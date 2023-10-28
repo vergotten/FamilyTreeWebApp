@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Panel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url({{ url_for('static', filename='images/elden_tree.png') }}) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        .separator {
+            border-left: 1px solid #ffffff;
+            height: 30px;
+            margin-left: 5px;  /* Reduced from 15px */
+            margin-right: 5px; /* Reduced from 15px */
+        }
+    </style>
+</head>
+<body>
+
+<!-- Top navigation bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex justify-content-between">
+  <div>
+    <a class="navbar-brand" href="{{ url_for('index') }}">Главная</a>
+    {% if session['username'] %}
+      <a class="btn btn-success nav-link d-inline-block" href="{{ url_for('user_profile', username=session['username']) }}">{{ session['username'] }}</a>
+      <a class="btn btn-danger nav-link d-inline-block mr-5" href="{{ url_for('logout') }}">Выйти</a>
+      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('persons', username=session['username']) }}" href="{{ url_for('persons', username=session['username']) }}">Persons</a>
+      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('places', username=session['username']) }}" href="{{ url_for('places', username=session['username']) }}">Places</a>
+    </div>
+  {% endif %}
+
+  {% if not session['username'] %}
+    <div>
+      <a class="btn btn-primary nav-link d-inline-block" href="{{ url_for('login') }}">Войти</a>
+      <a class="btn btn-primary nav-link d-inline-block" href="{{ url_for('register') }}">Зарегистрироваться</a>
+    </div>
+  {% endif %}
+</nav>
+
+
+<div class="container-fluid">
+  <div class="row">
+
+<!-- Main content area -->
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+      <!-- Main content here -->
+      {% block content %}
+      {% endblock %}
+    </main>
+
+  </div>
+</div>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
