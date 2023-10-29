@@ -1,0 +1,31 @@
+{% extends "user_panel.html" %}
+
+{% block content %}
+<div class="container">
+<!--    <h2>Persons</h2>-->
+    <div class="form-container bg-light p-3 rounded">
+        {% if persons %}
+        <table class="table">
+            <thead>
+                <tr>
+                    {% for column in Person.__table__.columns %}
+                    <th>{{ column.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for person in persons %}
+                <tr>
+                    {% for column in Person.__table__.columns %}
+                    <td>{{ getattr(person, column.name) }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No records in database. <a href="/create_person">Create new</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
