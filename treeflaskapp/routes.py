@@ -33,7 +33,8 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Registration successful. Please log in.', 'success')
+        flash_message = 'Registration successful. Please log in.' if g.user_language == 'en' else 'Регистрация прошла успешно. Пожалуйста, войдите в систему.'
+        flash(flash_message, 'success')
         return redirect(url_for('login'))
     return render_template('register.html', form=form)
 
@@ -47,7 +48,8 @@ def login():
             session['username'] = user.username  # store the username in session
             return redirect(url_for('user_profile', username=user.username))  # redirect to user's profile
         else:
-            flash('Incorrect username or password. Please try again.')
+            flash_message = 'Incorrect username or password. Please try again.' if g.user_language == 'en' else 'Неверное имя пользователя или пароль. Пожалуйста, попробуйте еще раз.'
+            flash(flash_message)
     return render_template('login.html', form=form)
 
 @app.route('/logout')
@@ -60,12 +62,12 @@ def logout():
 @login_required
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template('user_panel.html', user=user)
+    return render_template('user_panel.html', user=user, user_language=g.user_language)
 
 @app.route('/user/<username>/persons')
 def persons(username):
     # Your code here
-    return render_template(g.user_language + '/persons.html')
+    return render_template('persons.html')
 
 @app.route('/user/<username>/places')
 def places(username):

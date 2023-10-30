@@ -11,11 +11,17 @@
             -o-background-size: cover;
             background-size: cover;
         }
-        .separator {
-            border-left: 1px solid #ffffff;
-            height: 30px;
-            margin-left: 5px;  /* Reduced from 15px */
-            margin-right: 5px; /* Reduced from 15px */
+        .nav-link {
+            color: #FFFFFF; /* Change this to the color you want */
+        }
+        .nav-link:hover {
+            color: gold !important;
+        }
+        .nav-link.active {
+            box-shadow: 0 0 10px gold;
+        }
+        .nav-link img:hover {
+            filter: brightness(0.8);
         }
     </style>
 </head>
@@ -24,12 +30,36 @@
 <!-- Top navigation bar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark d-flex justify-content-between">
   <div>
-    <a class="navbar-brand" href="{{ url_for('index') }}">Главная</a>
+    <a class="navbar-brand" href="{{ url_for('index') }}">
+      {% if g.user_language == 'ru' %}
+        Главная
+      {% else %}
+        Home
+      {% endif %}
+    </a>
     {% if session['username'] %}
       <a class="btn btn-success nav-link d-inline-block" href="{{ url_for('user_profile', username=session['username']) }}">{{ session['username'] }}</a>
-      <a class="btn btn-danger nav-link d-inline-block mr-5" href="{{ url_for('logout') }}">Выйти</a>
-      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('persons', username=session['username']) }}" href="{{ url_for('persons', username=session['username']) }}">Persons</a>
-      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('places', username=session['username']) }}" href="{{ url_for('places', username=session['username']) }}">Places</a>
+      <a class="btn btn-danger nav-link d-inline-block mr-5" href="{{ url_for('logout') }}">
+        {% if g.user_language == 'ru' %}
+          Выйти
+        {% else %}
+          Logout
+        {% endif %}
+      </a>
+      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('persons', username=session['username']) }}" href="{{ url_for('persons', username=session['username']) }}">
+        {% if g.user_language == 'ru' %}
+          Персоны
+        {% else %}
+          Persons
+        {% endif %}
+      </a>
+      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('places', username=session['username']) }}" href="{{ url_for('places', username=session['username']) }}">
+        {% if g.user_language == 'ru' %}
+          Места
+        {% else %}
+          Places
+        {% endif %}
+      </a>
     </div>
   {% endif %}
 
@@ -39,6 +69,18 @@
       <a class="btn btn-primary nav-link d-inline-block" href="{{ url_for('register') }}">Зарегистрироваться</a>
     </div>
   {% endif %}
+
+  <!-- Language flags -->
+  <div class="navbar-nav ml-auto d-flex flex-row">
+    <a class="nav-link {{ 'active' if g.user_language == 'en' }}" href="{{ url_for('set_language', language='en') }}">
+      <img src="{{ url_for('static', filename='images/us_flag.png') }}" alt="EN" style="height:20px;">
+      EN
+    </a>
+    <a class="nav-link {{ 'active' if g.user_language == 'ru' }}" href="{{ url_for('set_language', language='ru') }}">
+      <img src="{{ url_for('static', filename='images/ru_flag.png') }}" alt="RU" style="height:20px;">
+      RU
+    </a>
+  </div>
 </nav>
 
 
