@@ -9,12 +9,6 @@ Flask-WTF==1.1.1
 flaskwebgui==1.0.8
 itsdangerous==2.1.2
 Jinja2==3.1.2
-nicegui==1.3.18
-pydantic_core==2.10.1
-Pygments==2.16.1
-pytz==2023.3.post1
-pyvibe==0.0.5
-PyYAML==6.0.1
 SQLAlchemy==2.0.22
 watchfiles==0.21.0
 websockets==11.0.3
