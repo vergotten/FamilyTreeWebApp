@@ -9,16 +9,21 @@
 
 <div class="d-flex justify-content-center align-items-center vh-10">
     <div class="form-container mx-auto py-md-3 py-1 golden-gradient bg-gradient" style="max-width: 500px; padding: 15px; border-radius: 10px;">
-        <h1 class="text-center"><strong style="color: black; text-shadow: 2px 2px 4px #ffd700;">Register</strong></h1>
+        {% if g.user_language == 'en' %}
+            <h1 class="text-center"><strong style="color: black; text-shadow: 2px 2px 4px #ffd700;">Register</strong></h1>
+        {% elif g.user_language == 'ru' %}
+            <h1 class="text-center"><strong style="color: black; text-shadow: 2px 2px 4px #ffd700;">Регистрация</strong></h1>
+        {% endif %}
+
         <form method="POST" class="needs-validation" novalidate>
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.first_name.label(class="form-label", style="font-weight:bold") }}
-                {{ form.first_name(class="form-control", size=20) }}
+                {{ form.first_name(class="form-control", size=30) }}
             </div>
             <div class="form-group">
                 {{ form.last_name.label(class="form-label", style="font-weight:bold") }}
-                {{ form.last_name(class="form-control", size=20) }}
+                {{ form.last_name(class="form-control", size=30) }}
             </div>
             <div class="form-group">
                 {{ form.date_of_birth.label(class="form-label", style="font-weight:bold") }}
@@ -26,7 +31,7 @@
             </div>
             <div class="form-group">
                 {{ form.username.label(class="form-label", style="font-weight:bold") }}
-                {{ form.username(class="form-control", size=20) }}
+                {{ form.username(class="form-control", size=30) }}
                 {% if form.username.errors %}
                     <div class="alert alert-danger">
                         {{ form.username.errors|join(', ') }}
@@ -35,7 +40,7 @@
             </div>
             <div class="form-group">
                 {{ form.email.label(class="form-label", style="font-weight:bold") }}
-                {{ form.email(class="form-control", size=20) }}
+                {{ form.email(class="form-control", size=30) }}
                 {% if form.email.errors %}
                     <div class="alert alert-danger">
                         {{ form.email.errors|join(', ') }}
@@ -44,15 +49,21 @@
             </div>
             <div class="form-group">
                 {{ form.password.label(class="form-label", style="font-weight:bold") }}
-                {{ form.password(class="form-control", size=20) }}
+                {{ form.password(class="form-control", size=30) }}
             </div>
             <div class="form-group">
                 {{ form.confirm_password.label(class="form-label", style="font-weight:bold") }}
-                {{ form.confirm_password(class="form-control", size=20) }}
+                {{ form.confirm_password(class="form-control", size=30) }}
             </div>
+
             <!-- Add your additional fields here -->
+
             <div class="text-center">
-                {{ form.submit(class='btn btn-dark') }}
+                {% if g.user_language == 'en' %}
+                    {{ form.submit(class='btn btn-dark', value='Register') }}
+                {% elif g.user_language == 'ru' %}
+                    {{ form.submit(class='btn btn-dark', value='Регистрация') }}
+                {% endif %}
             </div>
         </form>
     </div>

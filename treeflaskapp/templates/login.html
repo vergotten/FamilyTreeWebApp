@@ -8,7 +8,11 @@
 
 <div class="d-flex justify-content-center align-items-center vh-10">
     <div class="form-container mx-auto py-md-3 py-1 golden-gradient bg-gradient" style="max-width: 500px; padding: 15px; border-radius: 10px;">
-        <h1 class="text-center"><strong style="color: black; text-shadow: 2px 2px 4px #ffd700;">Login</strong></h1>
+        {% if g.user_language == 'en' %}
+            <h1 class="text-center"><strong style="color: black; text-shadow: 2px 2px 4px #ffd700;">Login</strong></h1>
+        {% elif g.user_language == 'ru' %}
+            <h1 class="text-center"><strong style="color: black; text-shadow: 2px 2px 4px #ffd700;">Войти</strong></h1>
+        {% endif %}
 
         {% with messages = get_flashed_messages() %}
           {% if messages %}
@@ -24,7 +28,7 @@
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.username.label(class="form-label", style="font-weight:bold") }}
-                {{ form.username(class="form-control", size=20) }}
+                {{ form.username(class="form-control", size=30) }}
                 {% if form.username.errors %}
                     <div class="alert alert-danger">
                         {{ form.username.errors|join(', ') }}
@@ -33,7 +37,7 @@
             </div>
             <div class="form-group">
                 {{ form.password.label(class="form-label", style="font-weight:bold") }}
-                {{ form.password(class="form-control", size=20) }}
+                {{ form.password(class="form-control", size=30) }}
                 {% if form.password.errors %}
                     <div class="alert alert-danger">
                         {{ form.password.errors|join(', ') }}
@@ -42,7 +46,11 @@
             </div>
             <!-- Add your additional fields here -->
             <div class="text-center">
-                {{ form.submit(class='btn btn-dark') }}
+                {% if g.user_language == 'en' %}
+                    {{ form.submit(class='btn btn-dark', value='Login') }}
+                {% elif g.user_language == 'ru' %}
+                    {{ form.submit(class='btn btn-dark', value='Войти') }}
+                {% endif %}
             </div>
         </form>
     </div>

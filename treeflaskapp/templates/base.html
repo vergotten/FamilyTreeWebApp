@@ -62,7 +62,7 @@
       {% endif %}
     </a>
   {% endif %}
-  <div class="navbar-nav ml-auto">
+  <div class="navbar-nav ml-auto d-flex flex-row">
     <a class="nav-link {{ 'active' if g.user_language == 'en' }}" href="{{ url_for('set_language', language='en') }}">
       <img src="{{ url_for('static', filename='images/us_flag.png') }}" alt="EN" style="height:20px;">
       EN

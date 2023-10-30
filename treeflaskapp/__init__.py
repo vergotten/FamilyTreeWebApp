@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, url_for, request, g
+from flask import Flask, flash, redirect, url_for, request, g, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from config import Config
@@ -36,7 +36,10 @@ def get_user_language():
 
 @app.before_request
 def before_request():
-    g.user_language = get_user_language()
+    g.user_language = session.get('user_language')
+    if g.user_language not in ['en', 'ru']:
+        g.user_language = 'en'  # default to English if no valid language is set in session
+
 
 # Import routes and models after db has been defined
 from treeflaskapp.models import User, UserAdmin  # Import your models here

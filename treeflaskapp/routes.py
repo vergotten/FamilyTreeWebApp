@@ -23,11 +23,11 @@ def set_language(language):
 
 @app.route('/')
 def index():
-    return render_template(g.user_language + '/index.html')
+    return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegisterForm()
+    form = RegisterForm(user_language=g.user_language)
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, date_of_birth=form.date_of_birth.data)
         user.set_password(form.password.data)
@@ -35,20 +35,20 @@ def register():
         db.session.commit()
         flash('Registration successful. Please log in.', 'success')
         return redirect(url_for('login'))
-    return render_template(g.user_language + '/register.html', form=form)
+    return render_template('register.html', form=form)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
+    form = LoginForm(user_language=g.user_language)
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user and user.check_password(form.password.data):
+        if user is not None and user.check_password(form.password.data):
             login_user(user)
             session['username'] = user.username  # store the username in session
             return redirect(url_for('user_profile', username=user.username))  # redirect to user's profile
         else:
             flash('Incorrect username or password. Please try again.')
-    return render_template(g.user_language + '/login.html', form=form)
+    return render_template('login.html', form=form)
 
 @app.route('/logout')
 def logout():
@@ -60,7 +60,7 @@ def logout():
 @login_required
 def user_profile(username):
     user = User.query.filter_by(username=username).first_or_404()
-    return render_template(g.user_language + '/user_panel.html', user=user)
+    return render_template('user_panel.html', user=user)
 
 @app.route('/user/<username>/persons')
 def persons(username):
@@ -70,4 +70,4 @@ def persons(username):
 @app.route('/user/<username>/places')
 def places(username):
     # Your code here
-    return render_template(g.user_language + '/places.html')
+    return render_template('places.html')
