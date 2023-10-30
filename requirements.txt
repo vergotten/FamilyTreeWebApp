@@ -10,9 +10,6 @@ flaskwebgui==1.0.8
 itsdangerous==2.1.2
 Jinja2==3.1.2
 SQLAlchemy==2.0.22
-watchfiles==0.21.0
-websockets==11.0.3
 Werkzeug==2.2.0
-wsproto==1.2.0
 WTForms==3.1.0
 yarl==1.9.2
