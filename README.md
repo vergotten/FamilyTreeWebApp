@@ -12,7 +12,7 @@ The Family Tree Project is a web application that allows users to create, visual
 ## Installation & Usage
 1. Clone the repository to your local machine.
 2. Navigate to the project directory.
-3. Install the required dependencies using pip: `pip install -r requirements.txt`
+3. Install the required dependencies using pip (Python version 3.10.13): `pip install -r requirements.txt`
 4. Run the application: `python app.py`
 5. Open your web browser and navigate to `localhost:8080` to access the application.
 
