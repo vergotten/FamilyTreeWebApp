@@ -2,22 +2,21 @@
 
 {% block content %}
 <div class="container">
-<!--    <h2>Places</h2>-->
     <div class="form-container bg-light p-3 rounded">
-        {% if places %}
+        {% if events %}
         <table class="table">
             <thead>
                 <tr>
-                    {% for column in Place.__table__.columns %}
+                    {% for column in Event.__table__.columns %}
                     <th>{{ column.name }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
-                {% for place in places %}
+                {% for event in events %}
                 <tr>
-                    {% for column in Place.__table__.columns %}
-                    <td>{{ getattr(place, column.name) }}</td>
+                    {% for column in Event.__table__.columns %}
+                    <td>{{ getattr(event, column.name) }}</td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
@@ -25,9 +24,9 @@
         </table>
         {% else %}
         {% if g.user_language == 'en' %}
-            <p>No records in database. <a href="/create_place">Create new</a></p>
+            <p>No records in database. <a href="/create_event">Create new</a></p>
         {% elif g.user_language == 'ru' %}
-            <p>Нет записей в базе данных. <a href="/create_place">Создать новую</a></p>
+            <p>Нет записей в базе данных. <a href="/create_event">Создать новую</a></p>
         {% endif %}
     {% endif %}
     </div>

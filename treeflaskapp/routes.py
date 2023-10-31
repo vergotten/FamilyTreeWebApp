@@ -66,10 +66,12 @@ def user_profile(username):
 
 @app.route('/user/<username>/persons')
 def persons(username):
-    # Your code here
     return render_template('persons.html')
 
 @app.route('/user/<username>/places')
 def places(username):
-    # Your code here
     return render_template('places.html')
+
+@app.route('/user/<username>/events')
+def events(username):
+    return render_template('events.html')

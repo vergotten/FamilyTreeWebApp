@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, DateField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from .models import User  # replace with your actual User model
+from .models import User
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[DataRequired()])
@@ -17,11 +17,12 @@ class LoginForm(FlaskForm):
 
     def translate(self, text):
         translations = {
-            'en': {'Username': 'Username', 'Password': 'Password', 'Submit': 'Submit'},
-            'ru': {'Username': 'Имя пользователя', 'Password': 'Пароль', 'Submit': 'Отправить'}
+            'en': {'Username': 'Username', 'Password': 'Password', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
+            'ru': {'Username': 'Имя пользователя', 'Password': 'Пароль', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
         }
         return translations.get(self.user_language, {}).get(text, text)
 
+# TODO: 'This field is required.' in flash both languages message handler (currently only EN)
 class RegisterForm(FlaskForm):
     first_name = StringField(validators=[DataRequired()])
     last_name = StringField(validators=[DataRequired()])
@@ -57,7 +58,10 @@ class RegisterForm(FlaskForm):
                    "Username already in use. Please log in instead.":
                        "Username already in use. Please log in instead.",
                    "Email already in use. Please log in instead.":
-                       "Email already in use. Please log in instead."},
+                       "Email already in use. Please log in instead.",
+                   "This field is required.": "This field is required.",
+                   "Invalid email address.": "Invalid email address.",
+                   "Passwords must match.": "Passwords must match."},
             'ru': {'First Name': 'Имя',
                    'Last Name': 'Фамилия',
                    'Date of Birth': 'Дата рождения',
@@ -69,7 +73,10 @@ class RegisterForm(FlaskForm):
                    "Username already in use. Please log in instead.":
                        "Имя пользователя уже используется. Пожалуйста, войдите в систему.",
                    "Email already in use. Please log in instead.":
-                       "Электронная почта уже используется. Пожалуйста, войдите в систему."}
+                       "Электронная почта уже используется. Пожалуйста, войдите в систему.",
+                   "This field is required.": "Это поле обязательно для заполнения.",
+                   "Invalid email address.": "Неверный адрес электронной почты.",
+                   "Passwords must match.": "Пароли должны совпадать."}
         }
         return translations.get(self.user_language, {}).get(text, text)
 
