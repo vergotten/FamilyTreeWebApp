@@ -4,7 +4,7 @@
 <div class="container">
     <div class="form-container bg-light p-3 rounded">
         {% if events %}
-        <table class="table">
+        <table id="myTable" class="table">
             <thead>
                 <tr>
                     <th>{{ form.name.label.text }}</th>
@@ -20,13 +20,50 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        <!-- Buttons -->
+        <button id="createBtn" class="btn btn-success">{% if g.user_language == 'en' %}Create New{% elif g.user_language == 'ru' %}Создать новую{% endif %}</button>
+        <button id="editBtn" class="btn btn-secondary" disabled>{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
+        <button id="deleteBtn" class="btn btn-danger" disabled>{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
+
         {% else %}
         {% if g.user_language == 'en' %}
-            <p>No records in database. <a href="{{ url_for('create_event', username=session['username']) }}">Create new</a></p>
+            <p>No records in database. <a href="{{ url_for('create_person', username=session['username']) }}">Create new</a></p>
         {% elif g.user_language == 'ru' %}
-            <p>Нет записей в базе данных. <a href="{{ url_for('create_event', username=session['username']) }}">Создать новую</a></p>
+            <p>Нет записей в базе данных. <a href="{{ url_for('create_person', username=session['username']) }}">Создать новую</a></p>
         {% endif %}
     {% endif %}
     </div>
 </div>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    var table = $('#myTable').DataTable({
+        pageLength: 10,
+        createdRow: function(row) {
+            $(row).click(function(){
+                if ($(this).hasClass('highlight')) {
+                    $(this).removeClass('highlight');
+                    $('#editBtn, #deleteBtn').prop('disabled', true);
+                } else {
+                    $('#myTable tbody tr').removeClass('highlight');
+                    $(this).addClass('highlight');
+                    $('#editBtn, #deleteBtn').prop('disabled', false);
+                }
+            });
+        }
+    });
+});
+</script>
+
+<style type="text/css">
+.highlight {
+    background-color: gold !important;
+}
+</style>
+
 {% endblock %}
