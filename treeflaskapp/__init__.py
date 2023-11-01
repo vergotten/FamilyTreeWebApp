@@ -42,7 +42,7 @@ def before_request():
 
 
 # Import routes and models after db has been defined
-from treeflaskapp.models import User, UserAdmin  # Import your models here
+from treeflaskapp.models import *
 
 # Import routes and models after db has been defined
 from treeflaskapp import routes

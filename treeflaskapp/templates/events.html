@@ -7,26 +7,24 @@
         <table class="table">
             <thead>
                 <tr>
-                    {% for column in Event.__table__.columns %}
-                    <th>{{ column.name }}</th>
-                    {% endfor %}
+                    <th>{{ form.name.label.text }}</th>
+                    <th>{{ form.date.label.text }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for event in events %}
                 <tr>
-                    {% for column in Event.__table__.columns %}
-                    <td>{{ getattr(event, column.name) }}</td>
-                    {% endfor %}
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.date }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% else %}
         {% if g.user_language == 'en' %}
-            <p>No records in database. <a href="/create_event">Create new</a></p>
+            <p>No records in database. <a href="{{ url_for('create_event', username=session['username']) }}">Create new</a></p>
         {% elif g.user_language == 'ru' %}
-            <p>Нет записей в базе данных. <a href="/create_event">Создать новую</a></p>
+            <p>Нет записей в базе данных. <a href="{{ url_for('create_event', username=session['username']) }}">Создать новую</a></p>
         {% endif %}
     {% endif %}
     </div>

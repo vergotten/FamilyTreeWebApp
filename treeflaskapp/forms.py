@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DateField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from .models import User
+from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Optional
+from datetime import datetime
+
+from .models import *
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[DataRequired()])
@@ -87,3 +89,65 @@ class RegisterForm(FlaskForm):
     def validate_email(self, field):
         if User.query.filter_by(email=field.data).first():
             raise ValidationError(self.translate('Email already in use. Please log in instead.'))
+
+
+class PersonForm(FlaskForm):
+    name = StringField(validators=[DataRequired()])
+    birth_date = DateField(format='%Y-%m-%d', validators=[Optional()])
+    death_date = DateField(format='%Y-%m-%d', validators=[Optional()])
+    submit = SubmitField()
+
+    def __init__(self, user_language='en', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_language = user_language
+        self.name.label.text = self.translate('Name')
+        self.birth_date.label.text = self.translate('Birth Date')
+        self.death_date.label.text = self.translate('Death Date')
+        self.submit.label.text = self.translate('Submit')
+
+    def translate(self, text):
+        translations = {
+            'en': {'Name': 'Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
+            'ru': {'Name': 'Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
+        }
+        return translations.get(self.user_language, {}).get(text, text)
+
+class PlaceForm(FlaskForm):
+    name = StringField(validators=[DataRequired()])
+    location = StringField()
+    significance = TextAreaField()
+    submit = SubmitField()
+
+    def __init__(self, user_language='en', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_language = user_language
+        self.name.label.text = self.translate('Name')
+        self.location.label.text = self.translate('Location')
+        self.significance.label.text = self.translate('Significance')
+        self.submit.label.text = self.translate('Submit')
+
+    def translate(self, text):
+        translations = {
+            'en': {'Name': 'Name', 'Location': 'Location', 'Significance': 'Significance', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
+            'ru': {'Name': 'Имя', 'Location': 'Местоположение', 'Significance': 'Значение', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
+        }
+        return translations.get(self.user_language, {}).get(text, text)
+
+class EventForm(FlaskForm):
+    name = StringField(validators=[DataRequired()])
+    date = DateField(format='%Y-%m-%d')
+    submit = SubmitField()
+
+    def __init__(self, user_language='en', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_language = user_language
+        self.name.label.text = self.translate('Name')
+        self.date.label.text = self.translate('Date')
+        self.submit.label.text = self.translate('Submit')
+
+    def translate(self, text):
+        translations = {
+            'en': {'Name': 'Name', 'Date': 'Date', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
+            'ru': {'Name': 'Имя', 'Date': 'Дата', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
+        }
+        return translations.get(self.user_language, {}).get(text, text)
