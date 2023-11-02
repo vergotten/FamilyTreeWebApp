@@ -17,7 +17,15 @@
                 {{ form.date(class="form-control") }}
             </div>
             <!-- Add more form fields as needed -->
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="text-center">
+                {% if g.user_language == 'en' %}
+                    {{ form.submit(class='btn btn-success', value='Update') }}
+                    <a href="{{ url_for('events.events_view', username=username) }}" class="btn btn-danger">Cancel</a>
+                {% elif g.user_language == 'ru' %}
+                    {{ form.submit(class='btn btn-success', value='Обновить') }}
+                    <a href="{{ url_for('events.events_view', username=username) }}" class="btn btn-danger">Отмена</a>
+                {% endif %}
+            </div>
         </form>
     </div>
 </div>

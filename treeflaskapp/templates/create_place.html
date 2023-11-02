@@ -23,9 +23,11 @@
             <!-- Add more form fields as needed -->
             <div class="text-center">
                 {% if g.user_language == 'en' %}
-                    {{ form.submit(class='btn btn-dark', value='Submit') }}
+                    {{ form.submit(class='btn btn-success', value='Update') }}
+                    <a href="{{ url_for('places.places_view', username=username) }}" class="btn btn-danger">Cancel</a>
                 {% elif g.user_language == 'ru' %}
-                    {{ form.submit(class='btn btn-dark', value='Отправить') }}
+                    {{ form.submit(class='btn btn-success', value='Обновить') }}
+                    <a href="{{ url_for('places.places_view', username=username) }}" class="btn btn-danger">Отмена</a>
                 {% endif %}
             </div>
         </form>
