@@ -27,7 +27,7 @@
             {{ 'Create New' if g.user_language == 'en' else 'Создать новую' }}
         </button>
         <button id="editBtn" class="btn btn-secondary" disabled onclick="editEvent()">{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
-        <button id="deleteBtn" class="btn btn-danger" disabled>{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
+        <button id="deleteBtn" class="btn btn-danger" disabled onclick="deleteEvent()">{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
 
         {% else %}
         {% if g.user_language == 'en' %}
