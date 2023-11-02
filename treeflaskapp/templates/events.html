@@ -69,6 +69,27 @@ function editEvent() {
         window.location.href = '/user/' + username + '/edit_event/' + id;
     }
 }
+
+function deleteEvent() {
+    var id = $('#myTable tr.highlight').data('id');
+    if (id) {
+        var username = '{{ session['username'] }}'; // get username from session
+        $.ajax({
+            url: '/user/' + username + '/delete_event/' + id,
+            type: 'POST',
+            success: function(result) {
+                // Remove the deleted record from the table
+                $('#myTable tr.highlight').remove();
+                // Optionally, show a success message
+                // alert('Event deleted successfully!');
+            },
+            error: function(xhr, status, error) {
+                // Optionally, show an error message
+                alert('An error occurred while deleting the event: ' + error);
+            }
+        });
+    }
+}
 </script>
 
 <style type="text/css">

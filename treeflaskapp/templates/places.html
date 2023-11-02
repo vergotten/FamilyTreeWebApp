@@ -71,6 +71,27 @@ function editPlace() {
         window.location.href = '/user/' + username + '/edit_place/' + id;
     }
 }
+
+function deletePlace() {
+    var id = $('#myTable tr.highlight').data('id');
+    if (id) {
+        var username = '{{ session['username'] }}'; // get username from session
+        $.ajax({
+            url: '/user/' + username + '/delete_place/' + id,
+            type: 'POST',
+            success: function(result) {
+                // Remove the deleted record from the table
+                $('#myTable tr.highlight').remove();
+                // Optionally, show a success message
+                // alert('Place deleted successfully!');
+            },
+            error: function(xhr, status, error) {
+                // Optionally, show an error message
+                alert('An error occurred while deleting the place: ' + error);
+            }
+        });
+    }
+}
 </script>
 
 <style type="text/css">

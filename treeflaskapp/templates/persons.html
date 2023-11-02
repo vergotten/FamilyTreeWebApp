@@ -29,7 +29,7 @@
             {{ 'Create New' if g.user_language == 'en' else 'Создать новую' }}
         </button>
         <button id="editBtn" class="btn btn-secondary" disabled onclick="editPerson()">{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
-        <button id="deleteBtn" class="btn btn-danger" disabled>{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
+        <button id="deleteBtn" class="btn btn-danger" disabled onclick="deletePerson()">{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
 
         {% else %}
         {% if g.user_language == 'en' %}
@@ -69,6 +69,27 @@ function editPerson() {
     if (id) {
         var username = '{{ session['username'] }}'; // get username from session
         window.location.href = '/user/' + username + '/edit_person/' + id;
+    }
+}
+
+function deletePerson() {
+    var id = $('#myTable tr.highlight').data('id');
+    if (id) {
+        var username = '{{ session['username'] }}'; // get username from session
+        $.ajax({
+            url: '/user/' + username + '/delete_person/' + id,
+            type: 'POST',
+            success: function(result) {
+                // Remove the deleted record from the table
+                $('#myTable tr.highlight').remove();
+                // Optionally, show a success message
+                // alert('Person deleted successfully!');
+            },
+            error: function(xhr, status, error) {
+                // Optionally, show an error message
+                alert('An error occurred while deleting the person: ' + error);
+            }
+        });
     }
 }
 </script>

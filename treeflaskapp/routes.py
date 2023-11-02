@@ -181,21 +181,19 @@ def edit_person(username, id):
 
     return render_template('edit_person.html', form=form, username=username, person=person)
 
-@app.route('/user/<username>/delete_person/<id>', methods=['POST'])
+@app.route('/user/<username>/delete_person/<int:id>', methods=['POST'])
 @login_required
 def delete_person(username, id):
     person = Person.query.get(id)
-    if person.user_id != current_user.id:
-        abort(403)  # Forbidden
+    if person is None:
+        abort(404)  # Not found
     try:
         db.session.delete(person)
         db.session.commit()
-        flash_message = 'Person deleted successfully!' if g.user_language == 'en' else 'Человек успешно удален!'
-        flash(flash_message, 'success')
+        flash('Person deleted successfully!', 'success')
     except Exception as e:
         db.session.rollback()
-        # flash_message = 'An error occurred while deleting the person: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при удалении человека: {}'.format(e)
-        # flash(flash_message, 'error')
+        flash('An error occurred while deleting the person: {}'.format(e), 'error')
     return redirect(url_for('persons', username=username))
 
 @app.route('/user/<username>/places')
@@ -250,6 +248,21 @@ def edit_place(username, id):
             flash('An error occurred while updating the place: {}'.format(e), 'error')
     return render_template('edit_place.html', form=form, username=username, place=place)
 
+@app.route('/user/<username>/delete_place/<int:id>', methods=['POST'])
+@login_required
+def delete_place(username, id):
+    place = Place.query.get(id)
+    if place is None:
+        abort(404)  # Not found
+    try:
+        db.session.delete(place)
+        db.session.commit()
+        flash('Place deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while deleting the place: {}'.format(e), 'error')
+    return redirect(url_for('places', username=username))
+
 @app.route('/user/<username>/events')
 def events(username):
     if username == current_user.username:
@@ -299,3 +312,18 @@ def edit_event(username, id):
             db.session.rollback()
             flash('An error occurred while updating the event: {}'.format(e), 'error')
     return render_template('edit_event.html', form=form, username=username, event=event)
+
+@app.route('/user/<username>/delete_event/<int:id>', methods=['POST'])
+@login_required
+def delete_event(username, id):
+    event = Event.query.get(id)
+    if event is None:
+        abort(404)  # Not found
+    try:
+        db.session.delete(event)
+        db.session.commit()
+        flash('Event deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while deleting the event: {}'.format(e), 'error')
+    return redirect(url_for('events', username=username))
