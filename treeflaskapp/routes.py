@@ -75,6 +75,7 @@ def register():
             logger.error('An error occurred during registration: {}'.format(e))
     return render_template('register.html', form=form)
 
+# TODO: Fix bug with flash messages after creating or editing something
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(user_language=g.user_language)
@@ -159,8 +160,8 @@ def create_person(username):
             person = Person(user_id=current_user.id, name=form.name.data, birth_date=birth_date, death_date=death_date)
             db.session.add(person)
             db.session.commit()
-            flash_message = 'Person created successfully!' if g.user_language == 'en' else 'Человек успешно создан!'
-            flash(flash_message, 'success')
+            # flash_message = 'Person created successfully!' if g.user_language == 'en' else 'Человек успешно создан!'
+            # flash(flash_message, 'success')
             logger.debug('Person created successfully')
             return redirect(url_for('persons', username=username))
         except Exception as e:
@@ -170,6 +171,45 @@ def create_person(username):
             logger.error('An error occurred: {}'.format(e))
             print("errors: ", form.errors)
     return render_template('create_person.html', form=form, username=username)
+
+@app.route('/user/<username>/edit_person/<id>', methods=['GET', 'POST'])
+@login_required
+def edit_person(username, id):
+    person = Person.query.get(id)
+    if person.user_id != current_user.id:
+        abort(403)  # Forbidden
+    form = PersonForm(obj=person, user_language=g.user_language)
+    if form.validate_on_submit():
+        try:
+            person.name = form.name.data
+            person.birth_date = form.birth_date.data if form.birth_date.data else None
+            person.death_date = form.death_date.data if form.death_date.data else None
+            db.session.commit()
+            # flash_message = 'Person updated successfully!' if g.user_language == 'en' else 'Человек успешно обновлен!'
+            # flash(flash_message, 'success')
+            return redirect(url_for('persons', username=username))
+        except Exception as e:
+            db.session.rollback()
+            flash_message = 'An error occurred while updating the person: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при обновлении человека: {}'.format(e)
+            flash(flash_message, 'error')
+    return render_template('edit_person.html', form=form, username=username)
+
+@app.route('/user/<username>/delete_person/<id>', methods=['POST'])
+@login_required
+def delete_person(username, id):
+    person = Person.query.get(id)
+    if person.user_id != current_user.id:
+        abort(403)  # Forbidden
+    try:
+        db.session.delete(person)
+        db.session.commit()
+        flash_message = 'Person deleted successfully!' if g.user_language == 'en' else 'Человек успешно удален!'
+        flash(flash_message, 'success')
+    except Exception as e:
+        db.session.rollback()
+        # flash_message = 'An error occurred while deleting the person: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при удалении человека: {}'.format(e)
+        # flash(flash_message, 'error')
+    return redirect(url_for('persons', username=username))
 
 @app.route('/user/<username>/create_place', methods=['GET', 'POST'])
 @login_required
@@ -188,8 +228,8 @@ def create_place(username):
             return redirect(url_for('places', username=username))
         except Exception as e:
             db.session.rollback()
-            flash_message = 'An error occurred while creating the place: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при создании места: {}'.format(e)
-            flash(flash_message, 'error')
+            # flash_message = 'An error occurred while creating the place: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при создании места: {}'.format(e)
+            # flash(flash_message, 'error')
             logger.error('An error occurred: {}'.format(e))
             print("errors: ", form.errors)
     return render_template('create_place.html', form=form, username=username)
@@ -210,8 +250,8 @@ def create_event(username):
             return redirect(url_for('events', username=username))
         except Exception as e:
             db.session.rollback()
-            flash_message = 'An error occurred while creating the event: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при создании события: {}'.format(e)
-            flash(flash_message, 'error')
+            # flash_message = 'An error occurred while creating the event: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при создании события: {}'.format(e)
+            # flash(flash_message, 'error')
             logger.error('An error occurred: {}'.format(e))
             print("errors: ", form.errors)
     return render_template('create_event.html', form=form, username=username)

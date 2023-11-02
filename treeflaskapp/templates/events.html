@@ -22,7 +22,8 @@
         </table>
 
         <!-- Buttons -->
-        <button id="createBtn" class="btn btn-success">{% if g.user_language == 'en' %}Create New{% elif g.user_language == 'ru' %}Создать новую{% endif %}</button>
+        <button id="createBtn" class="btn btn-success" onclick="window.location.href='{{ url_for('create_event', username=session['username']) }}'">
+            {{ 'Create New' if g.user_language == 'en' else 'Создать новую' }}
         <button id="editBtn" class="btn btn-secondary" disabled>{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
         <button id="deleteBtn" class="btn btn-danger" disabled>{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
 
