@@ -46,21 +46,21 @@
           Logout
         {% endif %}
       </a>
-      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('persons', username=session['username']) }}" href="{{ url_for('persons', username=session['username']) }}">
+      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('persons.persons_view', username=session['username']) }}" href="{{ url_for('persons.persons_view', username=session['username']) }}">
         {% if g.user_language == 'ru' %}
           Персоны
         {% else %}
           Persons
         {% endif %}
       </a>
-      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('places', username=session['username']) }}" href="{{ url_for('places', username=session['username']) }}">
+      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('places.places_view', username=session['username']) }}" href="{{ url_for('places.places_view', username=session['username']) }}">
         {% if g.user_language == 'ru' %}
           Места
         {% else %}
           Places
         {% endif %}
       </a>
-      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('events', username=session['username']) }}" href="{{ url_for('events', username=session['username']) }}">
+      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('events.events_view', username=session['username']) }}" href="{{ url_for('events.events_view', username=session['username']) }}">
         {% if g.user_language == 'ru' %}
           События
         {% else %}

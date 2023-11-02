@@ -343,3 +343,23 @@
 2023-11-02 07:58:55,905 - my_logger - DEBUG - PersonForm created
 2023-11-02 07:58:56,037 - my_logger - DEBUG - Person created successfully
 2023-11-02 08:03:07,088 - my_logger - INFO - User profile accessed successfully
+2023-11-02 22:27:10,628 - my_logger - INFO - User logged out successfully
+2023-11-02 22:27:13,628 - my_logger - INFO - User logged in successfully
+2023-11-02 22:27:13,643 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:18:56,844 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:18:58,398 - my_logger - INFO - User logged out successfully
+2023-11-02 23:19:08,079 - my_logger - INFO - User logged in successfully
+2023-11-02 23:19:08,099 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:23:51,498 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:27:30,870 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:27:52,083 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:29:59,735 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:31:10,026 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:31:15,772 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:31:16,418 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:31:16,942 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:31:17,398 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:31:19,270 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:34:26,040 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:51:44,775 - my_logger - INFO - User profile accessed successfully
+2023-11-02 23:58:51,746 - my_logger - INFO - User profile accessed successfully

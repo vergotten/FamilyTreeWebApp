@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="form-container bg-light p-3 rounded">
-        <form action="/user/{{ username }}/edit_person/{{ person.id }}" method="post" class="needs-validation" novalidate>
+        <form action="/persons/user/{{ username }}/edit_person/{{ person.id }}" method="post" class="needs-validation" novalidate>
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.name.label(class="form-label") }}

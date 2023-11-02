@@ -23,7 +23,7 @@
         </table>
 
         <!-- Buttons -->
-        <button id="createBtn" class="btn btn-success" onclick="window.location.href='{{ url_for('create_event', username=session['username']) }}'">
+        <button id="createBtn" class="btn btn-success" onclick="window.location.href='{{ url_for('events.create_event', username=session['username']) }}'">
             {{ 'Create New' if g.user_language == 'en' else 'Создать новую' }}
         </button>
         <button id="editBtn" class="btn btn-secondary" disabled onclick="editEvent()">{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
@@ -66,7 +66,7 @@ function editEvent() {
     var id = $('#myTable tr.highlight').data('id');
     if (id) {
         var username = '{{ session['username'] }}'; // get username from session
-        window.location.href = '/user/' + username + '/edit_event/' + id;
+        window.location.href = '/events/user/' + username + '/edit_event/' + id;
     }
 }
 
@@ -75,7 +75,7 @@ function deleteEvent() {
     if (id) {
         var username = '{{ session['username'] }}'; // get username from session
         $.ajax({
-            url: '/user/' + username + '/delete_event/' + id,
+            url: '/events/user/' + username + '/delete_event/' + id,
             type: 'POST',
             success: function(result) {
                 // Remove the deleted record from the table

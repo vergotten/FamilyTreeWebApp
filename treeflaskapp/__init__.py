@@ -42,7 +42,15 @@ def before_request():
 
 
 # Import routes and models after db has been defined
-from treeflaskapp.models import *
+from .models import *
 
 # Import routes and models after db has been defined
-from treeflaskapp import routes
+from . import routes
+
+from .blueprint_persons import persons
+from .blueprint_places import places
+from .blueprint_events import events
+
+app.register_blueprint(persons, url_prefix='/persons')
+app.register_blueprint(places, url_prefix='/places')
+app.register_blueprint(events, url_prefix='/events')
