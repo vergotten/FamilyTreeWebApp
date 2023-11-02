@@ -13,9 +13,10 @@
             </thead>
             <tbody>
                 {% for event in events %}
-                <tr>
+                <tr data-id="{{ event.id }}">
                     <td>{{ event.name }}</td>
                     <td>{{ event.date }}</td>
+                    <!-- More columns here -->
                 </tr>
                 {% endfor %}
             </tbody>
@@ -24,14 +25,15 @@
         <!-- Buttons -->
         <button id="createBtn" class="btn btn-success" onclick="window.location.href='{{ url_for('create_event', username=session['username']) }}'">
             {{ 'Create New' if g.user_language == 'en' else 'Создать новую' }}
-        <button id="editBtn" class="btn btn-secondary" disabled>{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
+        </button>
+        <button id="editBtn" class="btn btn-secondary" disabled onclick="editEvent()">{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
         <button id="deleteBtn" class="btn btn-danger" disabled>{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
 
         {% else %}
         {% if g.user_language == 'en' %}
-            <p>No records in database. <a href="{{ url_for('create_person', username=session['username']) }}">Create new</a></p>
+            <p>No records in database. <a href="{{ url_for('create_event', username=session['username']) }}">Create new</a></p>
         {% elif g.user_language == 'ru' %}
-            <p>Нет записей в базе данных. <a href="{{ url_for('create_person', username=session['username']) }}">Создать новую</a></p>
+            <p>Нет записей в базе данных. <a href="{{ url_for('create_event', username=session['username']) }}">Создать новую</a></p>
         {% endif %}
     {% endif %}
     </div>
@@ -59,6 +61,14 @@ $(document).ready(function(){
         }
     });
 });
+
+function editEvent() {
+    var id = $('#myTable tr.highlight').data('id');
+    if (id) {
+        var username = '{{ session['username'] }}'; // get username from session
+        window.location.href = '/user/' + username + '/edit_person/' + id;
+    }
+}
 </script>
 
 <style type="text/css">

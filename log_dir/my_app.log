@@ -321,3 +321,20 @@
 2023-11-02 05:21:33,152 - my_logger - DEBUG - PersonForm created
 2023-11-02 05:21:35,153 - my_logger - DEBUG - PlaceForm created
 2023-11-02 05:21:37,397 - my_logger - DEBUG - EventForm created
+2023-11-02 05:29:31,754 - my_logger - DEBUG - PersonForm created
+2023-11-02 05:29:34,875 - my_logger - DEBUG - PlaceForm created
+2023-11-02 05:29:39,223 - my_logger - DEBUG - EventForm created
+2023-11-02 05:29:46,450 - my_logger - DEBUG - PersonForm created
+2023-11-02 05:32:46,367 - my_logger - DEBUG - EventForm created
+2023-11-02 05:32:48,604 - my_logger - DEBUG - PlaceForm created
+2023-11-02 05:32:52,347 - my_logger - DEBUG - PersonForm created
+2023-11-02 05:33:21,404 - my_logger - DEBUG - PersonForm created
+2023-11-02 06:02:53,703 - my_logger - INFO - User profile accessed successfully
+2023-11-02 06:02:56,899 - my_logger - DEBUG - PersonForm created
+2023-11-02 06:12:43,149 - my_logger - DEBUG - PersonForm created
+2023-11-02 06:13:18,160 - my_logger - DEBUG - PersonForm created
+2023-11-02 06:13:20,878 - my_logger - DEBUG - PersonForm created
+2023-11-02 06:16:53,111 - my_logger - DEBUG - PersonForm created
+2023-11-02 06:17:05,579 - my_logger - DEBUG - PersonForm created
+2023-11-02 06:18:20,964 - my_logger - DEBUG - PersonForm created
+2023-11-02 06:20:01,998 - my_logger - DEBUG - PersonForm created

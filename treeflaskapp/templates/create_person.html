@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="form-container bg-light p-3 rounded">
-        <form action="/user/{{ username }}/create_person" method="post" class="needs-validation" novalidate>
+        <form action="{{ url_for('create_person', username=username) }}" method="post" class="needs-validation" novalidate>
             {{ form.hidden_tag() }}
             <div class="form-group">
                 {{ form.name.label(class="form-label") }}
@@ -26,9 +26,9 @@
             <!-- Add more form fields as needed -->
             <div class="text-center">
                 {% if g.user_language == 'en' %}
-                    {{ form.submit(class='btn btn-dark', value='Submit') }}
+                    {{ form.submit(class='btn btn-dark', value='Update') }}
                 {% elif g.user_language == 'ru' %}
-                    {{ form.submit(class='btn btn-dark', value='Отправить') }}
+                    {{ form.submit(class='btn btn-dark', value='Обновить') }}
                 {% endif %}
             </div>
         </form>
@@ -38,17 +38,28 @@
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
 $(document).ready(function(){
-    setTimeout(function(){
-        $('.alert').fadeOut('slow');
-    }, 5000); // 5 seconds
-
-    // Client-side validation
-    $('.needs-validation').on('submit', function(event) {
-        if (this.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
+    var table = $('#myTable').DataTable({
+        pageLength: 10,
+        createdRow: function(row, data) {
+            $(row).click(function(){
+                if ($(this).hasClass('highlight')) {
+                    $(this).removeClass('highlight');
+                    $('#editBtn, #deleteBtn').prop('disabled', true);
+                } else {
+                    $('#myTable tbody tr').removeClass('highlight');
+                    $(this).addClass('highlight');
+                    $('#editBtn, #deleteBtn').prop('disabled', false);
+                }
+            });
         }
-        this.classList.add('was-validated');
+    });
+
+    // Add click event for the edit button
+    $('#editBtn').click(function() {
+        var data = table.row('.highlight').data();
+        if (data) {
+            window.location.href = '/user/' + username + 'edit_person/' + data[0];  // assuming the ID is in the first column of your table
+        }
     });
 });
 </script>

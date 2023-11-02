@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Optional
 from datetime import datetime
 
@@ -92,6 +92,7 @@ class RegisterForm(FlaskForm):
 
 
 class PersonForm(FlaskForm):
+    id = HiddenField()
     name = StringField(validators=[DataRequired()])
     birth_date = DateField(format='%Y-%m-%d', validators=[Optional()])
     death_date = DateField(format='%Y-%m-%d', validators=[Optional()])

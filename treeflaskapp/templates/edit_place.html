@@ -1,0 +1,12 @@
+{% extends "user_panel.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container bg-light p-3 rounded">
+        <form action="/user/{{ username }}/edit_place/{{ place.id }}" method="post" class="needs-validation" novalidate>
+            {{ form.hidden_tag() }}
+            <!-- Add your form fields here -->
+        </form>
+    </div>
+</div>
+{% endblock %}

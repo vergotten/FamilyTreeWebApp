@@ -14,10 +14,11 @@
             </thead>
             <tbody>
                 {% for place in places %}
-                <tr>
+                <tr data-id="{{ place.id }}">
                     <td>{{ place.name }}</td>
                     <td>{{ place.location }}</td>
                     <td>{{ place.significance }}</td>
+                    <!-- More columns here -->
                 </tr>
                 {% endfor %}
             </tbody>
@@ -26,7 +27,8 @@
         <!-- Buttons -->
         <button id="createBtn" class="btn btn-success" onclick="window.location.href='{{ url_for('create_place', username=session['username']) }}'">
             {{ 'Create New' if g.user_language == 'en' else 'Создать новую' }}
-        <button id="editBtn" class="btn btn-secondary" disabled>{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
+        </button>
+        <button id="editBtn" class="btn btn-secondary" disabled onclick="editPlace()">{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
         <button id="deleteBtn" class="btn btn-danger" disabled>{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
 
         {% else %}
@@ -61,6 +63,14 @@ $(document).ready(function(){
         }
     });
 });
+
+function editPlace() {
+    var id = $('#myTable tr.highlight').data('id');
+    if (id) {
+        var username = '{{ session['username'] }}'; // get username from session
+        window.location.href = '/user/' + username + '/edit_person/' + id;
+    }
+}
 </script>
 
 <style type="text/css">

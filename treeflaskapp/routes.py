@@ -75,7 +75,7 @@ def register():
             logger.error('An error occurred during registration: {}'.format(e))
     return render_template('register.html', form=form)
 
-# TODO: Fix bug with flash messages after creating or editing something
+# TODO: Fix
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(user_language=g.user_language)
@@ -130,24 +130,6 @@ def persons(username):
     else:
         return "Unauthorized", 403
 
-@app.route('/user/<username>/places')
-def places(username):
-    if username == current_user.username:
-        places = Place.query.filter_by(user_id=current_user.id).all()
-        form = PlaceForm(user_language=g.user_language)  # create an instance of your form
-        return render_template('places.html', places=places, form=form)
-    else:
-        return "Unauthorized", 403
-
-@app.route('/user/<username>/events')
-def events(username):
-    if username == current_user.username:
-        events = Event.query.filter_by(user_id=current_user.id).all()
-        form = EventForm(user_language=g.user_language)  # create an instance of your form
-        return render_template('events.html', events=events, form=form)
-    else:
-        return "Unauthorized", 403
-
 @app.route('/user/<username>/create_person', methods=['GET', 'POST'])
 @login_required
 def create_person(username):
@@ -172,27 +154,32 @@ def create_person(username):
             print("errors: ", form.errors)
     return render_template('create_person.html', form=form, username=username)
 
-@app.route('/user/<username>/edit_person/<id>', methods=['GET', 'POST'])
+@app.route('/user/<username>/edit_person/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_person(username, id):
-    person = Person.query.get(id)
-    if person.user_id != current_user.id:
-        abort(403)  # Forbidden
-    form = PersonForm(obj=person, user_language=g.user_language)
+    try:
+        person = Person.query.get(id)
+    except Exception as e:
+        flash('An error occurred while fetching the person: {}'.format(e), 'error')
+        return redirect(url_for('persons', username=username))  # Redirect to a safe page
+
+    if person is None:
+        abort(404)  # Not found
+
+    form = PersonForm(obj=person)
     if form.validate_on_submit():
         try:
             person.name = form.name.data
             person.birth_date = form.birth_date.data if form.birth_date.data else None
             person.death_date = form.death_date.data if form.death_date.data else None
             db.session.commit()
-            # flash_message = 'Person updated successfully!' if g.user_language == 'en' else 'Человек успешно обновлен!'
-            # flash(flash_message, 'success')
+            flash('Person updated successfully!', 'success')
             return redirect(url_for('persons', username=username))
         except Exception as e:
             db.session.rollback()
-            flash_message = 'An error occurred while updating the person: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при обновлении человека: {}'.format(e)
-            flash(flash_message, 'error')
-    return render_template('edit_person.html', form=form, username=username)
+            flash('An error occurred while updating the person: {}'.format(e), 'error')
+
+    return render_template('edit_person.html', form=form, username=username, person=person)
 
 @app.route('/user/<username>/delete_person/<id>', methods=['POST'])
 @login_required
@@ -210,6 +197,15 @@ def delete_person(username, id):
         # flash_message = 'An error occurred while deleting the person: {}'.format(e) if g.user_language == 'en' else 'Произошла ошибка при удалении человека: {}'.format(e)
         # flash(flash_message, 'error')
     return redirect(url_for('persons', username=username))
+
+@app.route('/user/<username>/places')
+def places(username):
+    if username == current_user.username:
+        places = Place.query.filter_by(user_id=current_user.id).all()
+        form = PlaceForm(user_language=g.user_language)  # create an instance of your form
+        return render_template('places.html', places=places, form=form)
+    else:
+        return "Unauthorized", 403
 
 @app.route('/user/<username>/create_place', methods=['GET', 'POST'])
 @login_required
@@ -234,6 +230,35 @@ def create_place(username):
             print("errors: ", form.errors)
     return render_template('create_place.html', form=form, username=username)
 
+@app.route('/user/<username>/edit_place/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_place(username, id):
+    place = Place.query.get(id)
+    if place is None:
+        abort(404)  # Not found
+    form = PlaceForm(obj=place)
+    if form.validate_on_submit():
+        try:
+            place.name = form.name.data
+            place.location = form.location.data
+            place.significance = form.significance.data
+            db.session.commit()
+            flash('Place updated successfully!', 'success')
+            return redirect(url_for('places', username=username))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while updating the place: {}'.format(e), 'error')
+    return render_template('edit_place.html', form=form, username=username, place=place)
+
+@app.route('/user/<username>/events')
+def events(username):
+    if username == current_user.username:
+        events = Event.query.filter_by(user_id=current_user.id).all()
+        form = EventForm(user_language=g.user_language)  # create an instance of your form
+        return render_template('events.html', events=events, form=form)
+    else:
+        return "Unauthorized", 403
+
 @app.route('/user/<username>/create_event', methods=['GET', 'POST'])
 @login_required
 def create_event(username):
@@ -256,4 +281,21 @@ def create_event(username):
             print("errors: ", form.errors)
     return render_template('create_event.html', form=form, username=username)
 
-
+@app.route('/user/<username>/edit_event/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_event(username, id):
+    event = Event.query.get(id)
+    if event is None:
+        abort(404)  # Not found
+    form = EventForm(obj=event)
+    if form.validate_on_submit():
+        try:
+            event.name = form.name.data
+            event.date = form.date.data
+            db.session.commit()
+            flash('Event updated successfully!', 'success')
+            return redirect(url_for('events', username=username))
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while updating the event: {}'.format(e), 'error')
+    return render_template('edit_event.html', form=form, username=username, event=event)
