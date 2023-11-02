@@ -39,7 +39,7 @@ def edit_person(username, id):
     if person is None or person.user_id != current_user.id:
         return "Unauthorized", 403
 
-    form = PersonForm(obj=person)
+    form = PersonForm(obj=person, user_language=g.user_language)
     if form.validate_on_submit():
         try:
             person.name = form.name.data

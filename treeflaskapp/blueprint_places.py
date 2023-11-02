@@ -37,7 +37,7 @@ def edit_place(username, id):
     if place is None or place.user_id != current_user.id:
         return "Unauthorized", 403
 
-    form = PlaceForm(obj=place)
+    form = PlaceForm(obj=place, user_language=g.user_language)
     if form.validate_on_submit():
         try:
             place.name = form.name.data

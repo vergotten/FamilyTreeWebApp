@@ -37,7 +37,7 @@ def edit_event(username, id):
     if event is None or event.user_id != current_user.id:
         return "Unauthorized", 403
 
-    form = EventForm(obj=event)
+    form = EventForm(obj=event, user_language=g.user_language)
     if form.validate_on_submit():
         try:
             event.name = form.name.data
