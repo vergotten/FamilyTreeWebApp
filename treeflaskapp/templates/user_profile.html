@@ -1,0 +1,14 @@
+{% extends "user_panel.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container bg-light p-3 rounded">
+        {% if g.user_language == 'en' %}
+            <p>Welcome to the user profile page! Please navigate to the tabs to select or create data.</p>
+        {% elif g.user_language == 'ru' %}
+            <p>Добро пожаловать на страницу профиля пользователя! Пожалуйста, перейдите на вкладки, чтобы выбрать или создать данные.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

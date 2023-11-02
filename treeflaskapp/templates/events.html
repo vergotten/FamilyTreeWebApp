@@ -31,9 +31,9 @@
 
         {% else %}
         {% if g.user_language == 'en' %}
-            <p>No records in database. <a href="{{ url_for('create_event', username=session['username']) }}">Create new</a></p>
+            <p>No records in database. <a href="{{ url_for('events.create_event', username=session['username']) }}">Create new</a></p>
         {% elif g.user_language == 'ru' %}
-            <p>Нет записей в базе данных. <a href="{{ url_for('create_event', username=session['username']) }}">Создать новую</a></p>
+            <p>Нет записей в базе данных. <a href="{{ url_for('events.create_event', username=session['username']) }}">Создать новую</a></p>
         {% endif %}
     {% endif %}
     </div>

@@ -117,4 +117,4 @@ def user_profile(username):
         return redirect(url_for('index'))
     except Exception as e:
         logger.error(f'An error occurred while accessing user profile: {e}')
-    return render_template('user_panel.html', user=user, user_language=g.user_language)
+    return render_template('user_profile.html', user=user, user_language=g.user_language)
