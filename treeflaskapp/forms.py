@@ -114,6 +114,7 @@ class PersonForm(FlaskForm):
         return translations.get(self.user_language, {}).get(text, text)
 
 class PlaceForm(FlaskForm):
+    id = HiddenField()
     name = StringField(validators=[DataRequired()])
     location = StringField()
     significance = TextAreaField()
@@ -135,6 +136,7 @@ class PlaceForm(FlaskForm):
         return translations.get(self.user_language, {}).get(text, text)
 
 class EventForm(FlaskForm):
+    id = HiddenField()
     name = StringField(validators=[DataRequired()])
     date = DateField(format='%Y-%m-%d')
     submit = SubmitField()

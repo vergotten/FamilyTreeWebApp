@@ -5,7 +5,19 @@
     <div class="form-container bg-light p-3 rounded">
         <form action="/user/{{ username }}/edit_event/{{ event.id }}" method="post" class="needs-validation" novalidate>
             {{ form.hidden_tag() }}
-            <!-- Add your form fields here -->
+            <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control", required=True) }}
+                <div class="invalid-feedback">
+                    Please provide a name.
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.date.label(class="form-label") }}
+                {{ form.date(class="form-control") }}
+            </div>
+            <!-- Add more form fields as needed -->
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
 </div>

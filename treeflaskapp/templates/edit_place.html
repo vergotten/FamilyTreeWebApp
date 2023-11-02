@@ -5,7 +5,23 @@
     <div class="form-container bg-light p-3 rounded">
         <form action="/user/{{ username }}/edit_place/{{ place.id }}" method="post" class="needs-validation" novalidate>
             {{ form.hidden_tag() }}
-            <!-- Add your form fields here -->
+            <div class="form-group">
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control", required=True) }}
+                <div class="invalid-feedback">
+                    Please provide a name.
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.location.label(class="form-label") }}
+                {{ form.location(class="form-control") }}
+            </div>
+            <div class="form-group">
+                {{ form.significance.label(class="form-label") }}
+                {{ form.significance(class="form-control") }}
+            </div>
+            <!-- Add more form fields as needed -->
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
 </div>

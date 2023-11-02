@@ -68,7 +68,7 @@ function editPlace() {
     var id = $('#myTable tr.highlight').data('id');
     if (id) {
         var username = '{{ session['username'] }}'; // get username from session
-        window.location.href = '/user/' + username + '/edit_person/' + id;
+        window.location.href = '/user/' + username + '/edit_place/' + id;
     }
 }
 </script>
