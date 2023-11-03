@@ -50,11 +50,14 @@ def create_person(username):
             person = Person(user_id=current_user.id, name=form.name.data, birth_date=birth_date, death_date=death_date, image_file=filepath)
             db.session.add(person)
             db.session.commit()
-            flash('Person created successfully!', 'success')
+            flash_message = 'Person created successfully!' if g.user_language == 'en' else 'Персона успешно создана!'
+            flash(flash_message, 'success')
             return redirect(url_for('persons.persons_view', username=username))
         except Exception as e:
             db.session.rollback()
-            flash('An error occurred while creating the person: {}'.format(e), 'error')
+            flash_message = 'An error occurred while creating the person: {}'.format(e) if g.user_language == 'en' \
+                else 'Произошла ошибка при создании персоны: {}'.format(e)
+            flash(flash_message, 'error')
     return render_template('create_person.html', form=form, username=username)
 
 @persons.route('/user/<username>/edit_person/<int:id>', methods=['GET', 'POST'])
@@ -78,11 +81,14 @@ def edit_person(username, id):
             person.birth_date = form.birth_date.data if form.birth_date.data else None
             person.death_date = form.death_date.data if form.death_date.data else None
             db.session.commit()
-            flash('Person updated successfully!', 'success')
+            flash_message = 'Person updated successfully!' if g.user_language == 'en' else 'Персона успешно обновлена!'
+            flash(flash_message, 'success')
             return redirect(url_for('persons.persons_view', username=username))
         except Exception as e:
             db.session.rollback()
-            flash('An error occurred while updating the person: {}'.format(e), 'error')
+            flash_message = 'An error occurred while updating the person: {}'.format(e) if g.user_language == 'en' \
+                else 'Произошла ошибка при обновлении персоны: {}'.format(e)
+            flash(flash_message, 'error')
 
     return render_template('edit_person.html', form=form, username=username, person=person)
 
@@ -96,9 +102,12 @@ def delete_person(username, id):
     try:
         db.session.delete(person)
         db.session.commit()
-        flash('Person deleted successfully!', 'success')
+        flash_message = 'Person deleted successfully!' if g.user_language == 'en' else 'Персона успешно удалена!'
+        flash(flash_message, 'success')
     except Exception as e:
         db.session.rollback()
-        flash('An error occurred while deleting the person: {}'.format(e), 'error')
+        flash_message = 'An error occurred while deleting the person: {}'.format(e) if g.user_language == 'en' \
+            else 'Произошла ошибка при удалении персоны: {}'.format(e)
+        flash(flash_message, 'error')
 
     return redirect(url_for('persons.persons_view', username=username))

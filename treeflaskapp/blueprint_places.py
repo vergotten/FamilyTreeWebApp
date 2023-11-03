@@ -24,11 +24,14 @@ def create_place(username):
             place = Place(user_id=current_user.id, name=form.name.data, location=form.location.data, significance=form.significance.data)
             db.session.add(place)
             db.session.commit()
-            flash('Place created successfully!', 'success')
+            flash_message = 'Place created successfully!' if g.user_language == 'en' else 'Место успешно создано!'
+            flash(flash_message, 'success')
             return redirect(url_for('places.places_view', username=username))
         except Exception as e:
             db.session.rollback()
-            flash('An error occurred while creating the place: {}'.format(e), 'error')
+            flash_message = 'An error occurred while creating the place: {}'.format(e) if g.user_language == 'en' \
+                else 'Произошла ошибка при создании места: {}'.format(e)
+            flash(flash_message, 'error')
     return render_template('create_place.html', form=form, username=username)
 
 @places.route('/user/<username>/edit_place/<int:id>', methods=['GET', 'POST'])
@@ -45,8 +48,9 @@ def edit_place(username, id):
             place.location = form.location.data
             place.significance = form.significance.data
             db.session.commit()
-            flash('Place updated successfully!', 'success')
-            return redirect(url_for('places.places_view', username=username))
+            flash_message = 'Place updated successfully!' if g.user_language == 'en' else 'Место успешно обновлено!'
+            flash(flash_message, 'success')
+            return redirect(url_for('persons.persons_view', username=username))
         except Exception as e:
             db.session.rollback()
             flash('An error occurred while updating the place: {}'.format(e), 'error')
@@ -63,9 +67,12 @@ def delete_place(username, id):
     try:
         db.session.delete(place)
         db.session.commit()
-        flash('Place deleted successfully!', 'success')
+        flash_message = 'Place deleted successfully!' if g.user_language == 'en' else 'Место успешно удалено!'
+        flash(flash_message, 'success')
     except Exception as e:
         db.session.rollback()
-        flash('An error occurred while deleting the place: {}'.format(e), 'error')
+        flash_message = 'An error occurred while deleting the place: {}'.format(e) if g.user_language == 'en' \
+            else 'Произошла ошибка при удалении места: {}'.format(e)
+        flash(flash_message, 'error')
 
     return redirect(url_for('places.places_view', username=username))

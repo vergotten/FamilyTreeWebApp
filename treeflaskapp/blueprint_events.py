@@ -24,11 +24,14 @@ def create_event(username):
             event = Event(user_id=current_user.id, name=form.name.data, date=form.date.data)
             db.session.add(event)
             db.session.commit()
-            flash('Event created successfully!', 'success')
+            flash_message = 'Event created successfully!' if g.user_language == 'en' else 'Событие успешно создано!'
+            flash(flash_message, 'success')
             return redirect(url_for('events.events_view', username=username))
         except Exception as e:
             db.session.rollback()
-            flash('An error occurred while creating the event: {}'.format(e), 'error')
+            flash_message = 'An error occurred while creating the event: {}'.format(e) if g.user_language == 'en' \
+                else 'Произошла ошибка при создании события: {}'.format(e)
+            flash(flash_message, 'error')
     return render_template('create_event.html', form=form, username=username)
 
 @events.route('/user/<username>/edit_event/<int:id>', methods=['GET', 'POST'])
@@ -44,11 +47,14 @@ def edit_event(username, id):
             event.name = form.name.data
             event.date = form.date.data
             db.session.commit()
-            flash('Event updated successfully!', 'success')
+            flash_message = 'Event updated successfully!' if g.user_language == 'en' else 'Событие успешно обновлено!'
+            flash(flash_message, 'success')
             return redirect(url_for('events.events_view', username=username))
         except Exception as e:
             db.session.rollback()
-            flash('An error occurred while updating the event: {}'.format(e), 'error')
+            flash_message = 'An error occurred while updating the event: {}'.format(e) if g.user_language == 'en' \
+                else 'Произошла ошибка при обновлении события: {}'.format(e)
+            flash(flash_message, 'error')
 
     return render_template('edit_event.html', form=form, username=username, event=event)
 
@@ -62,9 +68,12 @@ def delete_event(username, id):
     try:
         db.session.delete(event)
         db.session.commit()
-        flash('Event deleted successfully!', 'success')
+        flash_message = 'Event deleted successfully!' if g.user_language == 'en' else 'Событие успешно удалено!'
+        flash(flash_message, 'success')
     except Exception as e:
         db.session.rollback()
-        flash('An error occurred while deleting the event: {}'.format(e), 'error')
+        flash_message = 'An error occurred while deleting the event: {}'.format(e) if g.user_language == 'en' \
+            else 'Произошла ошибка при удалении события: {}'.format(e)
+        flash(flash_message, 'error')
 
     return redirect(url_for('events.events_view', username=username))
