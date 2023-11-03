@@ -6,7 +6,7 @@ from sqlalchemy import Date
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////mnt/e/Python_Flask/FamilyTreeFlask/db.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////mnt/e/Python_Flask/FamilyTreeWebApp/db.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -36,6 +36,7 @@ class Person(db.Model):
     name = db.Column(db.String(100))
     birth_date = db.Column(db.Date)
     death_date = db.Column(db.Date)
+    image_file = db.Column(db.String(120), nullable=True)
 
 
 class Relationship(db.Model):

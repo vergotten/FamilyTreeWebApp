@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from flask import flash, session, g
 import logging
 import os
+from werkzeug.utils import secure_filename
 
 from treeflaskapp import app, db, login_manager
 from treeflaskapp.models import *
@@ -118,3 +119,4 @@ def user_profile(username):
     except Exception as e:
         logger.error(f'An error occurred while accessing user profile: {e}')
     return render_template('user_profile.html', user=user, user_language=g.user_language)
+

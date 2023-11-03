@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, HiddenField
+from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, HiddenField, FileField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Optional
+from flask_wtf.file import FileAllowed
+
 from datetime import datetime
 
 from .models import *
@@ -96,6 +98,7 @@ class PersonForm(FlaskForm):
     name = StringField(validators=[DataRequired()])
     birth_date = DateField(format='%Y-%m-%d', validators=[Optional()])
     death_date = DateField(format='%Y-%m-%d', validators=[Optional()])
+    image_file = FileField('Image File', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField()
 
     def __init__(self, user_language='en', *args, **kwargs):

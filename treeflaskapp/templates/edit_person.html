@@ -3,8 +3,18 @@
 {% block content %}
 <div class="container">
     <div class="form-container bg-light p-3 rounded">
-        <form action="/persons/user/{{ username }}/edit_person/{{ person.id }}" method="post" class="needs-validation" novalidate>
+        <form action="/persons/user/{{ username }}/edit_person/{{ person.id }}" method="post" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
+            <div class="form-group"> <!-- Add 'text-center' class here -->
+<!--                {{ form.image_file.label(class="form-label") }}-->
+                {% if person.image_file %}
+                    <img src="{{ url_for('static', filename=person.image_file) }}" alt="Person Image" style="width: 400px; height: 400px;">
+                {% endif %}
+                {{ form.image_file(class="form-control", required=False) }}
+                <div class="invalid-feedback">
+                    Please provide a file.
+                </div>
+            </div>
             <div class="form-group">
                 {{ form.name.label(class="form-label") }}
                 {{ form.name(class="form-control", required=True) }}

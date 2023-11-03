@@ -3,8 +3,15 @@
 {% block content %}
 <div class="container">
     <div class="form-container bg-light p-3 rounded">
-        <form action="{{ url_for('persons.create_person', username=username) }}" method="post" class="needs-validation" novalidate>
+        <form action="/persons/user/{{ username }}/create_person" method="post" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.image_file.label(class="form-label") }}
+                {{ form.image_file(class="form-control", required=False) }}
+                <div class="invalid-feedback">
+                    Please provide a name.
+                </div>
+            </div>
             <div class="form-group">
                 {{ form.name.label(class="form-label") }}
                 {{ form.name(class="form-control", required=True) }}

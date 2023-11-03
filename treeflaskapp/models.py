@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
-    date_of_birth = db.Column(Date)  # new field
+    date_of_birth = db.Column(Date)
     password_hash = db.Column(db.String(128))
     people = db.relationship('Person', backref='user', lazy=True)
     places = db.relationship('Place', backref='user', lazy=True)
@@ -39,6 +39,7 @@ class Person(db.Model):
     name = db.Column(db.String(100))
     birth_date = db.Column(db.Date)
     death_date = db.Column(db.Date)
+    image_file = db.Column(db.String(120), nullable=True)
 
 class Relationship(db.Model):
     id = db.Column(db.Integer, primary_key=True)
