@@ -107,12 +107,13 @@ class PersonForm(FlaskForm):
         self.name.label.text = self.translate('Name')
         self.birth_date.label.text = self.translate('Birth Date')
         self.death_date.label.text = self.translate('Death Date')
+        self.image_file.label.text = self.translate('Image File')
         self.submit.label.text = self.translate('Submit')
 
     def translate(self, text):
         translations = {
-            'en': {'Name': 'Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
-            'ru': {'Name': 'Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
+            'en': {'Name': 'Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit', 'This field is required.': 'This field is required.', 'Image File': 'Image File'},
+            'ru': {'Name': 'Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.', 'Image File': 'Файл Изображения'}
         }
         return translations.get(self.user_language, {}).get(text, text)
 

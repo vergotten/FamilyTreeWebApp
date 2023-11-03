@@ -414,3 +414,6 @@
 2023-11-03 06:57:52,364 - my_logger - INFO - User profile accessed successfully
 2023-11-03 07:03:35,623 - my_logger - INFO - User profile accessed successfully
 2023-11-03 07:03:40,915 - my_logger - INFO - User profile accessed successfully
+2023-11-03 17:05:37,958 - my_logger - INFO - User logged in successfully
+2023-11-03 17:05:37,979 - my_logger - INFO - User profile accessed successfully
+2023-11-03 17:24:13,443 - my_logger - INFO - User profile accessed successfully

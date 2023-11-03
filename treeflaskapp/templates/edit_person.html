@@ -3,35 +3,60 @@
 {% block content %}
 <div class="container">
     <div class="form-container bg-light p-3 rounded">
-        <form action="/persons/user/{{ username }}/edit_person/{{ person.id }}" method="post" enctype="multipart/form-data">
+        <form action="/persons/user/{{ username }}/edit_person/{{ person.id }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
             {{ form.hidden_tag() }}
-            <div class="form-group"> <!-- Add 'text-center' class here -->
-<!--                {{ form.image_file.label(class="form-label") }}-->
-                {% if person.image_file %}
-                    <img src="{{ url_for('static', filename=person.image_file) }}" alt="Person Image" style="width: 400px; height: 400px;">
-                {% endif %}
-                {{ form.image_file(class="form-control", required=False) }}
-                <div class="invalid-feedback">
-                    Please provide a file.
+            <div class="row">
+                <div class="col-md-6 text-left">
+                    <div class="form-group text-center">
+                        {% if person.image_file %}
+                            <img src="{{ url_for('static', filename=person.image_file) }}" alt="Person Image" style="width: 500px; height: 500px;">
+                        {% endif %}
+                        <label class="custom-file-upload">
+                            <input type="file" id="image_file" name="image_file" style="display: none;"/>
+                            <span id="file-name">
+                                {% if g.user_language == 'en' %}
+                                    No file chosen
+                                {% elif g.user_language == 'ru' %}
+                                    Файл не выбран
+                                {% endif %}
+                            </span>
+                        </label>
+                        <button type="button" id="file-upload-button" class="btn btn-dark">
+                            {% if g.user_language == 'en' %}
+                                Choose file
+                            {% elif g.user_language == 'ru' %}
+                                Выберите файл
+                            {% endif %}
+                        </button>
+                        <div class="invalid-feedback">
+                            {% if g.user_language == 'en' %}
+                                Please provide a file.
+                            {% elif g.user_language == 'ru' %}
+                                Пожалуйста, предоставьте файл.
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                {{ form.name.label(class="form-label") }}
-                {{ form.name(class="form-control", required=True) }}
-                <div class="invalid-feedback">
-                    Please provide a name.
+                <div class="col-md-4 text-left pl-5">
+                    <div class="form-group">
+                        {{ form.name.label(class="form-label") }}
+                        {{ form.name(class="form-control", required=True) }}
+                        <div class="invalid-feedback">
+                            Please provide a name.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form.birth_date.label(class="form-label") }}
+                        {{ form.birth_date(class="form-control") }}
+                        <div class="invalid-feedback">
+                            Please provide a birth date.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form.death_date.label(class="form-label") }}
+                        {{ form.death_date(class="form-control") }}
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                {{ form.birth_date.label(class="form-label") }}
-                {{ form.birth_date(class="form-control") }}
-                <div class="invalid-feedback">
-                    Please provide a birth date.
-                </div>
-            </div>
-            <div class="form-group">
-                {{ form.death_date.label(class="form-label") }}
-                {{ form.death_date(class="form-control") }}
             </div>
             <!-- Add more form fields as needed -->
             <div class="text-center">
@@ -61,6 +86,15 @@ $(document).ready(function(){
             event.stopPropagation();
         }
         this.classList.add('was-validated');
+    });
+
+    // Custom file input field
+    document.querySelector('input[type="file"]').addEventListener('change', function() {
+        document.getElementById('file-name').textContent = this.files[0].name;
+    });
+
+    document.getElementById('file-upload-button').addEventListener('click', function() {
+        document.querySelector('input[type="file"]').click();
     });
 });
 </script>
