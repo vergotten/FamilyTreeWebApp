@@ -417,3 +417,15 @@
 2023-11-03 17:05:37,958 - my_logger - INFO - User logged in successfully
 2023-11-03 17:05:37,979 - my_logger - INFO - User profile accessed successfully
 2023-11-03 17:24:13,443 - my_logger - INFO - User profile accessed successfully
+2023-11-03 20:21:10,045 - my_logger - INFO - User logged out successfully
+2023-11-03 20:28:19,972 - my_logger - INFO - User logged in successfully
+2023-11-03 20:28:19,996 - my_logger - INFO - User profile accessed successfully
+2023-11-03 20:28:43,006 - my_logger - INFO - User profile accessed successfully
+2023-11-03 20:35:23,903 - my_logger - INFO - User profile accessed successfully
+2023-11-03 20:38:27,954 - my_logger - INFO - User logged out successfully
+2023-11-03 20:38:31,778 - my_logger - INFO - User logged in successfully
+2023-11-03 20:38:31,797 - my_logger - INFO - User profile accessed successfully
+2023-11-03 20:39:09,958 - my_logger - INFO - User logged out successfully
+2023-11-03 20:39:15,934 - my_logger - INFO - User logged in successfully
+2023-11-03 20:39:15,951 - my_logger - INFO - User profile accessed successfully
+2023-11-03 20:40:20,736 - my_logger - INFO - User profile accessed successfully

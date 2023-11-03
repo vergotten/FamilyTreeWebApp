@@ -24,6 +24,7 @@ def create_place(username):
             place = Place(user_id=current_user.id, name=form.name.data, location=form.location.data, significance=form.significance.data)
             db.session.add(place)
             db.session.commit()
+            flash('Place created successfully!', 'success')
             return redirect(url_for('places.places_view', username=username))
         except Exception as e:
             db.session.rollback()

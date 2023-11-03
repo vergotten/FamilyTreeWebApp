@@ -24,6 +24,7 @@ def create_event(username):
             event = Event(user_id=current_user.id, name=form.name.data, date=form.date.data)
             db.session.add(event)
             db.session.commit()
+            flash('Event created successfully!', 'success')
             return redirect(url_for('events.events_view', username=username))
         except Exception as e:
             db.session.rollback()
