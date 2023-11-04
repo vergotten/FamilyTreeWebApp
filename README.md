@@ -1,8 +1,13 @@
 # Family Tree Project
-
+Website is hosted on this [link](https://familytreewebapp.onrender.com/) It's free hosting sometimes could work slow. Be patient. 😊
 ## Overview
 The Family Tree Project is a web application that allows users to create, visualize, and explore their family tree. It's built using Flask, a lightweight and flexible Python web framework, and leverages a SQLite database for data persistence.
 
+## Demo 
+Following images demonstrate functionality of webservice. 
+
+![Alt text](treeflaskapp/static/demo/person1.png?raw=true "Persons Demo")
+![Alt text](treeflaskapp/static/demo/person2.png?raw=true "Persons Demo")
 ## Features
 - **User Authentication:** Users can register, log in, and log out. User sessions are managed securely.
 - **Family Tree Visualization:** Users can create and visualize their family tree in an intuitive and user-friendly interface.
