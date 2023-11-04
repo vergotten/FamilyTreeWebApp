@@ -19,7 +19,8 @@
                 <tr>
                     <th>{{ form.name.label.text }}</th>
                     <th>{{ form.birth_date.label.text }}</th>
-                    <th>{{ form.death_date.label.text }}</th>
+                    <th style="display: none;">{{ form.death_date.label.text }}</th>
+                    <th style="display: none;">{{ form.image_file.label.text }}</th> <!-- Hidden column for image_file -->
                 </tr>
             </thead>
             <tbody>
@@ -27,7 +28,8 @@
                 <tr data-id="{{ person.id }}">
                     <td>{{ person.name }}</td>
                     <td>{{ person.birth_date }}</td>
-                    <td>{{ person.death_date }}</td>
+                    <td style="display: none;">{{ person.death_date }}</td>
+                    <td style="display: none;">{{ person.image_file }}</td> <!-- Hidden column for image_file -->
                     <!-- More columns here -->
                 </tr>
                 {% endfor %}
@@ -38,6 +40,7 @@
         <button id="createBtn" class="btn btn-success" onclick="window.location.href='{{ url_for('persons.create_person', username=session['username']) }}'">
             {{ 'Create New' if g.user_language == 'en' else 'Создать новую' }}
         </button>
+        <button id="openBtn" class="btn btn-secondary" disabled onclick="editPerson()">{% if g.user_language == 'en' %}Open Record{% elif g.user_language == 'ru' %}Открыть запись{% endif %}</button>
         <button id="editBtn" class="btn btn-secondary" disabled onclick="editPerson()">{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
         <button id="deleteBtn" class="btn btn-danger" disabled onclick="deletePerson()">{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
 
@@ -48,6 +51,10 @@
             <p>Нет записей в базе данных. <a href="{{ url_for('persons.create_person', username=session['username']) }}">Создать новую</a></p>
         {% endif %}
     {% endif %}
+        <!-- New container for the image -->
+        <div class="image-container mt-3 ml-3">
+            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" style="width: 300px; height: 300px; object-fit: cover;">
+        </div>
     </div>
 </div>
 
@@ -56,23 +63,54 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
 
 <script type="text/javascript">
+// Create a JavaScript variable for the static URL
+var staticUrl = "{{ url_for('static', filename='') }}";
+
 $(document).ready(function(){
     var table = $('#myTable').DataTable({
         pageLength: 10,
-        createdRow: function(row) {
+        createdRow: function(row, data) {
             $(row).click(function(){
+                // Get the img element
+                var img = $('.image-container img');
+
                 if ($(this).hasClass('highlight')) {
                     $(this).removeClass('highlight');
-                    $('#editBtn, #deleteBtn').prop('disabled', true);
+                    $('#openBtn, #editBtn, #deleteBtn').prop('disabled', true);
+
+                    // Display the no-user-photo.png image
+                    img.attr('src', staticUrl + 'images/no-user-photo.png');
                 } else {
                     $('#myTable tbody tr').removeClass('highlight');
                     $(this).addClass('highlight');
-                    $('#editBtn, #deleteBtn').prop('disabled', false);
+                    $('#openBtn, #editBtn, #deleteBtn').prop('disabled', false);
+
+                    // Get the image_file value from the clicked row
+                    var imageFile = data[3];  // Access the image_file value by its index
+
+                    // Update the src attribute of the img element
+                    if (imageFile && isValidImageFile(imageFile)) {
+                        img.attr('src', staticUrl + imageFile);
+                        console.log(staticUrl + imageFile);  // Print the image path
+                    } else {
+                        img.attr('src', staticUrl + 'images/no-user-photo.png');
+                        console.log(staticUrl + 'images/no-user-photo.png');  // Print the image path
+                    }
                 }
             });
         }
     });
 });
+
+function isValidImageFile(imageFile) {
+    var imageFileExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+    for (var i = 0; i < imageFileExtensions.length; i++) {
+        if (imageFile.endsWith(imageFileExtensions[i])) {
+            return true;
+        }
+    }
+    return false;
+}
 
 function editPerson() {
     var id = $('#myTable tr.highlight').data('id');

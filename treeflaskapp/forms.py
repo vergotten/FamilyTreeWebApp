@@ -96,8 +96,8 @@ class RegisterForm(FlaskForm):
 class PersonForm(FlaskForm):
     id = HiddenField()
     name = StringField(validators=[DataRequired()])
-    birth_date = DateField(format='%Y-%m-%d', validators=[Optional()])
-    death_date = DateField(format='%Y-%m-%d', validators=[Optional()])
+    birth_date = DateField(format='%d-%m-%Y', validators=[Optional()])
+    death_date = DateField(format='%d-%m-%Y', validators=[Optional()])
     image_file = FileField('Image File', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField()
 
