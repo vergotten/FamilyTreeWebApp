@@ -53,7 +53,7 @@
     {% endif %}
         <!-- New container for the image -->
         <div class="image-container mt-3 ml-3">
-            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" style="width: 300px; height: 300px; object-fit: cover;">
+            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" style="width: auto; height: 300px; object-fit: cover;">
         </div>
     </div>
 </div>
@@ -103,7 +103,7 @@ $(document).ready(function(){
 });
 
 function isValidImageFile(imageFile) {
-    var imageFileExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+    var imageFileExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', 'JPG', 'JPEG'];
     for (var i = 0; i < imageFileExtensions.length; i++) {
         if (imageFile.endsWith(imageFileExtensions[i])) {
             return true;

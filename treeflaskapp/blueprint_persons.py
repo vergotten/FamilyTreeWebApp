@@ -10,7 +10,7 @@ persons = Blueprint('persons', __name__)
 
 def handle_file_upload(file):
     def allowed_file(filename):
-        ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg', 'gif'}
+        ALLOWED_EXTENSIONS = {'jpg', 'png', 'jpeg', 'gif', 'JPG', 'JPEG'}
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     if file and allowed_file(file.filename):

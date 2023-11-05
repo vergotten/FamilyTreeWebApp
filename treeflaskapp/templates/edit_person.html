@@ -10,9 +10,27 @@
                     <div class="form-group text-center">
                         <div class="form-group text-center">
                             {% if person.image_file %}
-                                <img src="{{ url_for('static', filename=person.image_file) }}" alt="Person Image" style="width: 350px; height: 350px;">
+<!--                                <img id="personImage" src="{{ url_for('static', filename=person.image_file) }}" alt="Person Image" style="width: auto; height: 350px;">-->
+
+                                <!-- Trigger the Modal with the Image -->
+                                <img id="myImg" src="{{ url_for('static', filename=person.image_file) }}" alt="Person Image" style="width: auto; height: 350px;" data-toggle="modal" data-target="#myModal">
+
+                                <!-- The Modal -->
+                                <div class="modal fade" id="myModal">
+                                  <div class="modal-dialog modal-dialog-centered modal-lg">
+                                    <div class="modal-content">
+                                      <!-- The Close Button -->
+                                      <button type="button" class="close" data-dismiss="modal">×</button>
+                                      <!-- Modal Body : The Image -->
+                                      <div class="modal-body">
+                                        <img class="img-fluid" id="img01">
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
                             {% else %}
-                                <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="No User Photo" style="width: 350px; height: 350px;">
+                                <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="No User Photo" style="width: 350px; height: 350;">
                             {% endif %}
                         </div>
                         <label class="custom-file-upload">
@@ -100,6 +118,13 @@ $(document).ready(function(){
     document.getElementById('file-upload-button').addEventListener('click', function() {
         document.querySelector('input[type="file"]').click();
     });
+});
+
+$(document).ready(function(){
+  $('#myImg').click(function(){
+    var imgSrc = $(this).attr('src');
+    $('#img01').attr('src', imgSrc);
+  });
 });
 </script>
 {% endblock %}
