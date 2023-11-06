@@ -590,3 +590,8 @@
 2023-11-06 19:17:06,957 - my_logger - INFO - User profile accessed successfully
 2023-11-06 21:15:37,198 - my_logger - INFO - User profile accessed successfully
 2023-11-06 21:58:15,824 - my_logger - INFO - User profile accessed successfully
+2023-11-06 22:07:39,447 - my_logger - INFO - User logged out successfully
+2023-11-06 22:08:50,161 - my_logger - INFO - User logged in successfully
+2023-11-06 22:08:50,180 - my_logger - INFO - User profile accessed successfully
+2023-11-06 22:46:06,777 - my_logger - INFO - User profile accessed successfully
+2023-11-06 22:52:59,856 - my_logger - INFO - User profile accessed successfully

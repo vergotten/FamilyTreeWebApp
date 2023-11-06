@@ -90,6 +90,8 @@ def edit_person(username, id):
             person.name = form.name.data
             person.birth_date = form.birth_date.data if form.birth_date.data else None
             person.death_date = form.death_date.data if form.death_date.data else None
+            person.place_of_live = form.place_of_live.data if form.place_of_live.data else None
+            person.gender = form.gender.data if form.gender.data else None
             db.session.commit()
             flash_message = 'Person updated successfully!' if g.user_language == 'en' else 'Персона успешно обновлена!'
             flash(flash_message, 'success')
