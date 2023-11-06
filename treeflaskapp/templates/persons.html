@@ -28,8 +28,6 @@
                     <th>{{ form.name.label.text }}</th>
                     <th>{{ form.is_alive.label.text }}</th>
                     <th>{{ form.birth_date.label.text }}</th>
-<!--                    <th style="display: none;">{{ form.death_date.label.text }}</th>-->
-<!--                    <th style="display: none;">{{ form.image_file.label.text }}</th> &lt;!&ndash; Hidden column for image_file &ndash;&gt;-->
                     <th>{{ form.place_of_live.label.text }}</th>
                     <th>{{ form.age.label.text }}</th>
                     <th>{{ form.gender.label.text }}</th>
@@ -39,30 +37,14 @@
             <tbody>
                 {% for person in persons %}
                 <tr data-id="{{ person.id }}">
-<!--                    <td>{{ person.image_file }}</td>-->
-<!--                    <td>-->
-<!--                        {% if person.image_file %}-->
-<!--                            <img src="{{ url_for('static', filename=person.image_file) }}" alt="User photo" style="width: auto; height: 50px; object-fit: cover;">-->
-<!--                        {% else %}-->
-<!--                            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" style="width: auto; height: 50px; object-fit: cover;">-->
-<!--                        {% endif %}-->
-<!--                    </td>-->
                     <td>
                         {% if person.image_file %}
                             <img src="{{ url_for('static', filename=person.image_file) }}"
-                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 10.0em; height: auto; object-fit: cover;">
+                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 20.0em; height: auto; object-fit: cover;">
                         {% else %}
                             <img src="{{ url_for('static', filename='images/no-user-photo.png') }}"
-                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 10.0em; height: auto; object-fit: cover;">
+                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 20.0em; height: auto; object-fit: cover;">
                         {% endif %}
-
-<!--                        {% if person.image_file %}-->
-<!--                            <img src="{{ url_for('static', filename=person.image_file) }}-->
-<!--                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 10.0em; height: auto; object-fit: cover;">-->
-<!--                        {% else %}-->
-<!--                            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}"-->
-<!--                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 10.0em; height: auto; object-fit: cover;">-->
-<!--                        {% endif %}-->
                     </td>
                     <td>{{ person.name }}</td>
                     <td>
@@ -96,10 +78,6 @@
             <p>Нет записей в базе данных. <a href="{{ url_for('persons.create_person', username=session['username']) }}">Создать новую</a></p>
         {% endif %}
     {% endif %}
-        <!-- New container for the image -->
-<!--        <div class="image-container mt-3 ml-3">-->
-<!--            <img id="user-photo" src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" style="width: auto; height: 300px; object-fit: cover;">-->
-<!--        </div>-->
     </div>
 </div>
 
