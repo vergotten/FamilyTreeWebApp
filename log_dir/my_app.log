@@ -582,3 +582,5 @@
 2023-11-06 02:21:40,555 - my_logger - INFO - User profile accessed successfully
 2023-11-06 18:02:46,533 - my_logger - INFO - User logged in successfully
 2023-11-06 18:02:46,563 - my_logger - INFO - User profile accessed successfully
+2023-11-06 18:27:55,170 - my_logger - INFO - User logged in successfully
+2023-11-06 18:27:55,192 - my_logger - INFO - User profile accessed successfully
