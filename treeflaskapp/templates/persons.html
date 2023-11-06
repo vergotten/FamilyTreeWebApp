@@ -1,6 +1,13 @@
 {% extends "user_panel.html" %}
 
 {% block content %}
+
+<style type="text/css">
+.highlight {
+    background-color: gold !important;
+}
+</style>
+
 <div class="container">
     <div class="form-container bg-light p-3 rounded">
         <!-- Flash message handler -->
@@ -141,11 +148,5 @@ function deletePerson() {
     }
 }
 </script>
-
-<style type="text/css">
-.highlight {
-    background-color: gold !important;
-}
-</style>
 
 {% endblock %}
