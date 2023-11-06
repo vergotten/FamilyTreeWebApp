@@ -50,10 +50,10 @@
                     <td>
                         {% if person.image_file %}
                             <img src="{{ url_for('static', filename=person.image_file) }}"
-                                 alt="User photo" class="img-thumbnail" style="width: auto; min-width: 100px; height: 200px; object-fit: cover;">
+                                 alt="User photo" class="img-thumbnail" style="width: auto; min-width: 10em; height: 20em; object-fit: cover;">
                         {% else %}
                             <img src="{{ url_for('static', filename='images/no-user-photo.png') }}"
-                                 alt="User photo" class="img-thumbnail" style="width: auto; min-width: 100px; height: 200px; object-fit: cover;">
+                                 alt="User photo" class="img-thumbnail" style="width: auto; min-width: 10em; height: 20em; object-fit: cover;">
                         {% endif %}
                     </td>
                     <td>{{ person.name }}</td>
