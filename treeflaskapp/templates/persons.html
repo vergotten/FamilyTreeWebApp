@@ -21,23 +21,51 @@
             {% endif %}
         {% endwith %}
         {% if persons %}
-        <table id="myTable" class="table">
+        <table id="myTable" class="table text-center">
             <thead>
                 <tr>
+                    <th>{{ form.image_file.label.text }}</th>
                     <th>{{ form.name.label.text }}</th>
+                    <th>{{ form.is_alive.label.text }}</th>
                     <th>{{ form.birth_date.label.text }}</th>
-                    <th style="display: none;">{{ form.death_date.label.text }}</th>
-                    <th style="display: none;">{{ form.image_file.label.text }}</th> <!-- Hidden column for image_file -->
+<!--                    <th style="display: none;">{{ form.death_date.label.text }}</th>-->
+<!--                    <th style="display: none;">{{ form.image_file.label.text }}</th> &lt;!&ndash; Hidden column for image_file &ndash;&gt;-->
+                    <th>{{ form.place_of_live.label.text }}</th>
+                    <th>{{ form.age.label.text }}</th>
+                    <th>{{ form.gender.label.text }}</th>
+
                 </tr>
             </thead>
             <tbody>
                 {% for person in persons %}
                 <tr data-id="{{ person.id }}">
+<!--                    <td>{{ person.image_file }}</td>-->
+<!--                    <td>-->
+<!--                        {% if person.image_file %}-->
+<!--                            <img src="{{ url_for('static', filename=person.image_file) }}" alt="User photo" style="width: auto; height: 50px; object-fit: cover;">-->
+<!--                        {% else %}-->
+<!--                            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" style="width: auto; height: 50px; object-fit: cover;">-->
+<!--                        {% endif %}-->
+<!--                    </td>-->
+                    <td>
+                        {% if person.image_file %}
+                            <img src="{{ url_for('static', filename=person.image_file) }}" alt="User photo" class="img-thumbnail" style="width: auto; height: 200px; object-fit: cover;">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" class="img-thumbnail" style="width: auto; height: 200px; object-fit: cover;">
+                        {% endif %}
+                    </td>
                     <td>{{ person.name }}</td>
+                    <td>
+                        <input type="checkbox" {% if person.is_alive %}checked{% endif %} disabled>
+                    </td>
                     <td>{{ person.birth_date }}</td>
-                    <td style="display: none;">{{ person.death_date }}</td>
-                    <td style="display: none;">{{ person.image_file }}</td> <!-- Hidden column for image_file -->
+<!--                    <td style="display: none;">{{ person.death_date }}</td>-->
+<!--                    <td style="display: none;">{{ person.image_file }}</td> &lt;!&ndash; Hidden column for image_file &ndash;&gt;-->
+
                     <!-- More columns here -->
+                    <td>{{ person.place_of_live }}</td>
+                    <th>{{ person.age }}</th>
+                    <th>{{ person.gender }}</th>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -59,9 +87,9 @@
         {% endif %}
     {% endif %}
         <!-- New container for the image -->
-        <div class="image-container mt-3 ml-3">
-            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" style="width: auto; height: 300px; object-fit: cover;">
-        </div>
+<!--        <div class="image-container mt-3 ml-3">-->
+<!--            <img id="user-photo" src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="User photo" style="width: auto; height: 300px; object-fit: cover;">-->
+<!--        </div>-->
     </div>
 </div>
 
@@ -100,37 +128,38 @@ $(document).ready(function(){
             }
         },
 
-        pageLength: 10,
+        pageLength: 5,  // Change this to 5
+        lengthMenu: [[5, 10, 15, 20], [5, 10, 15, 20]],
         createdRow: function(row, data) {
             $(row).click(function(){
                 // Get the img element
-                var img = $('.image-container img');
+<!--                var img = $('#user-photo');  // Use the id to get the specific image-->
 
                 if ($(this).hasClass('highlight')) {
                     $(this).removeClass('highlight');
                     $('#openBtn, #editBtn, #deleteBtn').prop('disabled', true);
 
                     // Display the no-user-photo.png image
-                    img.attr('src', staticUrl + 'images/no-user-photo.png');
+<!--                    img.attr('src', staticUrl + 'images/no-user-photo.png');-->
                 } else {
                     $('#myTable tbody tr').removeClass('highlight');
                     $(this).addClass('highlight');
                     $('#openBtn, #editBtn, #deleteBtn').prop('disabled', false);
 
                     // Get the image_file value from the clicked row
-                    var imageFile = data[3];  // Access the image_file value by its index
+<!--                    var imageFile = data[0];  // Access the image_file value by its index-->
 
                     // Update the src attribute of the img element
-                    if (imageFile && isValidImageFile(imageFile)) {
-                        img.attr('src', staticUrl + imageFile);
-                        console.log(staticUrl + imageFile);  // Print the image path
-                    } else {
-                        img.attr('src', staticUrl + 'images/no-user-photo.png');
-                        console.log(staticUrl + 'images/no-user-photo.png');  // Print the image path
-                    }
+<!--                    if (imageFile && isValidImageFile(imageFile)) {-->
+<!--                        img.attr('src', staticUrl + imageFile);-->
+<!--                        console.log(staticUrl + imageFile);  // Print the image path-->
+<!--                    } else {-->
+<!--                        img.attr('src', staticUrl + 'images/no-user-photo.png');-->
+<!--                        console.log(staticUrl + 'images/no-user-photo.png');  // Print the image path-->
+<!--                    }-->
                 }
-            });
-        }
+            });  // Closing for the click function
+        }  // Closing for the createdRow function
     });
 });
 

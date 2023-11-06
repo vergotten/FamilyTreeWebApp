@@ -99,6 +99,10 @@ class PersonForm(FlaskForm):
     birth_date = DateField(format='%Y-%m-%d', validators=[Optional()])
     death_date = DateField(format='%Y-%m-%d', validators=[Optional()])
     image_file = FileField('Image File', validators=[FileAllowed(['jpg', 'png'])])
+    is_alive = StringField()
+    place_of_live = StringField()
+    age = StringField()
+    gender = StringField()
     submit = SubmitField()
 
     def __init__(self, user_language='en', *args, **kwargs):
@@ -108,12 +112,20 @@ class PersonForm(FlaskForm):
         self.birth_date.label.text = self.translate('Birth Date')
         self.death_date.label.text = self.translate('Death Date')
         self.image_file.label.text = self.translate('Image File')
+        self.is_alive.label.text = self.translate('Is Alive')
+        self.place_of_live.label.text = self.translate('Place Of Live')
+        self.age.label.text = self.translate('Age')
+        self.gender.label.text = self.translate('Gender')
         self.submit.label.text = self.translate('Submit')
 
     def translate(self, text):
         translations = {
-            'en': {'Name': 'Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit', 'This field is required.': 'This field is required.', 'Image File': 'Image File'},
-            'ru': {'Name': 'Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.', 'Image File': 'Файл Изображения'}
+            'en': {'Name': 'Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit',
+                   'This field is required.': 'This field is required.', 'Image File': 'Image File', 'Is Alive': 'Is Alive',
+                   'Place Of Live': 'Place Of Live', 'Age' : 'Age', 'Gender' : 'Gender'},
+            'ru': {'Name': 'Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить',
+                   'This field is required.': 'Это поле обязательно для заполнения.', 'Image File': 'Фото',
+                   'Is Alive': 'Жив', 'Place Of Live': 'Место жительства', 'Age': 'Возраст', 'Gender': 'Пол'}
         }
         return translations.get(self.user_language, {}).get(text, text)
 

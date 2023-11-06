@@ -40,6 +40,10 @@ class Person(db.Model):
     birth_date = db.Column(db.Date)
     death_date = db.Column(db.Date)
     image_file = db.Column(db.String(120), nullable=True)
+    is_alive = db.Column(db.Boolean, default=True)
+    place_of_live = db.Column(db.String(120), nullable=True)
+    age = db.Column(db.String(120), nullable=True)
+    gender = db.Column(db.String(120), nullable=True)
 
 class Relationship(db.Model):
     id = db.Column(db.Integer, primary_key=True)

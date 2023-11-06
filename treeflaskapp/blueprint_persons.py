@@ -28,12 +28,22 @@ def handle_file_upload(file):
 
 @persons.route('/user/<username>/persons')
 def persons_view(username):
-    if username == current_user.username:
-        persons = Person.query.filter_by(user_id=current_user.id).all()
-        form = PersonForm(user_language=g.user_language)  # create an instance of your form
-        return render_template('persons.html', persons=persons, form=form)
-    else:
-        return "Unauthorized", 403
+    try:
+        if username == current_user.username:
+            persons = Person.query.filter_by(user_id=current_user.id).all()
+            for person in persons:
+                if person.death_date is not None:
+                    person.is_alive = False
+                else:
+                    person.is_alive = True
+            db.session.commit()
+            form = PersonForm(user_language=g.user_language)  # create an instance of your form
+            return render_template('persons.html', persons=persons, form=form)
+        else:
+            return "Unauthorized", 403
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return "An error occurred", 500
 
 @persons.route('/user/<username>/create_person', methods=['GET', 'POST'])
 @login_required
