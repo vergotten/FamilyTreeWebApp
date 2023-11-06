@@ -75,6 +75,31 @@ var staticUrl = "{{ url_for('static', filename='') }}";
 
 $(document).ready(function(){
     var table = $('#myTable').DataTable({
+        language: {
+            decimal: "",
+            emptyTable: {% if g.user_language == 'en' %}"No data available in table"{% elif g.user_language == 'ru' %}"Нет данных в таблице"{% endif %},
+            info: "{% if g.user_language == 'en' %}Showing _START_ to _END_ of _TOTAL_ entries{% elif g.user_language == 'ru' %}Показано _START_ до _END_ из _TOTAL_ записей{% endif %}",
+            infoEmpty: "{% if g.user_language == 'en' %}Showing 0 to 0 of 0 entries{% elif g.user_language == 'ru' %}Показано 0 до 0 из 0 записей{% endif %}",
+            infoFiltered: "{% if g.user_language == 'en' %}(filtered from _MAX_ total entries){% elif g.user_language == 'ru' %}(отфильтровано из _MAX_ записей){% endif %}",
+            infoPostFix: "",
+            thousands: ",",
+            lengthMenu: "{% if g.user_language == 'en' %}Show _MENU_ entries{% elif g.user_language == 'ru' %}Показать _MENU_ записей{% endif %}",
+            loadingRecords: "{% if g.user_language == 'en' %}Loading...{% elif g.user_language == 'ru' %}Загрузка...{% endif %}",
+            processing: "",
+            search: "{% if g.user_language == 'en' %}Search:{% elif g.user_language == 'ru' %}Поиск:{% endif %}",
+            zeroRecords: "{% if g.user_language == 'en' %}No matching records found{% elif g.user_language == 'ru' %}Нет соответствующих записей{% endif %}",
+            paginate: {
+                first: "{% if g.user_language == 'en' %}First{% elif g.user_language == 'ru' %}Первая{% endif %}",
+                last: "{% if g.user_language == 'en' %}Last{% elif g.user_language == 'ru' %}Последняя{% endif %}",
+                next: "{% if g.user_language == 'en' %}Next{% elif g.user_language == 'ru' %}Следующая{% endif %}",
+                previous: "{% if g.user_language == 'en' %}Previous{% elif g.user_language == 'ru' %}Предыдущая{% endif %}"
+            },
+            aria: {
+                sortAscending: "{% if g.user_language == 'en' %}: activate to sort column ascending{% elif g.user_language == 'ru' %}: активировать для сортировки столбца по возрастанию{% endif %}",
+                sortDescending: "{% if g.user_language == 'en' %}: activate to sort column descending{% elif g.user_language == 'ru' %}: активировать для сортировки столбца по убыванию{% endif %}"
+            }
+        },
+
         pageLength: 10,
         createdRow: function(row, data) {
             $(row).click(function(){
