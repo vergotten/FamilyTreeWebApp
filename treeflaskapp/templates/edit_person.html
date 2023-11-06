@@ -86,16 +86,18 @@
                         {{ form.gender.label(class="form-label") }}
                         {{ form.gender(class="form-control") }}
                     </div>
-                    <div class="text-center">
-                        {% if g.user_language == 'en' %}
-                            {{ form.submit(class='btn btn-success', value='Update') }}
-                            <a href="{{ url_for('persons.persons_view', username=username) }}" class="btn btn-danger">Cancel</a>
-                        {% elif g.user_language == 'ru' %}
-                            {{ form.submit(class='btn btn-success', value='Обновить') }}
-                            <a href="{{ url_for('persons.persons_view', username=username) }}" class="btn btn-danger">Отмена</a>
-                        {% endif %}
-                    </div>
+
                 </div>
+            </div>
+            <!-- Add more form fields as needed -->
+            <div class="text-center">
+                {% if g.user_language == 'en' %}
+                    {{ form.submit(class='btn btn-success', value='Update') }}
+                        <a href="{{ url_for('persons.persons_view', username=username) }}" class="btn btn-danger">Cancel</a>
+                {% elif g.user_language == 'ru' %}
+                    {{ form.submit(class='btn btn-success', value='Обновить') }}
+                        <a href="{{ url_for('persons.persons_view', username=username) }}" class="btn btn-danger">Отмена</a>
+                {% endif %}
             </div>
         </form>
     </div>

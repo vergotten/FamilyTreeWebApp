@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, HiddenField, FileField
+from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, HiddenField, FileField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Optional
 from flask_wtf.file import FileAllowed
 
@@ -102,7 +102,7 @@ class PersonForm(FlaskForm):
     is_alive = StringField()
     place_of_live = StringField()
     age = StringField()
-    gender = StringField()
+    gender = SelectField('Gender', choices=[])
     submit = SubmitField()
 
     def __init__(self, user_language='en', *args, **kwargs):
@@ -116,16 +116,18 @@ class PersonForm(FlaskForm):
         self.place_of_live.label.text = self.translate('Place Of Live')
         self.age.label.text = self.translate('Age')
         self.gender.label.text = self.translate('Gender')
+        self.gender.choices = [(value, self.translate(label)) for value, label in [('Male', 'Male'), ('Female', 'Female')]]
         self.submit.label.text = self.translate('Submit')
 
     def translate(self, text):
         translations = {
             'en': {'Name': 'Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit',
                    'This field is required.': 'This field is required.', 'Image File': 'Image File', 'Is Alive': 'Is Alive',
-                   'Place Of Live': 'Place Of Live', 'Age' : 'Age', 'Gender' : 'Gender'},
+                   'Place Of Live': 'Place Of Live', 'Age' : 'Age', 'Gender' : 'Gender', 'Male': 'Male', 'Female': 'Female'},
             'ru': {'Name': 'Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить',
                    'This field is required.': 'Это поле обязательно для заполнения.', 'Image File': 'Фото',
-                   'Is Alive': 'Жив', 'Place Of Live': 'Место жительства', 'Age': 'Возраст', 'Gender': 'Пол'}
+                   'Is Alive': 'Жив', 'Place Of Live': 'Место жительства', 'Age': 'Возраст', 'Gender': 'Пол',
+                   'Male': 'Мужчина', 'Female': 'Женщина'}
         }
         return translations.get(self.user_language, {}).get(text, text)
 
