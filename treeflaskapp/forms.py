@@ -124,7 +124,7 @@ class PersonForm(FlaskForm):
             'en': {'Full Name': 'Full Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit',
                    'This field is required.': 'This field is required.', 'Image File': 'Image File', 'Is Alive': 'Is Alive',
                    'Place Of Live': 'Place Of Live', 'Age' : 'Age', 'Gender' : 'Gender', 'Male': 'Male', 'Female': 'Female'},
-            'ru': {'Full Name': 'Полное Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить',
+            'ru': {'Full Name': 'Полное имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить',
                    'This field is required.': 'Это поле обязательно для заполнения.', 'Image File': 'Фото',
                    'Is Alive': 'Жив', 'Place Of Live': 'Место жительства', 'Age': 'Возраст', 'Gender': 'Пол',
                    'Male': 'Мужчина', 'Female': 'Женщина'}

@@ -69,9 +69,22 @@
         <button id="editBtn" class="btn btn-secondary" disabled onclick="editPerson()">{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
         <button id="deleteBtn" class="btn btn-danger" disabled onclick="deletePerson()">{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
 
-        <div class="d-flex justify-content-center p-3">
-            <img id="user-photo" src="{{ url_for('static', filename='images/no-user-photo.png') }}"
-                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 15.0em; height: auto; object-fit: cover;">
+        <div class="d-flex justify-content-center p-3 border border-secondary">
+            <div class="d-flex justify-content-center p-3 border border-primary mx-3">
+                <img id="user-photo" src="{{ url_for('static', filename='images/no-user-photo.png') }}"
+                     alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 15.0em; height: auto; object-fit: cover;">
+            </div>
+            <div class="justify-content-center p-3 border border-primary">
+                <div id="name-bottom-field" class="form-group">
+                    <label>{{ form.name.label.text }}: <span class="data"></span></label>
+                </div>
+                <div id="birth_date-bottom-field" class="form-group">
+                    <label>{{ form.birth_date.label.text }}: <span class="data"></span></label>
+                </div>
+                <div id="age-bottom-field" class="form-group">
+                    <label>{{ form.age.label.text }}: <span class="data"></span></label>
+                </div>
+            </div>
         </div>
         {% else %}
         {% if g.user_language == 'en' %}
@@ -128,6 +141,11 @@ $(document).ready(function(){
 
                     // If no row is selected, set the src to the path of the no-person-photo.png image
                     $('#user-photo').attr('src', '/static/images/no-user-photo.png');
+
+                    // If no row is selected, remove the additional data
+                    $('#name-bottom-field .data').text('');
+                    $('#birth_date-bottom-field .data').text('');
+                    $('#age-bottom-field .data').text('');
                 } else {
                     $('#myTable tbody tr').removeClass('highlight');
                     $this.addClass('highlight');
@@ -153,6 +171,10 @@ $(document).ready(function(){
                         // If data[0] is None, set the src to the path of the default image
                         $('#user-photo').attr('src', '/static/images/no-user-photo.png');
                     }
+                     // Update the additional data
+                    $('#name-bottom-field .data').text(data[1]);
+                    $('#birth_date-bottom-field .data').text(data[3]);
+                    $('#age-bottom-field .data').text(data[5]);
                 }
             });
         }
