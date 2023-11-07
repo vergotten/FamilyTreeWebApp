@@ -10,10 +10,12 @@
                     <div class="form-group text-center">
                         <div class="form-group text-center">
                             {% if person.image_file %}
-<!--                                <img id="personImage" src="{{ url_for('static', filename=person.image_file) }}" alt="Person Image" style="width: auto; height: 350px;">-->
-
                                 <!-- Trigger the Modal with the Image -->
-                                <img id="myImg" src="{{ url_for('static', filename=person.image_file) }}" alt="Person Image" style="width: auto; height: 350px;" data-toggle="modal" data-target="#myModal">
+                                <img id="myImg" src="{{ url_for('static', filename=person.image_file) }}"
+                                     alt="Person Image"
+                                     style="width: 100%; max-width: 30.0em; height: auto; object-fit: cover;"
+                                     data-toggle="modal" data-target="#myModal"
+                                     data-filename="{{ person.image_file }}">
 
                                 <!-- The Modal -->
                                 <div class="modal fade" id="myModal">
@@ -30,24 +32,40 @@
                                 </div>
 
                             {% else %}
-                                <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="No User Photo" style="width: 350px; height: 350;">
+                                <img src="{{ url_for('static', filename='images/no-user-photo.png') }}"
+                                     alt="No User Photo"
+                                     style="width: 100%; max-width: 35.0em; height: auto; object-fit: cover;">
                             {% endif %}
                         </div>
                         <label class="custom-file-upload">
                             <input type="file" id="image_file" name="image_file" style="display: none;"/>
                             <span id="file-name">
                                 {% if g.user_language == 'en' %}
-                                    Choose image file for persona
+                                    Choose image file
                                 {% elif g.user_language == 'ru' %}
-                                    Выберите изображение для персоны
+                                    Выберите изображение
                                 {% endif %}
                             </span>
                         </label>
                         <button type="button" id="file-upload-button" class="btn btn-dark">
                             {% if g.user_language == 'en' %}
-                                Choose file
+                                Update
                             {% elif g.user_language == 'ru' %}
-                                Выберите файл
+                                Обновить
+                            {% endif %}
+                        </button>
+                        <div class="invalid-feedback">
+                            {% if g.user_language == 'en' %}
+                                Please provide a file.
+                            {% elif g.user_language == 'ru' %}
+                                Пожалуйста, предоставьте файл.
+                            {% endif %}
+                        </div>
+                        <button type="button" id="file-upload-delete" class="btn btn-warning">
+                            {% if g.user_language == 'en' %}
+                                Delete
+                            {% elif g.user_language == 'ru' %}
+                                Удалить
                             {% endif %}
                         </button>
                         <div class="invalid-feedback">
@@ -127,6 +145,34 @@ $(document).ready(function(){
 
     document.getElementById('file-upload-button').addEventListener('click', function() {
         document.querySelector('input[type="file"]').click();
+    });
+
+    document.getElementById('file-upload-delete').addEventListener('click', function() {
+        // Get the image element
+        var imgElement = document.getElementById('myImg');
+
+        // Get the filename from the data attribute
+        var filename = imgElement.getAttribute('data-filename');
+        console.log('filename:', filename);
+
+        // Change the src attribute of the image to the <pa></pa>th of the no-user-photo.png image
+        document.getElementById('myImg').src = '/static/images/no-user-photo.png';
+
+<!--        var username = "{{ session['username'] }}";  // Replace this with the actual username-->
+<!--        var id = "{{ person.id }}";  // Replace this with the actual id-->
+
+        fetch('/persons/user/{{ session['username'] }}/edit_person/{{ person.id }}/delete-file', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ filename: filename }),
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     });
 });
 

@@ -108,7 +108,7 @@ class PersonForm(FlaskForm):
     def __init__(self, user_language='en', *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user_language = user_language
-        self.name.label.text = self.translate('Name')
+        self.name.label.text = self.translate('Full Name')
         self.birth_date.label.text = self.translate('Birth Date')
         self.death_date.label.text = self.translate('Death Date')
         self.image_file.label.text = self.translate('Image File')
@@ -121,10 +121,10 @@ class PersonForm(FlaskForm):
 
     def translate(self, text):
         translations = {
-            'en': {'Name': 'Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit',
+            'en': {'Full Name': 'Full Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit',
                    'This field is required.': 'This field is required.', 'Image File': 'Image File', 'Is Alive': 'Is Alive',
                    'Place Of Live': 'Place Of Live', 'Age' : 'Age', 'Gender' : 'Gender', 'Male': 'Male', 'Female': 'Female'},
-            'ru': {'Name': 'Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить',
+            'ru': {'Full Name': 'Полное Имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить',
                    'This field is required.': 'Это поле обязательно для заполнения.', 'Image File': 'Фото',
                    'Is Alive': 'Жив', 'Place Of Live': 'Место жительства', 'Age': 'Возраст', 'Gender': 'Пол',
                    'Male': 'Мужчина', 'Female': 'Женщина'}

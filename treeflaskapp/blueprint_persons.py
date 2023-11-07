@@ -5,6 +5,7 @@ from .models import Person, db
 from .forms import PersonForm
 from werkzeug.utils import secure_filename
 import os
+from datetime import datetime
 
 persons = Blueprint('persons', __name__)
 
@@ -32,10 +33,23 @@ def persons_view(username):
         if username == current_user.username:
             persons = Person.query.filter_by(user_id=current_user.id).all()
             for person in persons:
+                if person.birth_date is not None:
+                    birth_date = person.birth_date
+                    today = datetime.today().date()  # Get the current date
+                    age = today.year - birth_date.year
+
+                    # if birthday hasn't happened this year, subtract 1
+                    if (today.month, today.day) < (birth_date.month, birth_date.day):
+                        age -= 1
+                    person.age = age
+                else:
+                    person.age = None
+
                 if person.death_date is not None:
                     person.is_alive = False
                 else:
                     person.is_alive = True
+
             db.session.commit()
             form = PersonForm(user_language=g.user_language)  # create an instance of your form
             return render_template('persons.html', persons=persons, form=form)
@@ -123,3 +137,31 @@ def delete_person(username, id):
         flash(flash_message, 'error')
 
     return redirect(url_for('persons.persons_view', username=username))
+
+@persons.route('/user/<username>/edit_person/<int:id>/delete-file', methods=['POST'])
+@login_required
+def delete_file(username, id):
+    data = request.get_json()
+    filename = data.get('filename')
+
+    print('Received request:', request)  # Print the entire request
+    print('Received data:', data)  # Print the received JSON data
+    print('Received filename:', filename)  # Print the received filename
+
+    if filename:
+        person = Person.query.get(id)
+        if person and person.image_file == filename:
+            # If the person's image_file is the same as the filename, set it to None
+            person.image_file = None
+            db.session.commit()
+
+            file_path = os.path.join(persons.root_path, 'static', filename)
+
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+            return jsonify({'message': 'File deleted.'}), 200
+        else:
+            return jsonify({'message': 'File not found.'}), 404
+    else:
+        return jsonify({'message': 'No filename provided.'}), 400

@@ -9,7 +9,7 @@
 </style>
 
 <div class="container">
-    <div class="form-container bg-light rounded">
+    <div class="form-container bg-light p-2 rounded">
         <!-- Flash message handler -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
@@ -30,7 +30,7 @@
                     <th>{{ form.birth_date.label.text }}</th>
                     <th>{{ form.place_of_live.label.text }}</th>
                     <th>{{ form.age.label.text }}</th>
-                    <th>{{ form.gender.label.text }}</th>
+<!--                    <th>{{ form.gender.label.text }}</th>-->
 
                 </tr>
             </thead>
@@ -40,10 +40,10 @@
                     <td>
                         {% if person.image_file %}
                             <img src="{{ url_for('static', filename=person.image_file) }}"
-                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 20.0em; height: auto; object-fit: cover;">
+                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 5.0em; height: auto; object-fit: cover;">
                         {% else %}
                             <img src="{{ url_for('static', filename='images/no-user-photo.png') }}"
-                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 20.0em; height: auto; object-fit: cover;">
+                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 5.0em; height: auto; object-fit: cover;">
                         {% endif %}
                     </td>
                     <td>{{ person.name }}</td>
@@ -51,13 +51,11 @@
                         <input type="checkbox" {% if person.is_alive %}checked{% endif %} disabled>
                     </td>
                     <td>{{ person.birth_date }}</td>
-<!--                    <td style="display: none;">{{ person.death_date }}</td>-->
-<!--                    <td style="display: none;">{{ person.image_file }}</td> &lt;!&ndash; Hidden column for image_file &ndash;&gt;-->
 
                     <!-- More columns here -->
                     <td>{{ person.place_of_live }}</td>
                     <th>{{ person.age }}</th>
-                    <th>{{ person.gender }}</th>
+<!--                    <th>{{ person.gender }}</th>-->
                 </tr>
                 {% endfor %}
             </tbody>
@@ -71,6 +69,10 @@
         <button id="editBtn" class="btn btn-secondary" disabled onclick="editPerson()">{% if g.user_language == 'en' %}Edit Record{% elif g.user_language == 'ru' %}Редактировать запись{% endif %}</button>
         <button id="deleteBtn" class="btn btn-danger" disabled onclick="deletePerson()">{% if g.user_language == 'en' %}Delete Record{% elif g.user_language == 'ru' %}Удалить запись{% endif %}</button>
 
+        <div class="d-flex justify-content-center p-3">
+            <img id="user-photo" src="{{ url_for('static', filename='images/no-user-photo.png') }}"
+                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 15.0em; height: auto; object-fit: cover;">
+        </div>
         {% else %}
         {% if g.user_language == 'en' %}
             <p>No records in database. <a href="{{ url_for('persons.create_person', username=session['username']) }}">Create new</a></p>
@@ -115,39 +117,45 @@ $(document).ready(function(){
                 sortDescending: "{% if g.user_language == 'en' %}: activate to sort column descending{% elif g.user_language == 'ru' %}: активировать для сортировки столбца по убыванию{% endif %}"
             }
         },
-
         pageLength: 5,  // Change this to 5
         lengthMenu: [[5, 10, 15, 20], [5, 10, 15, 20]],
         createdRow: function(row, data) {
             $(row).click(function(){
-                // Get the img element
-<!--                var img = $('#user-photo');  // Use the id to get the specific image-->
-
-                if ($(this).hasClass('highlight')) {
-                    $(this).removeClass('highlight');
+                var $this = $(this);
+                if ($this.hasClass('highlight')) {
+                    $this.removeClass('highlight');
                     $('#openBtn, #editBtn, #deleteBtn').prop('disabled', true);
 
-                    // Display the no-user-photo.png image
-<!--                    img.attr('src', staticUrl + 'images/no-user-photo.png');-->
+                    // If no row is selected, set the src to the path of the no-person-photo.png image
+                    $('#user-photo').attr('src', '/static/images/no-user-photo.png');
                 } else {
                     $('#myTable tbody tr').removeClass('highlight');
-                    $(this).addClass('highlight');
+                    $this.addClass('highlight');
                     $('#openBtn, #editBtn, #deleteBtn').prop('disabled', false);
 
-                    // Get the image_file value from the clicked row
-<!--                    var imageFile = data[0];  // Access the image_file value by its index-->
+                    var imgTag = data[0];  // This is your img tag
 
-                    // Update the src attribute of the img element
-<!--                    if (imageFile && isValidImageFile(imageFile)) {-->
-<!--                        img.attr('src', staticUrl + imageFile);-->
-<!--                        console.log(staticUrl + imageFile);  // Print the image path-->
-<!--                    } else {-->
-<!--                        img.attr('src', staticUrl + 'images/no-user-photo.png');-->
-<!--                        console.log(staticUrl + 'images/no-user-photo.png');  // Print the image path-->
-<!--                    }-->
+                    if (imgTag) {
+                        // Use a regex to match the src attribute and extract its value
+                        var regex = /src\s*=\s*"([^"]+)"/i;
+                        var match = imgTag.match(regex);
+
+                        if (match) {
+                            var profilePicPath = match[1];
+<!--                            console.log('profilePicPath:', profilePicPath);  // This should now log the correct path-->
+
+                            // Update the user photo
+                            $('#user-photo').attr('src', profilePicPath);
+                        } else {
+                            console.log('No src attribute found');
+                        }
+                    } else {
+                        // If data[0] is None, set the src to the path of the default image
+                        $('#user-photo').attr('src', '/static/images/no-user-photo.png');
+                    }
                 }
-            });  // Closing for the click function
-        }  // Closing for the createdRow function
+            });
+        }
     });
 });
 

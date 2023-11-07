@@ -36,7 +36,7 @@ class UserAdmin(ModelView):
 class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    name = db.Column(db.String(100))
+    name = db.Column(db.String(200))
     birth_date = db.Column(db.Date)
     death_date = db.Column(db.Date)
     image_file = db.Column(db.String(120), nullable=True)
