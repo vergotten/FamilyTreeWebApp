@@ -40,20 +40,22 @@
                         <label class="custom-file-upload">
                             <input type="file" id="image_file" name="image_file" style="display: none;"/>
                             <span id="file-name">
-                                {% if g.user_language == 'en' %}
-                                    Choose image
-                                {% elif g.user_language == 'ru' %}
-                                    Выберите фото
-                                {% endif %}
+                                <button type="button" id="file-upload-button" class="btn btn-dark">
+                                    {% if g.user_language == 'en' %}
+                                        Choose image
+                                    {% elif g.user_language == 'ru' %}
+                                        Выберите фото
+                                    {% endif %}
+                                </button>
                             </span>
                         </label>
-                        <button type="button" id="file-upload-button" class="btn btn-dark">
-                            {% if g.user_language == 'en' %}
-                                Update
-                            {% elif g.user_language == 'ru' %}
-                                Обновить
-                            {% endif %}
-                        </button>
+<!--                        <button type="button" id="image-change-button" class="btn btn-dark">-->
+<!--                            {% if g.user_language == 'en' %}-->
+<!--                                Update-->
+<!--                            {% elif g.user_language == 'ru' %}-->
+<!--                                Обновить-->
+<!--                            {% endif %}-->
+<!--                        </button>-->
                         <div class="invalid-feedback">
                             {% if g.user_language == 'en' %}
                                 Please provide a file.
@@ -77,34 +79,68 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-4 text-left pl-5">
                     <div class="form-group">
-                        {{ form.name.label(class="form-label") }}
+                        <strong>{{ form.name.label(class="form-label") }}</strong>
                         {{ form.name(class="form-control", required=True) }}
                         <div class="invalid-feedback">
                             Please provide a name.
                         </div>
                     </div>
                     <div class="form-group">
-                        {{ form.birth_date.label(class="form-label") }}
+                        <strong>{{ form.birth_date.label(class="form-label") }}</strong>
                         {{ form.birth_date(class="form-control") }}
                         <div class="invalid-feedback">
                             Please provide a birth date.
                         </div>
                     </div>
-                    <div class="form-group" id="death_date_group">
-                        {{ form.death_date.label(class="form-label") }}
+
+                    <div class="form-group">
+                        <strong>{{ form.is_alive.label(class="form-label") }}</strong>
+                        <input type="checkbox" id="is_alive" {% if person.is_alive %}checked{% endif %}>
+                    </div>
+                    <div class="form-group" id="death_date_group" style="display: none;">
+                        <strong>{{ form.death_date.label(class="form-label") }}</strong>
                         {{ form.death_date(class="form-control") }}
                     </div>
                     <div class="form-group">
-                        {{ form.place_of_live.label(class="form-label") }}
+                        <strong>{{ form.place_of_live.label(class="form-label") }}</strong>
                         {{ form.place_of_live(class="form-control") }}
                     </div>
                     <div class="form-group">
-                        {{ form.gender.label(class="form-label") }}
+                        <strong>{{ form.place_of_born.label(class="form-label") }}</strong>
+                        {{ form.place_of_born(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        <strong>{{ form.gender.label(class="form-label") }}</strong>
                         {{ form.gender(class="form-control") }}
                     </div>
 
+                    {# //////////////////////////////////////////// #}
+                     <div class="form-group">
+                        <strong>{{ form.mother.label(class="form-label") }}</strong>
+                        {{ form.mother(class="form-control", id="mother-select") }}
+                    </div>
+                    <div class="form-group">
+                        <strong>{{ form.father.label(class="form-label") }}</strong>
+                        {{ form.father(class="form-control", id="father-select") }}
+                    </div>
+
+                    {#<div class="form-group"> #}
+                    {#    {{ form.mother.label(class="form-label") }} #}
+                    {#    {{ form.mother(class="form-control") }} #}
+                    {#</div> #}
+
+                    {#<div class="form-group"> #}
+                    {#    {{ form.father.label(class="form-label") }} #}
+                    {#    {{ form.father(class="form-control") }} #}
+                    {#</div> #}
+                    {# #}
+                    {#<div class="form-group"> #}
+                    {#    {{ form.children.label(class="form-label") }} #}
+                    {#    {{ form.children(class="form-control") }} #}
+                    {#</div> #}
                 </div>
             </div>
             <!-- Add more form fields as needed -->
@@ -139,27 +175,40 @@ $(document).ready(function(){
     });
 
     // Custom file input field
-    document.querySelector('input[type="file"]').addEventListener('change', function() {
+    var fileInput = document.querySelector('input[type="file"]');
+<!--    var updateButton = document.getElementById('image-change-button');-->
+    var imgElement = document.getElementById('myImg');
+
+    fileInput.addEventListener('change', function() {
         document.getElementById('file-name').textContent = this.files[0].name;
+<!--        updateButton.disabled = false;  // Enable the 'Update' button when a file is selected-->
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            imgElement.src = e.target.result;  // Change the image source to the uploaded file
+        }
+        reader.readAsDataURL(this.files[0]);
     });
 
     document.getElementById('file-upload-button').addEventListener('click', function() {
-        document.querySelector('input[type="file"]').click();
+        fileInput.click();
     });
 
-    document.getElementById('file-upload-delete').addEventListener('click', function() {
-        // Get the image element
-        var imgElement = document.getElementById('myImg');
+<!--    updateButton.addEventListener('click', function() {-->
+<!--        if (fileInput.files.length > 0) {  // Check if a file is selected-->
+<!--            imgElement.src = imgElement.src;  // Update the image source-->
+<!--        }-->
+<!--    });-->
 
+<!--    updateButton.disabled = true;  // Disable the 'Update' button initially-->
+
+    document.getElementById('file-upload-delete').addEventListener('click', function() {
         // Get the filename from the data attribute
         var filename = imgElement.getAttribute('data-filename');
         console.log('filename:', filename);
 
-        // Change the src attribute of the image to the <pa></pa>th of the no-user-photo.png image
+        // Change the src attribute of the image to the path of the no-user-photo.png image
         document.getElementById('myImg').src = '/static/images/no-user-photo.png';
-
-<!--        var username = "{{ session['username'] }}";  // Replace this with the actual username-->
-<!--        var id = "{{ person.id }}";  // Replace this with the actual id-->
 
         fetch('/persons/user/{{ session['username'] }}/edit_person/{{ person.id }}/delete-file', {
             method: 'POST',
@@ -174,13 +223,30 @@ $(document).ready(function(){
             console.error('Error:', error);
         });
     });
-});
 
-$(document).ready(function(){
-  $('#myImg').click(function(){
-    var imgSrc = $(this).attr('src');
-    $('#img01').attr('src', imgSrc);
-  });
+    $('#myImg').click(function(){
+        var imgSrc = $(this).attr('src');
+        $('#img01').attr('src', imgSrc);
+    });
+
+    // Check the state of the checkbox when the document is ready
+    if ($('#is_alive').is(":checked")) {
+        $('#death_date_group').hide();
+    } else {
+        $('#death_date_group').show();
+    }
+
+    // Add a click event handler to the checkbox
+    $('#is_alive').click(function(){
+        // If the checkbox is checked, hide the death_date field
+        if ($(this).is(":checked")) {
+            $('#death_date_group').hide();
+        }
+        // If the checkbox is not checked, show the death_date field
+        else {
+            $('#death_date_group').show();
+        }
+    });
 });
 </script>
 {% endblock %}

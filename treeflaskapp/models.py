@@ -42,8 +42,18 @@ class Person(db.Model):
     image_file = db.Column(db.String(120), nullable=True)
     is_alive = db.Column(db.Boolean, default=True)
     place_of_live = db.Column(db.String(120), nullable=True)
+    place_of_born = db.Column(db.String(120), nullable=True)
     age = db.Column(db.String(120), nullable=True)
     gender = db.Column(db.String(120), nullable=True)
+
+    mother_id = db.Column(db.Integer, db.ForeignKey('person.id'))  # table.id
+    father_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+
+    # lambda to initialize Person object.id before it's actually created (it doesn't work otherwise)
+    mother = db.relationship('Person', foreign_keys=[mother_id],
+                             backref=db.backref('maternal_children', lazy='dynamic'), remote_side=lambda: Person.id)
+    father = db.relationship('Person', foreign_keys=[father_id],
+                             backref=db.backref('paternal_children', lazy='dynamic'), remote_side=lambda: Person.id)
 
 class Relationship(db.Model):
     id = db.Column(db.Integer, primary_key=True)

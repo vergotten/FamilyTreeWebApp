@@ -6,6 +6,7 @@ from .forms import PersonForm
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
+from sqlalchemy import and_
 
 persons = Blueprint('persons', __name__)
 
@@ -47,6 +48,11 @@ def persons_view(username):
 
                 if person.death_date is not None:
                     person.is_alive = False
+                    death_date = person.death_date
+                    age_at_death = death_date.year - birth_date.year
+                    if (death_date.month, death_date.day) < (birth_date.month, birth_date.day):
+                        age_at_death -= 1
+                    person.age = age_at_death
                 else:
                     person.is_alive = True
 
@@ -71,7 +77,14 @@ def create_person(username):
 
             birth_date = form.birth_date.data if form.birth_date.data else None
             death_date = form.death_date.data if form.death_date.data else None
-            person = Person(user_id=current_user.id, name=form.name.data, birth_date=birth_date, death_date=death_date, image_file=filepath)
+            person = Person(user_id=current_user.id,
+                            name=form.name.data,
+                            is_alive=form.is_alive.data,
+                            place_of_live=form.place_of_live.data,
+                            place_of_born=form.place_of_born.data,
+                            birth_date=birth_date,
+                            death_date=death_date,
+                            image_file=filepath)
             db.session.add(person)
             db.session.commit()
             flash_message = 'Person created successfully!' if g.user_language == 'en' else 'Персона успешно создана!'
@@ -92,6 +105,33 @@ def edit_person(username, id):
         return "Unauthorized", 403
 
     form = PersonForm(obj=person, user_language=g.user_language)
+
+    # TODO: more handlers for person list, like mother can't be mother of herself or her own mother, etc
+    # TODO: when is_alive in form person.death_date should be None
+    # TODO: add more constraints like if current person not wife or husband
+
+    # Assuming the Person model has a 'name' field
+    # Assuming current_user_id is the id of the current user
+    def get_choices(persons, selected_person):
+        choices = [(p.id, p.name) for p in persons]
+        if selected_person is not None:
+            choices.remove((selected_person.id, selected_person.name))
+            choices.insert(0, (None, ''))
+            choices.insert(0, (selected_person.id, selected_person.name))
+        else:
+            choices.insert(0, (None, ''))
+        return choices
+
+    persons_female = Person.query.filter(and_(Person.gender == 'Female', Person.id != person.id)).order_by(
+        Person.id).all()
+    persons_male = Person.query.filter(and_(Person.gender == 'Male', Person.id != person.id)).order_by(Person.id).all()
+
+    mother = Person.query.get(person.mother_id)
+    father = Person.query.get(person.father_id)
+
+    form.mother.choices = get_choices(persons_female, mother)
+    form.father.choices = get_choices(persons_male, father)
+
     if form.validate_on_submit():
         try:
             filepath = None  # Initialize filepath with a default value
@@ -101,11 +141,17 @@ def edit_person(username, id):
                     person.image_file = filepath  # update image_file field with full path
                 db.session.commit()  # commit changes to the database
 
-            person.name = form.name.data
-            person.birth_date = form.birth_date.data if form.birth_date.data else None
-            person.death_date = form.death_date.data if form.death_date.data else None
-            person.place_of_live = form.place_of_live.data if form.place_of_live.data else None
-            person.gender = form.gender.data if form.gender.data else None
+            person.name = form.name.data; print(f"person.name: {person.name}")
+            person.birth_date = form.birth_date.data if form.birth_date.data else None; print(f"person.birth_date: {person.birth_date}")
+            ########################################
+            person.is_alive = form.is_alive.data; print(f"person.is_alive: {person.is_alive}")
+            person.death_date = form.death_date.data if form.death_date.data else None; print(f"person.death_date: {person.death_date}")
+            person.place_of_live = form.place_of_live.data if form.place_of_live.data else None; print(f"person.place_of_live: {person.place_of_live}")
+            person.place_of_born = form.place_of_born.data if form.place_of_born.data else None; print(f"person.place_of_born: {person.place_of_born}")
+            person.gender = form.gender.data if form.gender.data else None; print(f"person.gender: {person.gender}")
+            person.mother_id = form.mother.data  # Save the selected mother id to the person's mother field
+            person.father_id = form.father.data  # Save the selected mother id to the person's mother field
+
             db.session.commit()
             flash_message = 'Person updated successfully!' if g.user_language == 'en' else 'Персона успешно обновлена!'
             flash(flash_message, 'success')
