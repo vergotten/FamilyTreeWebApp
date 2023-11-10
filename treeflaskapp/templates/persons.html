@@ -24,13 +24,17 @@
         <table id="myTable" class="table text-center">
             <thead>
                 <tr>
-                    <th>{{ form.image_file.label.text }}</th>
+                    <th>{{ form.id }}</th>
                     <th>{{ form.name.label.text }}</th>
                     <th>{{ form.is_alive.label.text }}</th>
                     <th>{{ form.birth_date.label.text }}</th>
                     <th>{{ form.place_of_live.label.text }}</th>
                     <th>{{ form.age.label.text }}</th>
 <!--                    <th>{{ form.gender.label.text }}</th>-->
+                    <th style="display: none;">{{ form.spouse.label.text }}</th>
+                    <th style="display: none;">{{ form.mother.label.text }}</th>
+                    <th style="display: none;">{{ form.father.label.text }}</th>
+                    <th style="display: none;">Children</th>
 
                 </tr>
             </thead>
@@ -40,23 +44,67 @@
                     <td>
                         {% if person.image_file %}
                             <img src="{{ url_for('static', filename=person.image_file) }}"
-                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 5.0em; height: auto; object-fit: cover;">
+                                 alt="User photo" class="img-thumbnail" style="width: 100%; min-width: 5.0em; max-width: 5.0em; height: auto; object-fit: cover;">
                         {% else %}
                             <img src="{{ url_for('static', filename='images/no-user-photo.png') }}"
-                                 alt="User photo" class="img-thumbnail" style="width: 100%; max-width: 5.0em; height: auto; object-fit: cover;">
+                                 alt="User photo" class="img-thumbnail" style="width: 100%; min-width: 5.0em; max-width: 5.0em; height: auto; object-fit: cover;">
                         {% endif %}
                     </td>
                     <td>{{ person.name }}</td>
                     <td>
                         <input type="checkbox" {% if person.is_alive %}checked{% endif %} disabled>
                     </td>
-                    <td>{{ person.birth_date }}</td>
+                    <td>{{ person.birth_date.strftime('%d-%m-%Y') if person.birth_date is not none else '' }}</td>
 
                     <!-- More columns here -->
                     <td>{{ person.place_of_live }}</td>
-                    <th>{{ person.age }}</th>
-<!--                    <th>{{ person.gender }}</th>-->
+                    <td>{{ person.age }}</td>
+
+                    <td style="display: none;">
+                        {% if person.spouse_id is not none and person.spouse_id != "None" %}
+                            <a href="{{ url_for('persons.edit_person', username=session['username'], id=person.spouse_id)|safe }}">
+                                {{ Person.query.get(person.spouse_id).name }}
+                            </a>
+                        {% endif %}
+                    </td>
+
+                    <td style="display: none;">
+                        {% if person.mother_id is not none and person.mother_id != "None" %}
+                            <a href="{{ url_for('persons.edit_person', username=session['username'], id=person.mother_id)|safe }}">
+                                {{ Person.query.get(person.mother_id).name }}
+                            </a>
+                        {% endif %}
+                    </td>
+                    <td style="display: none;">
+                        {% if person.father_id is not none and person.father_id != "None" %}
+                            <a href="{{ url_for('persons.edit_person', username=session['username'], id=person.father_id)|safe }}">
+                                {{ Person.query.get(person.father_id).name }}
+                            </a>
+                        {% endif %}
+                    </td>
+
+                    <td style="display: none;">
+                        {% if person.gender == 'Female' %}
+                            {% for child in person.maternal_children %}
+                                {% if child.name is not none and child.id is not none %}
+                                    <a href="{{ url_for('persons.edit_person', username=session['username'], id=child.id)|safe }}">
+                                        | {{ child.name }} |
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        {% elif person.gender == 'Male' %}
+                            {% for child in person.paternal_children %}
+                                {% if child.name is not none and child.id is not none %}
+                                    <a href="{{ url_for('persons.edit_person', username=session['username'], id=child.id)|safe }}">
+                                        | {{ child.name }} |
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
                 </tr>
+                {# ////////////////////////////////////////////////////////// #}
+
                 {% endfor %}
             </tbody>
         </table>
@@ -83,6 +131,19 @@
                 </div>
                 <div id="age-bottom-field" class="form-group">
                     <label><strong>{{ form.age.label.text }}:</strong> <span class="data"></span></label>
+                </div>
+                {# #}
+                <div id="spouse-bottom-field" class="form-group">
+                    <label><strong>{{ form.spouse.label.text }}:</strong> <span class="data"></span></label>
+                </div>
+                <div id="mother-bottom-field" class="form-group">
+                    <label><strong>{{ form.mother.label.text }}:</strong> <span class="data"></span></label>
+                </div>
+                <div id="father-bottom-field" class="form-group">
+                    <label><strong>{{ form.father.label.text }}:</strong> <span class="data"></span></label>
+                </div>
+                <div id="children-bottom-field" class="form-group">
+                    <label><strong>{{ 'Children' if g.user_language == 'en' else 'Дети' }}:</strong> <span class="data"></span></label>
                 </div>
             </div>
         </div>
@@ -135,6 +196,7 @@ $(document).ready(function(){
         createdRow: function(row, data) {
             $(row).click(function(){
                 var $this = $(this);
+
                 if ($this.hasClass('highlight')) {
                     $this.removeClass('highlight');
                     $('#openBtn, #editBtn, #deleteBtn').prop('disabled', true);
@@ -146,6 +208,10 @@ $(document).ready(function(){
                     $('#name-bottom-field .data').text('');
                     $('#birth_date-bottom-field .data').text('');
                     $('#age-bottom-field .data').text('');
+                    $('#spouse-bottom-field .data').text('');
+                    $('#mother-bottom-field .data').text('');
+                    $('#father-bottom-field .data').text('');
+                    $('#children-bottom-field .data').text('');
                 } else {
                     $('#myTable tbody tr').removeClass('highlight');
                     $this.addClass('highlight');
@@ -175,6 +241,10 @@ $(document).ready(function(){
                     $('#name-bottom-field .data').text(data[1]);
                     $('#birth_date-bottom-field .data').text(data[3]);
                     $('#age-bottom-field .data').text(data[5]);
+                    $('#spouse-bottom-field .data').html(data[6]);
+                    $('#mother-bottom-field .data').html(data[7]);
+                    $('#father-bottom-field .data').html(data[8]);
+                    $('#children-bottom-field .data').html(data[9]);
                 }
             });
         }

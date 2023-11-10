@@ -5,19 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc2120d4-31d6-4b79-aa1b-7300dde184f1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/treeflaskapp/static/demo/img1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/treeflaskapp/static/demo/img2.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.db" beforeDir="false" afterPath="$PROJECT_DIR$/db.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log_dir/my_app.log" beforeDir="false" afterPath="$PROJECT_DIR$/log_dir/my_app.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/star_wolf.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/demo/person1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/demo/person2.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/create_person.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/create_person.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/create_place.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/create_place.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/edit_event.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/edit_event.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/edit_person.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/edit_person.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/edit_place.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/edit_place.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/events.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/events.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/persons.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/persons.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/places.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/places.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,15 +42,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/Python_Flask/FamilyTreeWebApp&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "E:/Python_Flask/FamilyTreeWebApp/treeflaskapp/static/demo"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Python_Flask\FamilyTreeWebApp\treeflaskapp\static\demo" />
       <recent name="E:\Python_Flask\FamilyTreeWebApp" />
     </key>
     <key name="MoveFile.RECENT_KEYS">

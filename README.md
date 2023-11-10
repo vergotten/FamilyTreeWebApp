@@ -6,8 +6,8 @@ The Family Tree Project is a web application that allows users to create, visual
 ## Demo 
 Following images demonstrate functionality of webservice. 
 
-![Alt text](treeflaskapp/static/demo/person1.png?raw=true "Persons Demo")
-![Alt text](treeflaskapp/static/demo/person2.png?raw=true "Persons Demo")
+![Alt text](treeflaskapp/static/demo/img1.png?raw=true "Interface Demo 1")
+![Alt text](treeflaskapp/static/demo/img2.png?raw=true "Interface Demo 2")
 ## Features
 - **User Authentication:** Users can register, log in, and log out. User sessions are managed securely.
 - **Family Tree Visualization:** Users can create and visualize their family tree in an intuitive and user-friendly interface.

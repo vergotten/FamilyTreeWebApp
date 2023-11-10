@@ -633,3 +633,20 @@
 2023-11-09 17:19:51,300 - my_logger - INFO - User profile accessed successfully
 2023-11-09 18:31:05,188 - my_logger - INFO - User profile accessed successfully
 2023-11-09 19:07:11,914 - my_logger - INFO - User profile accessed successfully
+2023-11-09 19:50:24,916 - my_logger - INFO - User profile accessed successfully
+2023-11-09 20:10:38,615 - my_logger - INFO - User profile accessed successfully
+2023-11-09 21:30:49,487 - my_logger - INFO - User profile accessed successfully
+2023-11-10 20:10:20,949 - my_logger - INFO - User profile accessed successfully
+2023-11-10 22:40:18,402 - my_logger - INFO - User profile accessed successfully
+2023-11-10 22:48:00,643 - my_logger - INFO - User logged out successfully
+2023-11-10 22:51:10,324 - my_logger - INFO - User logged in successfully
+2023-11-10 22:51:10,339 - my_logger - INFO - User profile accessed successfully
+2023-11-10 22:51:54,805 - my_logger - INFO - User logged out successfully
+2023-11-10 22:53:41,532 - my_logger - INFO - User registered successfully
+2023-11-10 22:53:49,773 - my_logger - INFO - User logged in successfully
+2023-11-10 22:53:49,790 - my_logger - INFO - User profile accessed successfully
+2023-11-10 23:01:42,493 - my_logger - INFO - User profile accessed successfully
+2023-11-10 23:03:38,790 - my_logger - INFO - User profile accessed successfully
+2023-11-10 23:03:42,999 - my_logger - INFO - User profile accessed successfully
+2023-11-10 23:14:22,160 - my_logger - INFO - User profile accessed successfully
+2023-11-10 23:14:24,082 - my_logger - INFO - User profile accessed successfully

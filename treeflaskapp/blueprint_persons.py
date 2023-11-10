@@ -6,7 +6,7 @@ from .forms import PersonForm
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 
 persons = Blueprint('persons', __name__)
 
@@ -58,7 +58,7 @@ def persons_view(username):
 
             db.session.commit()
             form = PersonForm(user_language=g.user_language)  # create an instance of your form
-            return render_template('persons.html', persons=persons, form=form)
+            return render_template('persons.html', persons=persons, form=form, Person=Person)
         else:
             return "Unauthorized", 403
     except Exception as e:
@@ -114,7 +114,7 @@ def edit_person(username, id):
     # Assuming current_user_id is the id of the current user
     def get_choices(persons, selected_person):
         choices = [(p.id, p.name) for p in persons]
-        if selected_person is not None:
+        if selected_person is not None and (selected_person.id, selected_person.name) in choices:
             choices.remove((selected_person.id, selected_person.name))
             choices.insert(0, (None, ''))
             choices.insert(0, (selected_person.id, selected_person.name))
@@ -122,9 +122,28 @@ def edit_person(username, id):
             choices.insert(0, (None, ''))
         return choices
 
-    persons_female = Person.query.filter(and_(Person.gender == 'Female', Person.id != person.id)).order_by(
+    # Get all persons excluding the current person and persons of the same gender
+    potential_spouses = Person.query.filter(and_(Person.gender != person.gender, Person.id != person.id, Person.user_id == current_user.id)).all()
+
+    # Exclude the mother and father from the potential spouses
+    if person.mother in potential_spouses:
+        potential_spouses.remove(person.mother)
+    if person.father in potential_spouses:
+        potential_spouses.remove(person.father)
+
+    # Exclude any persons the person is already married to
+    # if person.spouse in potential_spouses:
+    #     potential_spouses.remove(person.spouse)
+
+    # Set the choices for the spouse form field
+    form.spouse.choices = get_choices(potential_spouses, person.spouse)
+
+    persons_female = Person.query.filter(
+        and_(Person.gender == 'Female', Person.id != person.id, Person.user_id == current_user.id)).order_by(
         Person.id).all()
-    persons_male = Person.query.filter(and_(Person.gender == 'Male', Person.id != person.id)).order_by(Person.id).all()
+    persons_male = Person.query.filter(
+        and_(Person.gender == 'Male', Person.id != person.id, Person.user_id == current_user.id)).order_by(
+        Person.id).all()
 
     mother = Person.query.get(person.mother_id)
     father = Person.query.get(person.father_id)
@@ -149,8 +168,19 @@ def edit_person(username, id):
             person.place_of_live = form.place_of_live.data if form.place_of_live.data else None; print(f"person.place_of_live: {person.place_of_live}")
             person.place_of_born = form.place_of_born.data if form.place_of_born.data else None; print(f"person.place_of_born: {person.place_of_born}")
             person.gender = form.gender.data if form.gender.data else None; print(f"person.gender: {person.gender}")
-            person.mother_id = form.mother.data  # Save the selected mother id to the person's mother field
-            person.father_id = form.father.data  # Save the selected mother id to the person's mother field
+
+            # Get the selected spouse
+            selected_spouse = Person.query.get(form.spouse.data)
+
+            if selected_spouse is not None:
+                # Update the spouse_id field for both persons
+                person.spouse_id = selected_spouse.id
+                selected_spouse.spouse_id = person.id
+            else:
+                person.spouse_id = None
+
+            person.mother_id = form.mother.data if form.mother.data else None # Save the selected mother id to the person's mother field
+            person.father_id = form.father.data if form.father.data else None # Save the selected father id to the person's father field
 
             db.session.commit()
             flash_message = 'Person updated successfully!' if g.user_language == 'en' else 'Персона успешно обновлена!'

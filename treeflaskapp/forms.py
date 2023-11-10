@@ -105,6 +105,7 @@ class PersonForm(FlaskForm):
     age = StringField()
     gender = SelectField('Gender', choices=[])
 
+    spouse = SelectField('Spouse', validate_choice=False)
     mother = SelectField('Mother', validate_choice=False)
     father = SelectField('Father', validate_choice=False)
 
@@ -119,18 +120,19 @@ class PersonForm(FlaskForm):
         self.image_file.label.text = self.translate('Image File')
         self.is_alive.label.text = self.translate('Is Alive')
         self.place_of_live.label.text = self.translate('Place of Live')
-        self.place_of_born.label.text = self.translate('Place of Born')
+        self.place_of_born.label.text = self.translate('Place of Birth')
         self.age.label.text = self.translate('Age')
         self.gender.label.text = self.translate('Gender')
         self.gender.choices = [(value, self.translate(label)) for value, label in [('Male', 'Male'), ('Female', 'Female')]]
+
+        self.spouse.label.text = self.translate('Spouse')
+        self.spouse.choices = []
 
         self.mother.label.text = self.translate('Mother')
         self.mother.choices = []
 
         self.father.label.text = self.translate('Father')
         self.father.choices = []
-        # self.mother.choices = [(value, self.translate(label)) for value, label in
-        #                        [(None, " ")]]
 
         self.submit.label.text = self.translate('Submit')
 
@@ -138,12 +140,12 @@ class PersonForm(FlaskForm):
         translations = {
             'en': {'Full Name': 'Full Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit',
                    'This field is required.': 'This field is required.', 'Image File': 'Image File', 'Is Alive': 'Is Alive',
-                   'Place of Live': 'Place of Live', 'Place of Born': 'Place of Born', 'Age' : 'Age', 'Gender' : 'Gender',
-                   'Male': 'Male', 'Female': 'Female', 'Mother': 'Mother', 'Father': 'Отец', " ": " "},
+                   'Place of Live': 'Place of Live', 'Place of Birth': 'Place of Birth', 'Age' : 'Age', 'Gender' : 'Gender',
+                   'Male': 'Male', 'Female': 'Female', 'Spouse': 'Spouse', 'Mother': 'Mother', 'Father': 'Father', " ": " "},
             'ru': {'Full Name': 'Полное имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить',
                    'This field is required.': 'Это поле обязательно для заполнения.', 'Image File': 'Фото',
-                   'Is Alive': 'Жив(а)', 'Place of Live': 'Место жительства', 'Place of Born': 'Место рождения',
-                   'Age': 'Возраст', 'Gender': 'Пол', 'Male': 'Мужчина', 'Female': 'Женщина', 'Mother': 'Мать',
+                   'Is Alive': 'Жив(а)', 'Place of Live': 'Место жительства', 'Place of Birth': 'Место рождения',
+                   'Age': 'Возраст', 'Gender': 'Пол', 'Male': 'Мужчина', 'Female': 'Женщина', 'Spouse': 'Супруг(а)', 'Mother': 'Мать',
                    'Father': 'Отец', " ": " "}
         }
         return translations.get(self.user_language, {}).get(text, text)
