@@ -175,7 +175,7 @@ def edit_person(username, id):
             person.father_id = form.father.data if form.father.data else None  # Save the selected father id to the person's father field
 
             # Check if Place of Birth already exists
-            place_name = f"Place of birth {person.name}" if g.user_language == 'en' else f"Место рождения {person.name}"
+            place_name = f"Place of birth. {person.name}" if g.user_language == 'en' else f"Место рождения. {person.name}"
             place_of_birth = Place.query.filter_by(user_id=current_user.id, name=place_name).first()
             if place_of_birth:
                 # Update existing Place of Birth
@@ -188,7 +188,7 @@ def edit_person(username, id):
                 db.session.add(place_of_birth)
 
             # Check if Birth Event already exists
-            event_name = f"Birth of {person.name}" if g.user_language == 'en' else f"Рождение. {person.name}"
+            event_name = f"Birth. {person.name}" if g.user_language == 'en' else f"Рождение. {person.name}"
             birth_event = Event.query.filter_by(user_id=current_user.id, name=event_name).first()
             if birth_event:
                 # Update existing Birth Event
@@ -204,7 +204,7 @@ def edit_person(username, id):
 
             # Check if Place of Death and Death Event already exist if person is not alive
             if not person.is_alive and form.place_of_live.data and person.death_date:
-                place_name = f"Place of death {person.name}" if g.user_language == 'en' else f"Место смерти {person.name}"
+                place_name = f"Place of death. {person.name}" if g.user_language == 'en' else f"Место смерти. {person.name}"
                 place_of_death = Place.query.filter_by(user_id=current_user.id, name=place_name).first()
                 if place_of_death:
                     # Update existing Place of Death

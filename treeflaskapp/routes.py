@@ -60,7 +60,10 @@ def register():
     form = RegisterForm(user_language=g.user_language)
     if form.validate_on_submit():
         try:
-            user = User(username=form.username.data, email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, date_of_birth=form.date_of_birth.data)
+            date_of_birth = form.date_of_birth.data if form.date_of_birth.data else None
+
+            user = User(username=form.username.data, email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data,
+                        date_of_birth=date_of_birth)
             user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()

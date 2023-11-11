@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True)
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
-    date_of_birth = db.Column(Date)
+    date_of_birth = db.Column(Date, nullable=True)
     password_hash = db.Column(db.String(128))
     people = db.relationship('Person', backref='user', lazy=True)
     places = db.relationship('Place', backref='user', lazy=True)

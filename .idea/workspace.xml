@@ -8,17 +8,11 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.db" beforeDir="false" afterPath="$PROJECT_DIR$/db.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log_dir/my_app.log" beforeDir="false" afterPath="$PROJECT_DIR$/log_dir/my_app.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/06791b49de5697de3429ed1c9aa5c984.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/378856377_e685405340_c.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/701258-1502103913.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/MV5BN2QwY2I5MDgtODI1Mi00YWRjLThkZWItZTZhYTFkZWViZGRlXkEyXkFqcGdeQXVyNjUxMjc1OTM._V1_.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/apifhgtbc__28765.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/create_person.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/create_person.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/edit_person.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/edit_person.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/events.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/events.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,13 +30,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "E:/Python_Flask/FamilyTreeWebApp/treeflaskapp/static/demo"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Python_Flask/FamilyTreeWebApp/treeflaskapp/static/demo&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Python_Flask\FamilyTreeWebApp\treeflaskapp\static\demo" />

@@ -25,7 +25,7 @@
                 {% for event in events %}
                 <tr data-id="{{ event.id }}">
                     <td>{{ event.name }}</td>
-                    <td>{{ event.date }}</td>
+                    <td>{{ event.date.strftime('%d-%m-%Y') if event.date is not none else '' }}</td>
                     <!-- More columns here -->
                 </tr>
                 {% endfor %}

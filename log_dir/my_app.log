@@ -651,3 +651,16 @@
 2023-11-10 23:14:22,160 - my_logger - INFO - User profile accessed successfully
 2023-11-10 23:14:24,082 - my_logger - INFO - User profile accessed successfully
 2023-11-11 02:51:40,718 - my_logger - INFO - User profile accessed successfully
+2023-11-11 17:42:05,841 - my_logger - INFO - User profile accessed successfully
+2023-11-11 17:55:42,862 - my_logger - INFO - User logged out successfully
+2023-11-11 17:57:40,400 - my_logger - INFO - User registered successfully
+2023-11-11 17:57:48,930 - my_logger - INFO - User logged in successfully
+2023-11-11 17:57:48,944 - my_logger - INFO - User profile accessed successfully
+2023-11-11 17:57:59,295 - my_logger - INFO - User logged out successfully
+2023-11-11 18:40:03,167 - my_logger - INFO - User registered successfully
+2023-11-11 18:40:16,653 - my_logger - INFO - User logged in successfully
+2023-11-11 18:40:16,672 - my_logger - INFO - User profile accessed successfully
+2023-11-11 18:40:21,553 - my_logger - INFO - User profile accessed successfully
+2023-11-11 18:46:49,937 - my_logger - INFO - User logged out successfully
+2023-11-11 19:26:25,176 - my_logger - INFO - User logged in successfully
+2023-11-11 19:26:25,194 - my_logger - INFO - User profile accessed successfully

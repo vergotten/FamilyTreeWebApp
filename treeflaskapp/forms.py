@@ -30,7 +30,7 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     first_name = StringField(validators=[DataRequired()])
     last_name = StringField(validators=[DataRequired()])
-    date_of_birth = DateField(format='%Y-%m-%d')
+    date_of_birth = DateField(format='%Y-%m-%d', validators=[Optional()])
     username = StringField(validators=[DataRequired()])
     email = StringField(validators=[DataRequired(), Email()])
     password = PasswordField(validators=[DataRequired()])
