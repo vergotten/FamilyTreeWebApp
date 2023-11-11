@@ -5,26 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc2120d4-31d6-4b79-aa1b-7300dde184f1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/treeflaskapp/static/demo/img1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/treeflaskapp/static/demo/img2.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.db" beforeDir="false" afterPath="$PROJECT_DIR$/db.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/log_dir/my_app.log" beforeDir="false" afterPath="$PROJECT_DIR$/log_dir/my_app.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/demo/person1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/demo/person2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/06791b49de5697de3429ed1c9aa5c984.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/378856377_e685405340_c.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/701258-1502103913.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/MV5BN2QwY2I5MDgtODI1Mi00YWRjLThkZWItZTZhYTFkZWViZGRlXkEyXkFqcGdeQXVyNjUxMjc1OTM._V1_.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/apifhgtbc__28765.jpg" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/create_person.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/create_person.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/create_place.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/create_place.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/edit_event.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/edit_event.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/edit_person.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/edit_person.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/edit_place.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/edit_place.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/events.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/events.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/persons.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/persons.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/places.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/places.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

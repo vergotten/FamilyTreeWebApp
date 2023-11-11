@@ -101,7 +101,7 @@ class PersonForm(FlaskForm):
     image_file = FileField('Image File', validators=[FileAllowed(['jpg', 'png'])])
     is_alive = StringField()
     place_of_live = StringField()
-    place_of_born = StringField()
+    place_of_birth = StringField()
     age = StringField()
     gender = SelectField('Gender', choices=[])
 
@@ -120,7 +120,7 @@ class PersonForm(FlaskForm):
         self.image_file.label.text = self.translate('Image File')
         self.is_alive.label.text = self.translate('Is Alive')
         self.place_of_live.label.text = self.translate('Place of Live')
-        self.place_of_born.label.text = self.translate('Place of Birth')
+        self.place_of_birth.label.text = self.translate('Place of Birth')
         self.age.label.text = self.translate('Age')
         self.gender.label.text = self.translate('Gender')
         self.gender.choices = [(value, self.translate(label)) for value, label in [('Male', 'Male'), ('Female', 'Female')]]

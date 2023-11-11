@@ -42,7 +42,7 @@ class Person(db.Model):
     image_file = db.Column(db.String(120), nullable=True)
     is_alive = db.Column(db.Boolean, default=True)
     place_of_live = db.Column(db.String(120), nullable=True)
-    place_of_born = db.Column(db.String(120), nullable=True)
+    place_of_birth = db.Column(db.String(120), nullable=True)
     age = db.Column(db.String(120), nullable=True)
     gender = db.Column(db.String(120), nullable=True)
 
