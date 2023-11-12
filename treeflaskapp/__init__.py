@@ -62,7 +62,9 @@ from . import routes
 from .blueprint_persons import persons
 from .blueprint_places import places
 from .blueprint_events import events
+from .blueprint_documents import documents
 
 app.register_blueprint(persons, url_prefix='/persons')
 app.register_blueprint(places, url_prefix='/places')
 app.register_blueprint(events, url_prefix='/events')
+app.register_blueprint(documents, url_prefix='/documents')

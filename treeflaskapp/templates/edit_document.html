@@ -12,19 +12,19 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <form action="/persons/user/{{ username }}/edit_person/{{ person.id }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <form action="/documents/user/{{ username }}/edit_document/{{ document.id }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
             {{ form.hidden_tag() }}
             <div class="row">
                 <div class="col-md-6 text-left">
                     <div class="form-group text-center">
                         <div class="form-group text-center">
-                            {% if person.image_file %}
+                            {% if document.icon %}
                                 <!-- Trigger the Modal with the Image -->
-                                <img id="myImg" src="{{ url_for('static', filename=person.image_file) }}"
-                                     alt="Person Image"
+                                <img id="myImg" src="{{ url_for('static', filename=document.icon) }}"
+                                     alt="Icon Image"
                                      style="width: 100%; max-width: 30.0em; height: auto; object-fit: cover;"
                                      data-toggle="modal" data-target="#myModal"
-                                     data-filename="{{ person.image_file }}">
+                                     data-filename="{{ document.icon }}">
 
                                 <!-- The Modal -->
                                 <div class="modal fade" id="myModal">
@@ -47,13 +47,13 @@
                             {% endif %}
                         </div>
                         <label class="custom-file-upload">
-                            <input type="file" id="image_file" name="image_file" style="display: none;"/>
+                            <input type="file" id="icon" name="icon" name="icon" style="display: none;"/>
                             <span id="file-name">
                                 <button type="button" id="file-upload-button" class="btn btn-dark">
                                     {% if g.user_language == 'en' %}
-                                        Choose image
+                                        Choose file
                                     {% elif g.user_language == 'ru' %}
-                                        Выберите фото
+                                        Выберите изображение
                                     {% endif %}
                                 </button>
                             </span>
@@ -83,65 +83,40 @@
                 </div>
                 <div class="col-md-4 text-left pl-5 pr-0">
                     <div class="form-group">
-                        <strong>{{ form.name.label(class="form-label") }}</strong>
+                        <strong> {{ form.name.label(class="form-label") }} </strong>
                         {{ form.name(class="form-control", required=True) }}
                         <div class="invalid-feedback">
                             Please provide a name.
                         </div>
                     </div>
                     <div class="form-group">
-                        <strong>{{ form.birth_date.label(class="form-label") }}</strong>
-                        {{ form.birth_date(class="form-control") }}
+                        <strong> {{ form.description.label(class="form-label") }} </strong>
+                        {{ form.description(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        <strong> {{ form.date.label(class="form-label") }} </strong>
+                        {{ form.date(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        <strong> {{ form.file_path.label(class="form-label") }} </strong>
+                        {{ form.file_path(class="form-control", required=False) }}
                         <div class="invalid-feedback">
-                            Please provide a birth date.
+                            Please provide a file name.
                         </div>
                     </div>
                     <div class="form-group">
-                        <strong>{{ form.is_alive.label(class="form-label") }}</strong>
-                        <input type="checkbox" id="is_alive" {% if person.is_alive %}checked{% endif %}>
-                    </div>
-                    <div class="form-group" id="death_date_group" style="display: none;">
-                        <strong>{{ form.death_date.label(class="form-label") }}</strong>
-                        {{ form.death_date(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.place_of_live.label(class="form-label") }}</strong>
-                        {{ form.place_of_live(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.place_of_birth.label(class="form-label") }}</strong>
-                        {{ form.place_of_birth(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.gender.label(class="form-label") }}</strong>
-                        {{ form.gender(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.spouse.label(class="form-label") }}</strong>
-                        {{ form.spouse(class="form-control", id="spouse-select") }}
-                    </div>
-                     <div class="form-group">
-                        <strong>{{ form.mother.label(class="form-label") }}</strong>
-                        {{ form.mother(class="form-control", id="mother-select") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.father.label(class="form-label") }}</strong>
-                        {{ form.father(class="form-control", id="father-select") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.comment.label(class="form-label") }}</strong>
-                        {{ form.comment(class="form-control", id="comment") }}
+                        <strong> {{ form.comment.label(class="form-label") }} </strong>
+                        {{ form.comment(class="form-control") }}
                     </div>
                 </div>
             </div>
-            <!-- Add more form fields as needed -->
             <div class="text-center">
                 {% if g.user_language == 'en' %}
                     {{ form.submit(class='btn btn-success', value='Update') }}
-                        <a href="{{ url_for('persons.persons_view', username=username) }}" class="btn btn-danger">Cancel</a>
+                    <a href="{{ url_for('documents.documents_view', username=username) }}" class="btn btn-danger">Cancel</a>
                 {% elif g.user_language == 'ru' %}
                     {{ form.submit(class='btn btn-success', value='Обновить') }}
-                        <a href="{{ url_for('persons.persons_view', username=username) }}" class="btn btn-danger">Отмена</a>
+                    <a href="{{ url_for('documents.documents_view', username=username) }}" class="btn btn-danger">Отмена</a>
                 {% endif %}
             </div>
         </form>
@@ -149,7 +124,6 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 $(document).ready(function(){
     setTimeout(function(){
@@ -191,7 +165,7 @@ $(document).ready(function(){
         // Change the src attribute of the image to the path of the no-user-photo.png image
         document.getElementById('myImg').src = '/static/images/no-user-photo.png';
 
-        fetch('/persons/user/{{ session['username'] }}/edit_person/{{ person.id }}/delete-file', {
+        fetch('/documents/user/{{ session['username'] }}/edit_document/{{ document.id }}/delete-file', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -205,28 +179,9 @@ $(document).ready(function(){
         });
     });
 
-    $('#myImg').click(function(){
+        $('#myImg').click(function(){
         var imgSrc = $(this).attr('src');
         $('#img01').attr('src', imgSrc);
-    });
-
-    // Check the state of the checkbox when the document is ready
-    if ($('#is_alive').is(":checked")) {
-        $('#death_date_group').hide();
-    } else {
-        $('#death_date_group').show();
-    }
-
-    // Add a click event handler to the checkbox
-    $('#is_alive').click(function(){
-        // If the checkbox is checked, hide the death_date field
-        if ($(this).is(":checked")) {
-            $('#death_date_group').hide();
-        }
-        // If the checkbox is not checked, show the death_date field
-        else {
-            $('#death_date_group').show();
-        }
     });
 });
 </script>

@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, DateField, TextAreaField, HiddenField, FileField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Optional
 from flask_wtf.file import FileAllowed
+from wtforms.widgets import TextArea
 
 from datetime import datetime
 
@@ -109,6 +110,8 @@ class PersonForm(FlaskForm):
     mother = SelectField('Mother', validate_choice=False)
     father = SelectField('Father', validate_choice=False)
 
+    comment = TextAreaField('Comment', widget=TextArea(), validators=[Optional()])
+
     submit = SubmitField()
 
     def __init__(self, user_language='en', *args, **kwargs):
@@ -124,15 +127,13 @@ class PersonForm(FlaskForm):
         self.age.label.text = self.translate('Age')
         self.gender.label.text = self.translate('Gender')
         self.gender.choices = [(value, self.translate(label)) for value, label in [('Male', 'Male'), ('Female', 'Female')]]
-
         self.spouse.label.text = self.translate('Spouse')
         self.spouse.choices = []
-
         self.mother.label.text = self.translate('Mother')
         self.mother.choices = []
-
         self.father.label.text = self.translate('Father')
         self.father.choices = []
+        self.comment.label.text = self.translate('Comment')
 
         self.submit.label.text = self.translate('Submit')
 
@@ -141,20 +142,21 @@ class PersonForm(FlaskForm):
             'en': {'Full Name': 'Full Name', 'Birth Date': 'Birth Date', 'Death Date': 'Death Date', 'Submit': 'Submit',
                    'This field is required.': 'This field is required.', 'Image File': 'Image File', 'Is Alive': 'Is Alive',
                    'Place of Live': 'Place of Live', 'Place of Birth': 'Place of Birth', 'Age' : 'Age', 'Gender' : 'Gender',
-                   'Male': 'Male', 'Female': 'Female', 'Spouse': 'Spouse', 'Mother': 'Mother', 'Father': 'Father', " ": " "},
+                   'Male': 'Male', 'Female': 'Female', 'Spouse': 'Spouse', 'Mother': 'Mother', 'Father': 'Father', " ": " ",
+                   "Comment": "Comment", },
             'ru': {'Full Name': 'Полное имя', 'Birth Date': 'Дата рождения', 'Death Date': 'Дата смерти', 'Submit': 'Отправить',
                    'This field is required.': 'Это поле обязательно для заполнения.', 'Image File': 'Фото',
                    'Is Alive': 'Жив(а)', 'Place of Live': 'Место жительства', 'Place of Birth': 'Место рождения',
                    'Age': 'Возраст', 'Gender': 'Пол', 'Male': 'Мужчина', 'Female': 'Женщина', 'Spouse': 'Супруг(а)', 'Mother': 'Мать',
-                   'Father': 'Отец', " ": " "}
+                   'Father': 'Отец', " ": " ", "Comment": "Комментарий"}
         }
         return translations.get(self.user_language, {}).get(text, text)
 
 class PlaceForm(FlaskForm):
     id = HiddenField()
     name = StringField(validators=[DataRequired()])
-    location = StringField()
-    significance = TextAreaField()
+    location = StringField(validators=[Optional()])
+    significance = TextAreaField(validators=[Optional()])
     submit = SubmitField()
 
     def __init__(self, user_language='en', *args, **kwargs):
@@ -189,5 +191,34 @@ class EventForm(FlaskForm):
         translations = {
             'en': {'Name': 'Name', 'Date': 'Date', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
             'ru': {'Name': 'Имя', 'Date': 'Дата', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
+        }
+        return translations.get(self.user_language, {}).get(text, text)
+
+class DocumentForm(FlaskForm):
+    id = HiddenField()
+    name = StringField(validators=[DataRequired()])
+    description = TextAreaField(validators=[Optional()])
+    date = DateField(format='%Y-%m-%d', validators=[Optional()])
+    # file_path = StringField(validators=[Optional()])
+    file_path = FileField('File', validators=[Optional()])
+    comment = TextAreaField(validators=[Optional()])
+    icon = StringField(validators=[Optional()])
+    submit = SubmitField()
+
+    def __init__(self, user_language='en', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_language = user_language
+        self.name.label.text = self.translate('Name')
+        self.description.label.text = self.translate('Description')
+        self.date.label.text = self.translate('Date')
+        self.file_path.label.text = self.translate('File')
+        self.comment.label.text = self.translate('Comment')
+        self.icon.label.text = self.translate('Icon')
+        self.submit.label.text = self.translate('Submit')
+
+    def translate(self, text):
+        translations = {
+            'en': {'Name': 'Name', 'Description': 'Description', 'Date': 'Date', 'File': 'File', 'Comment': 'Comment', 'Icon': 'Icon', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
+            'ru': {'Name': 'Название', 'Description': 'Описание', 'Date': 'Дата', 'File': 'Файл', 'Comment': 'Комментарий', 'Icon': 'Иконка', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
         }
         return translations.get(self.user_language, {}).get(text, text)

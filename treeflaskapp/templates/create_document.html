@@ -12,7 +12,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <form action="/persons/user/{{ username }}/create_person" method="post" enctype="multipart/form-data">
+        <form action="/documents/user/{{ username }}/create_document" method="post" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <div class="row">
                 <div class="col-md-6 text-left">
@@ -21,20 +21,29 @@
                             <img src="{{ url_for('static', filename='images/no-user-photo.png') }}" alt="No User Photo" style="width: 350px; height: 350px;">
                         </div>
                         <label class="custom-file-upload">
-                            <input type="file" id="image_file" name="image_file" style="display: none;"/>
+                            <input type="file" id="icon" name="icon" name="icon" style="display: none;"/>
                             <span id="file-name">
-                                {% if g.user_language == 'en' %}
-                                    No file chosen
-                                {% elif g.user_language == 'ru' %}
-                                    Выберите изображение для персоны
-                                {% endif %}
+                                <button type="button" id="file-upload-button" class="btn btn-dark">
+                                    {% if g.user_language == 'en' %}
+                                        Choose file
+                                    {% elif g.user_language == 'ru' %}
+                                        Выберите изображение
+                                    {% endif %}
+                                </button>
                             </span>
                         </label>
-                        <button type="button" id="file-upload-button" class="btn btn-dark">
+                        <div class="invalid-feedback">
                             {% if g.user_language == 'en' %}
-                                Choose file
+                                Please provide a file.
                             {% elif g.user_language == 'ru' %}
-                                Выберите файл
+                                Пожалуйста, предоставьте файл.
+                            {% endif %}
+                        </div>
+                        <button type="button" id="file-upload-delete" class="btn btn-warning">
+                            {% if g.user_language == 'en' %}
+                                Delete
+                            {% elif g.user_language == 'ru' %}
+                                Удалить
                             {% endif %}
                         </button>
                         <div class="invalid-feedback">
@@ -55,47 +64,34 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <strong>{{ form.birth_date.label(class="form-label") }}</strong>
-                        {{ form.birth_date(class="form-control") }}
+                        <strong>{{ form.description.label(class="form-label") }}</strong>
+                        {{ form.description(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        <strong>{{ form.date.label(class="form-label") }}</strong>
+                        {{ form.date(class="form-control") }}
+                    </div>
+                    {# ####################################################################### #}
+                    <div class="form-group">
+                        <strong> {{ form.file_path.label(class="form-label") }} </strong>
+                        {{ form.file_path(class="form-control", required=False) }}
                         <div class="invalid-feedback">
-                            Please provide a birth date.
+                            Please provide a file name.
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <strong>{{ form.is_alive.label(class="form-label") }}</strong>
-                        <input type="checkbox" id="is_alive"checked>
-                    </div>
-                    <div class="form-group" id="death_date_group" style="display: none;">
-                        <strong>{{ form.death_date.label(class="form-label") }}</strong>
-                        {{ form.death_date(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.place_of_live.label(class="form-label") }}</strong>
-                        {{ form.place_of_live(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.place_of_birth.label(class="form-label") }}</strong>
-                        {{ form.place_of_birth(class="form-control") }}
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.gender.label(class="form-label") }}</strong>
-                        {{ form.gender(class="form-control") }}
                     </div>
                     <div class="form-group">
                         <strong>{{ form.comment.label(class="form-label") }}</strong>
-                        {{ form.comment(class="form-control", id="comment") }}
+                        {{ form.comment(class="form-control") }}
                     </div>
                 </div>
             </div>
-            <!-- Add more form fields as needed -->
             <div class="text-center">
                 {% if g.user_language == 'en' %}
                     {{ form.submit(class='btn btn-success', value='Create') }}
-                    <a href="{{ url_for('persons.persons_view', username=username) }}" class="btn btn-danger">Cancel</a>
+                    <a href="{{ url_for('documents.documents_view', username=username) }}" class="btn btn-danger">Cancel</a>
                 {% elif g.user_language == 'ru' %}
                     {{ form.submit(class='btn btn-success', value='Создать') }}
-                    <a href="{{ url_for('persons.persons_view', username=username) }}" class="btn btn-danger">Отмена</a>
+                    <a href="{{ url_for('documents.documents_view', username=username) }}" class="btn btn-danger">Отмена</a>
                 {% endif %}
             </div>
         </form>
@@ -119,31 +115,26 @@ $(document).ready(function(){
     });
 
     // Custom file input field
-    document.querySelector('input[type="file"]').addEventListener('change', function() {
+    var fileInput = document.querySelector('input[type="file"]');
+    var imgElement = document.getElementById('myImg');
+
+    fileInput.addEventListener('change', function() {
         document.getElementById('file-name').textContent = this.files[0].name;
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            imgElement.src = e.target.result;  // Change the image source to the uploaded file
+        }
+        reader.readAsDataURL(this.files[0]);
     });
 
     document.getElementById('file-upload-button').addEventListener('click', function() {
-        document.querySelector('input[type="file"]').click();
+        fileInput.click();
     });
 
-    // Check the state of the checkbox when the document is ready
-    if ($('#is_alive').is(":checked")) {
-        $('#death_date_group').hide();
-    } else {
-        $('#death_date_group').show();
-    }
-
-    // Add a click event handler to the checkbox
-    $('#is_alive').click(function(){
-        // If the checkbox is checked, hide the death_date field
-        if ($(this).is(":checked")) {
-            $('#death_date_group').hide();
-        }
-        // If the checkbox is not checked, show the death_date field
-        else {
-            $('#death_date_group').show();
-        }
+        $('#myImg').click(function(){
+        var imgSrc = $(this).attr('src');
+        $('#img01').attr('src', imgSrc);
     });
 });
 </script>

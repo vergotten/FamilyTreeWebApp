@@ -70,6 +70,13 @@
           Events
         {% endif %}
       </a>
+      <a class="btn btn-primary nav-link d-inline-block {{ 'active' if request.path == url_for('documents.documents_view', username=session['username']) }}" href="{{ url_for('documents.documents_view', username=session['username']) }}">
+        {% if g.user_language == 'ru' %}
+          Документы
+        {% else %}
+          Documents
+        {% endif %}
+      </a>
     </div>
   {% endif %}
 

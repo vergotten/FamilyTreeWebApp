@@ -57,11 +57,7 @@ class Person(db.Model):
     father = db.relationship('Person', foreign_keys=[father_id],
                              backref=db.backref('paternal_children', lazy='dynamic'), remote_side=lambda: Person.id)
 
-class Relationship(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    person1_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)
-    person2_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=False)
-    relationship_type = db.Column(db.String(50))
+    comment = db.Column(db.String(300), nullable=True)
 
 class Place(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -76,3 +72,13 @@ class Event(db.Model):
     name = db.Column(db.String(100))
     date = db.Column(db.Date)
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'))
+
+class Document(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    name = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(500), nullable=True)
+    date = db.Column(db.Date, nullable=True)
+    file_path = db.Column(db.String(150), nullable=True)
+    comment = db.Column(db.String(500), nullable=True)
+    icon = db.Column(db.String(150), nullable=True)

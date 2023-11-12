@@ -664,3 +664,6 @@
 2023-11-11 18:46:49,937 - my_logger - INFO - User logged out successfully
 2023-11-11 19:26:25,176 - my_logger - INFO - User logged in successfully
 2023-11-11 19:26:25,194 - my_logger - INFO - User profile accessed successfully
+2023-11-11 23:24:13,255 - my_logger - INFO - User profile accessed successfully
+2023-11-11 23:59:27,137 - my_logger - INFO - User profile accessed successfully
+2023-11-12 07:35:04,436 - my_logger - INFO - User profile accessed successfully

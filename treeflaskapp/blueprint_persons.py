@@ -77,6 +77,7 @@ def create_person(username):
 
             birth_date = form.birth_date.data if form.birth_date.data else None
             death_date = form.death_date.data if form.death_date.data else None
+            comment = form.comment.data if form.comment.data else None
             person = Person(user_id=current_user.id,
                             name=form.name.data,
                             is_alive=form.is_alive.data,
@@ -84,7 +85,8 @@ def create_person(username):
                             place_of_birth=form.place_of_birth.data,
                             birth_date=birth_date,
                             death_date=death_date,
-                            image_file=filepath)
+                            image_file=filepath,
+                            comment=comment)
             db.session.add(person)
             db.session.commit()
             flash_message = 'Person created successfully!' if g.user_language == 'en' else 'Персона успешно создана!'
@@ -159,6 +161,7 @@ def edit_person(username, id):
                 person.place_of_live = form.place_of_live.data if form.place_of_live.data else None
                 person.place_of_birth = form.place_of_birth.data if form.place_of_birth.data else None
                 person.gender = form.gender.data if form.gender.data else None
+                person.comment = form.comment.data if form.comment.data else None
 
             set_person_attributes(person, form)
 
