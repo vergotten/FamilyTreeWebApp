@@ -199,8 +199,6 @@ class DocumentForm(FlaskForm):
     name = StringField(validators=[DataRequired()])
     description = TextAreaField(validators=[Optional()])
     date = DateField(format='%Y-%m-%d', validators=[Optional()])
-    # file_path = StringField(validators=[Optional()])
-    file_path = FileField('File', validators=[Optional()])
     comment = TextAreaField(validators=[Optional()])
     icon = StringField(validators=[Optional()])
     submit = SubmitField()
@@ -211,14 +209,30 @@ class DocumentForm(FlaskForm):
         self.name.label.text = self.translate('Name')
         self.description.label.text = self.translate('Description')
         self.date.label.text = self.translate('Date')
-        self.file_path.label.text = self.translate('File')
         self.comment.label.text = self.translate('Comment')
         self.icon.label.text = self.translate('Icon')
         self.submit.label.text = self.translate('Submit')
 
     def translate(self, text):
         translations = {
-            'en': {'Name': 'Name', 'Description': 'Description', 'Date': 'Date', 'File': 'File', 'Comment': 'Comment', 'Icon': 'Icon', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
-            'ru': {'Name': 'Название', 'Description': 'Описание', 'Date': 'Дата', 'File': 'Файл', 'Comment': 'Комментарий', 'Icon': 'Иконка', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
+            'en': {'Name': 'Name', 'Description': 'Description', 'Date': 'Date', 'Comment': 'Comment', 'Icon': 'Icon', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
+            'ru': {'Name': 'Название', 'Description': 'Описание', 'Date': 'Дата', 'Comment': 'Комментарий', 'Icon': 'Иконка', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
+        }
+        return translations.get(self.user_language, {}).get(text, text)
+
+class FileForm(FlaskForm):
+    file_path = FileField('File', validators=[Optional()])
+    submit = SubmitField()
+
+    def __init__(self, user_language='en', *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user_language = user_language
+        self.file_path.label.text = self.translate('File')
+        self.submit.label.text = self.translate('Submit')
+
+    def translate(self, text):
+        translations = {
+            'en': {'File': 'File', 'Submit': 'Submit', 'This field is required.': 'This field is required.'},
+            'ru': {'File': 'Файл', 'Submit': 'Отправить', 'This field is required.': 'Это поле обязательно для заполнения.'}
         }
         return translations.get(self.user_language, {}).get(text, text)

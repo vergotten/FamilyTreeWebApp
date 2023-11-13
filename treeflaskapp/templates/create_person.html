@@ -23,18 +23,27 @@
                         <label class="custom-file-upload">
                             <input type="file" id="image_file" name="image_file" style="display: none;"/>
                             <span id="file-name">
-                                {% if g.user_language == 'en' %}
-                                    No file chosen
-                                {% elif g.user_language == 'ru' %}
-                                    Выберите изображение для персоны
-                                {% endif %}
+                                <button type="button" id="file-upload-button" class="btn btn-dark">
+                                    {% if g.user_language == 'en' %}
+                                        Choose image
+                                    {% elif g.user_language == 'ru' %}
+                                        Выберите фото
+                                    {% endif %}
+                                </button>
                             </span>
                         </label>
-                        <button type="button" id="file-upload-button" class="btn btn-dark">
+                        <div class="invalid-feedback">
                             {% if g.user_language == 'en' %}
-                                Choose file
+                                Please provide a file.
                             {% elif g.user_language == 'ru' %}
-                                Выберите файл
+                                Пожалуйста, предоставьте файл.
+                            {% endif %}
+                        </div>
+                        <button type="button" id="file-upload-delete" class="btn btn-warning">
+                            {% if g.user_language == 'en' %}
+                                Delete
+                            {% elif g.user_language == 'ru' %}
+                                Удалить
                             {% endif %}
                         </button>
                         <div class="invalid-feedback">
@@ -119,12 +128,27 @@ $(document).ready(function(){
     });
 
     // Custom file input field
-    document.querySelector('input[type="file"]').addEventListener('change', function() {
+    var fileInput = document.querySelector('input[type="file"]');
+
+    fileInput.addEventListener('change', function() {
         document.getElementById('file-name').textContent = this.files[0].name;
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            imgElement.src = e.target.result;  // Change the image source to the uploaded file
+        }
+        reader.readAsDataURL(this.files[0]);
     });
 
     document.getElementById('file-upload-button').addEventListener('click', function() {
-        document.querySelector('input[type="file"]').click();
+        fileInput.click();
+    });
+
+    document.getElementById('file-upload-delete').addEventListener('click', function() {
+        // Get the filename from the data attribute
+        var filename = imgElement.getAttribute('data-filename');
+        console.log('filename:', filename);
+
     });
 
     // Check the state of the checkbox when the document is ready

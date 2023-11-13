@@ -28,7 +28,7 @@
                     <th>{{ form.name.label.text }}</th>
                     <th>{{ form.description.label.text }}</th>
                     <th>{{ form.date.label.text }}</th>
-                    <th>{{ form.file_path.label.text }}</th>
+                    <th>{{ file_form.file_path.label.text }}</th>
                     <th>{{ form.comment.label.text }}</th>
                 </tr>
             </thead>
@@ -40,15 +40,27 @@
                             <img src="{{ url_for('static', filename=document.icon) }}"
                                  alt="Icon photo" class="img-thumbnail" style="width: 100%; min-width: 5.0em; max-width: 5.0em; height: auto; object-fit: cover;">
                         {% else %}
-                            <img src="{{ url_for('static', filename='images/no-user-photo.png') }}"
+                            <img src="{{ url_for('static', filename='images/document-none.svg') }}"
                                  alt="Icon photo" class="img-thumbnail" style="width: 100%; min-width: 5.0em; max-width: 5.0em; height: auto; object-fit: cover;">
                         {% endif %}
                     </td>
+
                     {# <td>{{ document.icon }}</td> #}
                     <td>{{ document.name }}</td>
                     <td>{{ document.description }}</td>
                     <td>{{ document.date }}</td>
-                    <td>{{ document.file_path }}</td>
+
+                    <td>
+                        {% for file in document.files %}
+                            {% if file.file_path %}
+                                <a href="{{ url_for('static', filename=file.file_path) }}" target="_blank">{{ file.file_path.split('/')[-1] }}</a>
+                                <br>
+                            {% endif %}
+                        {% else %}
+                            {{ 'No data' if g.user_language == 'en' else 'Нет данных' }}
+                        {% endfor %}
+                    </td>
+
                     <td>{{ document.comment }}</td>
                     <!-- More columns here -->
                 </tr>
@@ -118,8 +130,8 @@ $(document).ready(function(){
                     $this.removeClass('highlight');
                     $('#openBtn, #editBtn, #deleteBtn').prop('disabled', true);
 
-                    // If no row is selected, set the src to the path of the no-person-photo.png image
-                    $('#user-photo').attr('src', '/static/images/no-user-photo.png');
+                    // If no row is selected, set the src to the path of the document-none.svg image
+                    $('#user-photo').attr('src', '/static/images/document-none.svg');
 
                 } else {
                     $('#myTable tbody tr').removeClass('highlight');
@@ -144,7 +156,7 @@ $(document).ready(function(){
                         }
                     } else {
                         // If data[0] is None, set the src to the path of the default image
-                        $('#user-photo').attr('src', '/static/images/no-user-photo.png');
+                        $('#user-photo').attr('src', '/static/images/document-none.svg');
                     }
                 }
             });

@@ -41,7 +41,7 @@
                                 </div>
 
                             {% else %}
-                                <img src="{{ url_for('static', filename='images/no-user-photo.png') }}"
+                                <img src="{{ url_for('static', filename='images/document-none.svg') }}"
                                      alt="No User Photo"
                                      style="width: 100%; max-width: 35.0em; height: auto; object-fit: cover;">
                             {% endif %}
@@ -97,13 +97,29 @@
                         <strong> {{ form.date.label(class="form-label") }} </strong>
                         {{ form.date(class="form-control") }}
                     </div>
+                    {# #################################################################################### #}
                     <div class="form-group">
-                        <strong> {{ form.file_path.label(class="form-label") }} </strong>
-                        {{ form.file_path(class="form-control", required=False) }}
-                        <div class="invalid-feedback">
-                            Please provide a file name.
-                        </div>
+                        <strong> {{ file_form.file_path.label.text }} </strong>
+                        {% for file in document.files %}
+                            {% if file.file_path %}
+                                <br>
+                                <a href="{{ url_for('static', filename=file.file_path) }}" target="_blank">{{ file.file_path.split('/')[-1] }}</a>
+                                <br>
+                                <a href="{{ url_for('static', filename=file.file_path) }}" download class="btn btn-dark">
+                                    {{ 'Download' if g.user_language == 'en' else 'Скачать' }}
+                                </a>
+                                <button type="button" class="btn btn-danger" data-file-path="{{ file.file_path }}" id="deleteFile">
+                                    {{ 'Delete' if g.user_language == 'en' else 'Удалить' }}
+                                </button>
+                                <br>
+                            {% endif %}
+                        {% else %}
+                            <br>
+                            {{ 'No data' if g.user_language == 'en' else 'Нет данных' }}
+                        {% endfor %}
+                        {{ file_form.file_path(class="form-control", required=False, multiple=True) }}
                     </div>
+
                     <div class="form-group">
                         <strong> {{ form.comment.label(class="form-label") }} </strong>
                         {{ form.comment(class="form-control") }}
@@ -141,6 +157,7 @@ $(document).ready(function(){
 
     // Custom file input field
     var fileInput = document.querySelector('input[type="file"]');
+    var fieldFileInput = document.querySelector('input[type="file"]');
     var imgElement = document.getElementById('myImg');
 
     fileInput.addEventListener('change', function() {
@@ -162,8 +179,8 @@ $(document).ready(function(){
         var filename = imgElement.getAttribute('data-filename');
         console.log('filename:', filename);
 
-        // Change the src attribute of the image to the path of the no-user-photo.png image
-        document.getElementById('myImg').src = '/static/images/no-user-photo.png';
+        // Change the src attribute of the image to the path of the document-none.svg image
+        document.getElementById('myImg').src = '/static/images/document-none.svg';
 
         fetch('/documents/user/{{ session['username'] }}/edit_document/{{ document.id }}/delete-file', {
             method: 'POST',
@@ -179,10 +196,56 @@ $(document).ready(function(){
         });
     });
 
-        $('#myImg').click(function(){
-        var imgSrc = $(this).attr('src');
-        $('#img01').attr('src', imgSrc);
+    document.getElementById('deleteFile').addEventListener('click', function() {
+        // Get the file path from the data attribute
+        var filePath = this.getAttribute('data-file-path');
+        console.log('filePath:', filePath);
+
+        fetch('/documents/user/{{ session['username'] }}/edit_document/{{ document.id }}/delete-file', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ file_path: filePath }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the file link, "Download" button, and "Delete" button from the page
+<!--                let fileLink = this.previousElementSibling.previousElementSibling;-->
+<!--                let downloadButton = this.previousElementSibling;-->
+<!--                fileLink.remove();-->
+<!--                downloadButton.remove();-->
+<!--                this.remove();-->
+
+                // Remove the file link, "Download" button, and "Delete" button from the page
+                let br1 = this.previousElementSibling.previousElementSibling.previousElementSibling.previousElementSibling;
+                let fileLink = this.previousElementSibling.previousElementSibling.previousElementSibling;
+                let br2 = this.previousElementSibling.previousElementSibling;
+                let downloadButton = this.previousElementSibling;
+                let deleteButton = this;
+
+                br1.remove();
+                fileLink.remove();
+                br2.remove();
+                downloadButton.remove();
+                deleteButton.remove();
+
+                // Notify the user
+                // alert('File deleted successfully.');
+
+                // Show the file upload field
+                document.getElementById('file-upload-field').style.display = 'block';
+            } else {
+                // Handle the error
+                console.error('Error:', data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
     });
+
 });
 </script>
 {% endblock %}

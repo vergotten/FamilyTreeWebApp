@@ -71,17 +71,11 @@
                         <strong>{{ form.date.label(class="form-label") }}</strong>
                         {{ form.date(class="form-control") }}
                     </div>
-                    {# ####################################################################### #}
+                    {# #################################################################### #}
                     <div class="form-group">
-                        <strong> {{ form.file_path.label(class="form-label") }} </strong>
-                        {{ form.file_path(class="form-control", required=False) }}
-                        <div class="invalid-feedback">
-                            Please provide a file name.
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <strong>{{ form.comment.label(class="form-label") }}</strong>
-                        {{ form.comment(class="form-control") }}
+                        <strong> {{ file_form.file_path.label.text }} </strong>
+                        <br>
+                        {{ file_form.file_path(class="form-control", required=False, multiple=True) }}
                     </div>
                 </div>
             </div>
@@ -116,7 +110,6 @@ $(document).ready(function(){
 
     // Custom file input field
     var fileInput = document.querySelector('input[type="file"]');
-    var imgElement = document.getElementById('myImg');
 
     fileInput.addEventListener('change', function() {
         document.getElementById('file-name').textContent = this.files[0].name;

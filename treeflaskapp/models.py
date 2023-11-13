@@ -79,6 +79,11 @@ class Document(db.Model):
     name = db.Column(db.String(150), nullable=False)
     description = db.Column(db.String(500), nullable=True)
     date = db.Column(db.Date, nullable=True)
-    file_path = db.Column(db.String(150), nullable=True)
     comment = db.Column(db.String(500), nullable=True)
     icon = db.Column(db.String(150), nullable=True)
+    files = db.relationship('File', backref='document', lazy=True)
+
+class File(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    file_path = db.Column(db.String(150), nullable=True)
+    document_id = db.Column(db.Integer, db.ForeignKey('document.id'), nullable=False)

@@ -1,5 +1,5 @@
 # persons.py
-from flask import Blueprint, request, render_template, redirect, url_for, g, flash
+from flask import Blueprint, request, render_template, redirect, url_for, g, flash, jsonify
 from flask_login import login_required, current_user
 from .models import Person, Place, Event, db
 from .forms import PersonForm
