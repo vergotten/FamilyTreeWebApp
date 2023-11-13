@@ -5,20 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc2120d4-31d6-4b79-aa1b-7300dde184f1" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.db" beforeDir="false" afterPath="$PROJECT_DIR$/db.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/log_dir/my_app.log" beforeDir="false" afterPath="$PROJECT_DIR$/log_dir/my_app.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/blueprint_documents.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/blueprint_documents.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/images/2/4k.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/images/2/IMG_97892.JPG" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/static/uploads/images/2/star_wolf.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/create_document.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/create_document.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/create_person.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/create_person.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/documents.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/documents.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/edit_document.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/edit_document.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

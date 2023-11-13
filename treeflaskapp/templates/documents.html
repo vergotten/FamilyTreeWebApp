@@ -48,7 +48,7 @@
                     {# <td>{{ document.icon }}</td> #}
                     <td>{{ document.name }}</td>
                     <td>{{ document.description }}</td>
-                    <td>{{ document.date }}</td>
+                    <td>{{ document.date.strftime('%d-%m-%Y') if document.date is not none else '' }}</td>
 
                     <td>
                         {% for file in document.files %}
