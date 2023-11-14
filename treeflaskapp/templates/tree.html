@@ -10,6 +10,7 @@
     }
 </style>
 
+<script src="https://balkangraph.com/js/latest/OrgChart.js"></script>
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 
 <div class="container" style="height: 100vh;">
@@ -25,6 +26,31 @@
             {% endif %}
         {% endwith %}
         {% if persons %}
+            <!-- Add radio buttons for tree selection -->
+            <div style="display: flex; gap: 10px;">
+                <div>
+                    <input type="radio" id="tree1" name="tree" checked>
+                    <label for="tree1">
+                        {% if g.user_language == 'en' %}
+                                        Tree 1
+                                    {% elif g.user_language == 'ru' %}
+                                        Дерево 1
+                                    {% endif %}
+                    </label>
+
+
+                </div>
+                <div>
+                    <input type="radio" id="tree2" name="tree">
+                    <label for="tree2">
+                        {% if g.user_language == 'en' %}
+                                        Tree 2
+                                    {% elif g.user_language == 'ru' %}
+                                        Дерево 2
+                                    {% endif %}
+                    </label>
+                </div>
+            </div>
             <div id="treeContainer"></div>
 
         {% else %}
@@ -41,66 +67,125 @@
 
 <script type="text/javascript">
     var persons_data = {{ persons_data|tojson }};
+    console.log('Persons data:', persons_data);  // Debug line
 
-    // create an array with nodes
-    var nodes = new vis.DataSet(persons_data.map(function(person) {
-        var image = person.extra.image_file ? "/static/" + person.extra.image_file : null;
-        var label = person.name + '\n' + person.extra.birth_date;
-        if (person.extra.death_date) {
-            label += ' - ' + person.extra.death_date;
-        }
-        return {
-            id: person.extra.id,
-            label: label,
-            image: image,
-            shape: image ? 'image' : 'dot'
-        };
-    }));
-
-    // create an array with edges
-    var edges = new vis.DataSet(persons_data.flatMap(function(person) {
-        var personEdges = [];
-
-        if (person.marriages.length > 0) {
-            person.marriages.forEach(function(marriage) {
-                personEdges.push({
-                    from: person.extra.id,
-                    to: marriage.spouse.id,
-                    color: 'red',
-                    width: 2
-                });
-            });
-        }
-
-        if (person.extra.father_id) {
-            personEdges.push({from: person.extra.father_id, to: person.extra.id, color: 'black', arrows: 'to'});
-        }
-
-        return personEdges;
-    }));
-
-    // create a network
+    // Create the chart container
     var container = document.getElementById('treeContainer');
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
-    var options = {
-        layout: {
-            hierarchical: {
-                direction: "UD",  // Change direction to Up-Down
-                sortMethod: "directed"  // Sort nodes in a directed way
-            }
-        },
-        edges: {
-            smooth: {
-                type: 'cubicBezier',
-                forceDirection: 'vertical',
-                roundness: 0.4
-            }
+
+    // Check which radio button is selected
+    var tree1 = document.getElementById('tree1');
+    var tree2 = document.getElementById('tree2');
+
+    // Add event listeners to the radio buttons
+    tree1.addEventListener('change', updateChart);
+    tree2.addEventListener('change', updateChart);
+
+    // Function to update the chart
+    function updateChart() {
+        // Clear the existing chart
+        while (container.firstChild) {
+            container.firstChild.remove();
         }
-    };
-    var network = new vis.Network(container, data, options);
+
+        if (tree1.checked) {
+            // Create the OrgChart chart
+            var chart = new OrgChart(container, {
+                nodeBinding: {
+                    field_0: 'name',
+                    img_0: 'img'
+                },
+                nodes: persons_data.map(function(person) {
+                    console.log('Processing person:', person);  // Debug line
+
+                    // Print out the partner IDs
+                    console.log('Partner IDs:', person.partners);  // Debug line
+
+                    return {
+                        id: person.id,
+                        pid: person.pid,
+                        name: person.name,
+                        img: person.img,
+                        tags: person.partners.map(function(partner) {
+                            return 'partner' + partner;
+                        })
+                    };
+                }),
+                tags: persons_data.flatMap(function(person) {
+                    return person.partners.map(function(partner) {
+                        return {
+                            tag: 'partner' + partner,
+                            template: 'olivia'
+                        };
+                    });
+                })
+            });
+        } else if (tree2.checked) {
+            // Create the vis-network chart
+            var nodes = new vis.DataSet(persons_data.map(function(person) {
+                var image = person.img ? person.img : "/static/images/no-user-photo.png";
+                var label = person.name;
+                if (person.extra && person.extra.birth_date) {
+                    label += '\n' + person.extra.birth_date;
+                }
+                if (person.extra && person.extra.death_date) {
+                    label += ' - ' + person.extra.death_date;
+                }
+                return {
+                    id: person.id,
+                    label: label,
+                    image: image,
+                    shape: image ? 'image' : 'dot'
+                };
+            }));
+
+            var edges = new vis.DataSet(persons_data.flatMap(function(person) {
+                var personEdges = [];
+
+                if (person.partners && person.partners.length > 0) {
+                    person.partners.forEach(function(partner) {
+                        personEdges.push({
+                            from: person.id,
+                            to: partner,
+                            color: 'red',
+                            width: 2
+                        });
+                    });
+                }
+
+                if (person.extra && person.extra.father_id) {
+                    personEdges.push({from: person.extra.father_id, to: person.id, color: 'black', arrows: 'to'});
+                }
+
+                return personEdges;
+            }));
+
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+            var options = {
+                layout: {
+                    hierarchical: {
+                        direction: "LR",
+                        sortMethod: "directed"
+                    }
+                },
+                edges: {
+                    smooth: {
+                        type: 'cubicBezier',
+                        forceDirection: 'vertical',
+                        roundness: 0.4
+                    }
+                }
+            };
+            var network = new vis.Network(container, data, options);
+        } else {
+            console.log('No tree selected');
+        }
+    }
+
+    // Create the initial chart
+    updateChart();
 </script>
 
 {% endblock %}
