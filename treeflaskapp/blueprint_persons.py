@@ -28,6 +28,31 @@ def handle_file_upload(file):
 
     return None
 
+def get_choices(persons, selected_person):
+    if persons is not None:
+        choices = [(p.id, p.name) for p in persons]
+        if selected_person is not None and (selected_person.id, selected_person.name) in choices:
+            choices.remove((selected_person.id, selected_person.name))
+            choices.insert(0, (None, ''))
+            choices.insert(0, (selected_person.id, selected_person.name))
+        else:
+            choices.insert(0, (None, ''))
+        return choices
+
+def get_persons(role, person):
+    if person is not None:
+        if role == 'spouse':
+            return Person.query.filter(and_(Person.gender != person.gender, Person.id != person.id,
+                                            Person.user_id == current_user.id)).order_by(Person.id).all()
+        elif role == 'mother':
+            return Person.query.filter(
+                and_(Person.gender == 'Female', Person.id != person.id, Person.user_id == current_user.id)).order_by(
+                Person.id).all()
+        elif role == 'father':
+            return Person.query.filter(
+                and_(Person.gender == 'Male', Person.id != person.id, Person.user_id == current_user.id)).order_by(
+                Person.id).all()
+
 @persons.route('/user/<username>/persons')
 def persons_view(username):
     try:
@@ -72,32 +97,34 @@ def create_person(username):
     form = PersonForm(user_language=g.user_language)
     if form.validate_on_submit():
         try:
-            filepath = None
-            if 'image_file' in request.files and request.files['image_file'].filename != '':
-                filepath = handle_file_upload(request.files['image_file'])
+            filepath = handle_file_upload(request.files['image_file']) if 'image_file' in request.files and request.files['image_file'].filename != '' else None
 
-            birth_date = form.birth_date.data if form.birth_date.data else None
-            death_date = form.death_date.data if form.death_date.data else None
-            comment = form.comment.data if form.comment.data else None
-            person = Person(user_id=current_user.id,
-                            name=form.name.data,
-                            is_alive=form.is_alive.data,
-                            place_of_live=form.place_of_live.data,
-                            place_of_birth=form.place_of_birth.data,
-                            birth_date=birth_date,
-                            death_date=death_date,
-                            image_file=filepath,
-                            comment=comment)
+            person = Person(
+                user_id=current_user.id,
+                name=form.name.data,
+                is_alive=form.is_alive.data,
+                place_of_live=form.place_of_live.data or None,
+                place_of_birth=form.place_of_birth.data or None,
+                birth_date=form.birth_date.data or None,
+                death_date=form.death_date.data or None,
+                image_file=filepath,
+                comment=form.comment.data or None
+            )
+
             db.session.add(person)
             db.session.commit()
+
             flash_message = 'Person created successfully!' if g.user_language == 'en' else 'Персона успешно создана!'
             flash(flash_message, 'success')
+
             return redirect(url_for('persons.persons_view', username=username))
         except Exception as e:
             db.session.rollback()
+
             flash_message = 'An error occurred while creating the person: {}'.format(e) if g.user_language == 'en' \
                 else 'Произошла ошибка при создании персоны: {}'.format(e)
             flash(flash_message, 'error')
+
     return render_template('create_person.html', form=form, username=username)
 
 @persons.route('/user/<username>/edit_person/<int:id>', methods=['GET', 'POST'])
@@ -109,82 +136,43 @@ def edit_person(username, id):
 
     form = PersonForm(obj=person, user_language=g.user_language)
 
-    def get_choices(persons, selected_person):
-        if persons is not None:
-            choices = [(p.id, p.name) for p in persons]
-            if selected_person is not None and (selected_person.id, selected_person.name) in choices:
-                choices.remove((selected_person.id, selected_person.name))
-                choices.insert(0, (None, ''))
-                choices.insert(0, (selected_person.id, selected_person.name))
-            else:
-                choices.insert(0, (None, ''))
-            return choices
-
-    def get_persons(role, person):
-        if person is not None:
-            if role == 'spouse':
-                return Person.query.filter(and_(Person.gender != person.gender, Person.id != person.id,
-                                                Person.user_id == current_user.id)).order_by(Person.id).all()
-            elif role == 'mother':
-                return Person.query.filter(
-                    and_(Person.gender == 'Female', Person.id != person.id, Person.user_id == current_user.id)).order_by(
-                    Person.id).all()
-            elif role == 'father':
-                return Person.query.filter(
-                    and_(Person.gender == 'Male', Person.id != person.id, Person.user_id == current_user.id)).order_by(
-                    Person.id).all()
-
-    potential_spouses = get_persons('spouse', person)
-    form.spouse.choices = get_choices(potential_spouses, person.spouse)
-
-    persons_female = get_persons('mother', person)
-    persons_male = get_persons('father', person)
-
-    mother = Person.query.get(person.mother_id) if Person.query.get(person.mother_id) else None
-    father = Person.query.get(person.father_id) if Person.query.get(person.father_id) else None
-
-    form.mother.choices = get_choices(persons_female, mother)
-
-    form.father.choices = get_choices(persons_male, father)
+    # Set choices for spouse, mother, and father
+    for relation in ['spouse', 'mother', 'father']:
+        persons = get_persons(relation, person)
+        related_person = Person.query.get(getattr(person, f"{relation}_id")) if getattr(person, f"{relation}_id") else None
+        getattr(form, relation).choices = get_choices(persons, related_person)
 
     if form.validate_on_submit():
         try:
-            #filepath = None  # Initialize filepath with a default value
-            if 'image_file' in request.files and request.files['image_file'].filename != '':
-                filepath = handle_file_upload(request.files['image_file'])
-                person.image_file = filepath  # update image_file field with full path
+            filepath = handle_file_upload(request.files['image_file']) if 'image_file' in request.files and request.files['image_file'].filename != '' else None
 
             def set_person_attributes(person, form):
-                person.name = form.name.data
-                person.birth_date = form.birth_date.data if form.birth_date.data else None
+                person.name = form.name.data or None
+                person.image_file = filepath or None
+                person.birth_date = form.birth_date.data or None
                 person.is_alive = form.is_alive.data
-                person.death_date = form.death_date.data if form.death_date.data else None
-                person.place_of_live = form.place_of_live.data if form.place_of_live.data else None
-                person.place_of_birth = form.place_of_birth.data if form.place_of_birth.data else None
-                person.gender = form.gender.data if form.gender.data else None
-                person.comment = form.comment.data if form.comment.data else None
+                person.death_date = form.death_date.data or None
+                person.place_of_live = form.place_of_live.data or None
+                person.place_of_birth = form.place_of_birth.data or None
+                person.gender = form.gender.data or None
+                person.comment = form.comment.data or None
 
             set_person_attributes(person, form)
 
             # Get the selected spouse
             selected_spouse = Person.query.get(form.spouse.data)
-            if selected_spouse is not None:
-                # Update the spouse_id field for both persons
-                person.spouse_id = selected_spouse.id
-                selected_spouse.spouse_id = person.id
-            else:
-                person.spouse_id = None
+            person.spouse_id = selected_spouse.id if selected_spouse is not None else None
 
-            person.mother_id = form.mother.data if form.mother.data else None  # Save the selected mother id to the person's mother field
-            person.father_id = form.father.data if form.father.data else None  # Save the selected father id to the person's father field
+            person.mother_id = form.mother.data or None  # Save the selected mother id to the person's mother field
+            person.father_id = form.father.data or None  # Save the selected father id to the person's father field
 
             # Check if Place of Birth already exists
             place_name = f"Place of birth. {person.name}" if g.user_language == 'en' else f"Место рождения. {person.name}"
             place_of_birth = Place.query.filter_by(user_id=current_user.id, name=place_name).first()
-            if place_of_birth:
+            if place_of_birth and form.place_of_birth.data and form.place_of_birth.data != "":
                 # Update existing Place of Birth
                 place_of_birth.location = form.place_of_birth.data
-            elif form.place_of_birth.data:
+            elif form.place_of_birth.data and form.place_of_birth.data != "":
                 # Create new Place of Birth
                 place_of_birth = Place(user_id=current_user.id,
                                        name=place_name,
@@ -194,11 +182,11 @@ def edit_person(username, id):
             # Check if Birth Event already exists
             event_name = f"Birth. {person.name}" if g.user_language == 'en' else f"Рождение. {person.name}"
             birth_event = Event.query.filter_by(user_id=current_user.id, name=event_name).first()
-            if birth_event:
+            if birth_event and form.birth_date.data and form.birth_date.data != "":
                 # Update existing Birth Event
                 birth_event.date = person.birth_date
                 birth_event.place_id = place_of_birth.id
-            elif form.birth_date.data:
+            elif form.birth_date.data and form.birth_date.data != "":
                 # Create new Birth Event
                 birth_event = Event(user_id=current_user.id,
                                     name=event_name,
@@ -207,7 +195,7 @@ def edit_person(username, id):
                 db.session.add(birth_event)
 
             # Check if Place of Death and Death Event already exist if person is not alive
-            if not person.is_alive and form.place_of_live.data and person.death_date:
+            if not person.is_alive and form.place_of_live.data and form.place_of_live.data != "" and person.death_date:
                 place_name = f"Place of death. {person.name}" if g.user_language == 'en' else f"Место смерти. {person.name}"
                 place_of_death = Place.query.filter_by(user_id=current_user.id, name=place_name).first()
                 if place_of_death:
@@ -245,7 +233,6 @@ def edit_person(username, id):
                 e) if g.user_language == 'en' \
                 else 'Произошла ошибка при обновлении персоны, мест и событий: {}'.format(e)
             flash(flash_message, 'error')
-            return render_template('edit_person.html', form=form, username=username, person=person)
 
     return render_template('edit_person.html', form=form, username=username, person=person)
 
