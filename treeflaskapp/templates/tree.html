@@ -1,0 +1,106 @@
+{% extends "user_panel.html" %}
+
+{% block content %}
+
+<style type="text/css">
+    #treeContainer {
+        width: auto;
+        height: 100%;
+        border: 1px solid lightgray;
+    }
+</style>
+
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+<div class="container" style="height: 100vh;">
+    <div class="form-container bg-light p-2 rounded" style="height: 100%;">
+        <!-- Flash message handler -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if persons %}
+            <div id="treeContainer"></div>
+
+        {% else %}
+        {% if g.user_language == 'en' %}
+            <p>No records in database. <a href="{{ url_for('persons.create_person', username=session['username']) }}">Create new</a></p>
+        {% elif g.user_language == 'ru' %}
+            <p>Нет записей в базе данных. <a href="{{ url_for('persons.create_person', username=session['username']) }}">Создать новую</a></p>
+        {% endif %}
+    {% endif %}
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var persons_data = {{ persons_data|tojson }};
+
+    // create an array with nodes
+    var nodes = new vis.DataSet(persons_data.map(function(person) {
+        var image = person.extra.image_file ? "/static/" + person.extra.image_file : null;
+        var label = person.name + '\n' + person.extra.birth_date;
+        if (person.extra.death_date) {
+            label += ' - ' + person.extra.death_date;
+        }
+        return {
+            id: person.extra.id,
+            label: label,
+            image: image,
+            shape: image ? 'image' : 'dot'
+        };
+    }));
+
+    // create an array with edges
+    var edges = new vis.DataSet(persons_data.flatMap(function(person) {
+        var personEdges = [];
+
+        if (person.marriages.length > 0) {
+            person.marriages.forEach(function(marriage) {
+                personEdges.push({
+                    from: person.extra.id,
+                    to: marriage.spouse.id,
+                    color: 'red',
+                    width: 2
+                });
+            });
+        }
+
+        if (person.extra.father_id) {
+            personEdges.push({from: person.extra.father_id, to: person.extra.id, color: 'black', arrows: 'to'});
+        }
+
+        return personEdges;
+    }));
+
+    // create a network
+    var container = document.getElementById('treeContainer');
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+    var options = {
+        layout: {
+            hierarchical: {
+                direction: "UD",  // Change direction to Up-Down
+                sortMethod: "directed"  // Sort nodes in a directed way
+            }
+        },
+        edges: {
+            smooth: {
+                type: 'cubicBezier',
+                forceDirection: 'vertical',
+                roundness: 0.4
+            }
+        }
+    };
+    var network = new vis.Network(container, data, options);
+</script>
+
+{% endblock %}

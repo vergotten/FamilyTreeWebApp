@@ -5,8 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bc2120d4-31d6-4b79-aa1b-7300dde184f1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.db" beforeDir="false" afterPath="$PROJECT_DIR$/db.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/documents.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/documents.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/log_dir/my_app.log" beforeDir="false" afterPath="$PROJECT_DIR$/log_dir/my_app.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/blueprint_persons.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/user_panel.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/user_panel.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,15 +30,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/Python_Flask/FamilyTreeWebApp/treeflaskapp/static/demo&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "E:/Python_Flask/FamilyTreeWebApp/treeflaskapp/static/js"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Python_Flask\FamilyTreeWebApp\treeflaskapp\static\js" />
       <recent name="E:\Python_Flask\FamilyTreeWebApp\treeflaskapp\static\demo" />
       <recent name="E:\Python_Flask\FamilyTreeWebApp" />
     </key>

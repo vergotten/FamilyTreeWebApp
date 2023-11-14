@@ -57,6 +57,7 @@ def persons_view(username):
                     person.is_alive = True
 
             db.session.commit()
+
             form = PersonForm(user_language=g.user_language)  # create an instance of your form
             return render_template('persons.html', persons=persons, form=form, Person=Person)
         else:
@@ -295,3 +296,80 @@ def delete_file(username, id):
             return jsonify({'message': 'File not found.'}), 404
     else:
         return jsonify({'message': 'No filename provided.'}), 400
+
+@persons.route('/user/<username>/tree')
+@login_required
+def persons_tree(username):
+    try:
+        if username == current_user.username:
+            persons = Person.query.filter_by(user_id=current_user.id).all()
+            persons_data = []
+            for person in persons:
+                if person.birth_date is not None:
+                    birth_date = person.birth_date
+                    today = datetime.today().date()  # Get the current date
+                    age = today.year - birth_date.year
+
+                    # if birthday hasn't happened this year, subtract 1
+                    if (today.month, today.day) < (birth_date.month, birth_date.day):
+                        age -= 1
+                    person.age = age
+                else:
+                    person.age = None
+
+                if person.death_date is not None:
+                    person.is_alive = False
+                    death_date = person.death_date
+                    age_at_death = death_date.year - birth_date.year
+                    if (death_date.month, death_date.day) < (birth_date.month, birth_date.day):
+                        age_at_death -= 1
+                    person.age = age_at_death
+                else:
+                    person.is_alive = True
+
+                spouse = Person.query.get(person.spouse_id)
+                spouse_name = spouse.name if spouse is not None else None
+                spouse_id = spouse.id if spouse is not None else None
+
+                mother = Person.query.get(person.mother_id)
+                mother_name = mother.name if mother is not None else None
+                mother_id = mother.id if mother is not None else None
+
+                father = Person.query.get(person.father_id)
+                father_name = father.name if father is not None else None
+                father_id = father.id if father is not None else None
+
+                persons_data.append({
+                    'name': person.name,
+                    'class': 'node',
+                    'textClass': 'nodeText',
+                    'depthOffset': 1,
+                    'marriages': [{'spouse': {'name': spouse_name, 'id': spouse_id}, 'children': []}] if spouse_name is not None else [],
+                    'extra': {
+                        'id': person.id,
+                        'age': person.age,
+                        'is_alive': person.is_alive,
+                        'place_of_live': person.place_of_live,
+                        'place_of_birth': person.place_of_birth,
+                        'gender': person.gender,
+                        'comment': person.comment,
+                        'image_file': person.image_file,
+                        'user_id': person.user_id,
+                        'birth_date': person.birth_date.strftime('%d-%m-%Y') if person.birth_date is not None else None,
+                        'death_date': person.death_date.strftime('%d-%m-%Y') if person.death_date is not None else None,
+                        'mother_name': mother_name,
+                        'mother_id': mother_id,
+                        'father_name': father_name,
+                        'father_id': father_id,
+                    }
+                })
+
+            db.session.commit()
+
+            return render_template('tree.html', persons=persons, Person=Person, persons_data=persons_data)
+        else:
+            return "Unauthorized", 403
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return "An error occurred", 500
+

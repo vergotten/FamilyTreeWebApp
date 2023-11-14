@@ -1,0 +1,51 @@
+digraph {
+	6 [label="King George V"]
+	7 [label="Queen Mary"]
+	8 [label="King George VI"]
+	9 [label="Queen Elizabeth"]
+	10 [label="Prince Henry, Duke of Gloucester"]
+	11 [label="Princess Alice, Duchess of Gloucester"]
+	12 [label="Prince George, Duke of Kent"]
+	14 [label="Queen Elizabeth II"]
+	15 [label="Prince Philip, Duke of Edinburgh"]
+	16 [label="Charles III"]
+	17 [label="Anne, Princess Royal"]
+	18 [label="Prince Andrew, Duke of York"]
+	19 [label="Prince Edward, Duke of Edinburgh"]
+	20 [label="Princess Marina, Duchess of Kent"]
+	21 [label=123]
+	22 [label=123]
+	23 [label=123]
+	None -> 6
+	None -> 6
+	None -> 7
+	None -> 7
+	7 -> 8
+	6 -> 8
+	None -> 9
+	None -> 9
+	7 -> 10
+	6 -> 10
+	None -> 11
+	None -> 11
+	7 -> 12
+	6 -> 12
+	9 -> 14
+	8 -> 14
+	None -> 15
+	None -> 15
+	14 -> 16
+	19 -> 16
+	14 -> 17
+	19 -> 17
+	14 -> 18
+	19 -> 18
+	14 -> 19
+	15 -> 19
+	None -> 20
+	None -> 20
+	None -> 22
+	None -> 22
+	None -> 23
+	None -> 23
+}
