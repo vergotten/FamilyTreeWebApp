@@ -148,7 +148,8 @@ def edit_person(username, id):
 
             def set_person_attributes(person, form):
                 person.name = form.name.data or None
-                person.image_file = filepath or None
+                if filepath:
+                    person.image_file = filepath
                 person.birth_date = form.birth_date.data or None
                 person.is_alive = form.is_alive.data
                 person.death_date = form.death_date.data or None
@@ -292,18 +293,13 @@ def persons_tree(username):
             persons = Person.query.filter_by(user_id=current_user.id).all()
             persons_data = []
             for person in persons:
-                # Determine the parent id
-                pid = None
-                if person.father_id is not None:
-                    pid = person.father_id
-                elif person.mother_id is not None:
-                    pid = person.mother_id
 
                 # Add the person to the data
                 persons_data.append({
                     'id': person.id,
-                    'pid': pid,
                     'name': person.name,
+                    'mother_id': person.mother_id if person.mother_id else None,
+                    'father_id': person.father_id if person.father_id else None,
                     'img': "/static/" + person.image_file if person.image_file else None,
                     'partners': [person.spouse_id] if person.spouse_id else [],
                     'extra': {
@@ -316,8 +312,6 @@ def persons_tree(username):
                         'user_id': person.user_id if person.user_id else None,
                         'birth_date': person.birth_date.strftime('%d-%m-%Y') if person.birth_date is not None else None,
                         'death_date': person.death_date.strftime('%d-%m-%Y') if person.death_date is not None else None,
-                        'mother_id': person.mother_id if person.mother_id else None,
-                        'father_id': person.father_id if person.father_id else None,
                     }
                 })
 

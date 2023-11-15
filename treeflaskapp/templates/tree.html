@@ -12,6 +12,7 @@
 
 <script src="https://balkangraph.com/js/latest/OrgChart.js"></script>
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script src="https://balkan.app/js/familytree.js"></script>
 
 <div class="container" style="height: 100vh;">
     <div class="form-container bg-light p-2 rounded" style="height: 100%;">
@@ -85,47 +86,96 @@
             container.firstChild.remove();
         }
 
+        <!--    ////////////////////////////////////////////////////////////////////////////////////////////////    -->
+
         if (tree1.checked) {
-            // Create the OrgChart chart
-            var chart = new OrgChart(container, {
-                nodeBinding: {
-                    field_0: 'name',
-                    img_0: 'img'
-                },
-                nodes: persons_data.map(function(person) {
-                    console.log('Processing person:', person);  // Debug line
+            // Log the original data
+            console.log('Original data:', persons_data);
 
-                    // Print out the partner IDs
-                    console.log('Partner IDs:', person.partners);  // Debug line
-
-                    return {
-                        id: person.id,
-                        pid: person.pid,
-                        name: person.name,
-                        img: person.img,
-                        tags: person.partners.map(function(partner) {
-                            return 'partner' + partner;
-                        })
-                    };
-                }),
-                tags: persons_data.flatMap(function(person) {
-                    return person.partners.map(function(partner) {
-                        return {
-                            tag: 'partner' + partner,
-                            template: 'olivia'
-                        };
-                    });
-                }),
-                // Add configuration for spouse links
-                linkBinding: {
-                    color: "red",
-                    width: 2
-                },
-                // Sort nodes by age (assuming 'age' property exists in your data)
-                nodeSorter: function(a, b) {
-                    return a.age > b.age ? 1 : -1;
-                }
+            // Get all the ids
+            var ids = persons_data.map(function(person) {
+                return person.id;
             });
+
+            var nodes = persons_data.map(function(person) {
+                // Prepare the node data
+                var node = {
+                    id: person.id ? person.id : 'unknown',
+                    name: person.name ? person.name : 'unknown',
+                    img: person.img ? person.img : 'unknown',
+                };
+
+                // Check if person.extra.gender is "Male" or "Female", then set node.gender
+                if (person.extra && person.extra.gender) {
+                    if (person.extra.gender === 'Male' || person.extra.gender === 'Female') {
+                        node.gender = person.extra.gender.toLowerCase();
+                    }
+                }
+
+                // Add mother id to mid if it exists and corresponds to another person's id
+                if (person.mother_id && person.mother_id !== 'None' && ids.includes(person.mother_id)) {
+                    node.mid = [person.mother_id];
+                }
+
+                // Add father id to fid if it exists and corresponds to another person's id
+                if (person.father_id && person.father_id !== 'None' && ids.includes(person.father_id)) {
+                    node.fid = [person.father_id];
+                }
+
+                // Add partners to pids if they exist and each one corresponds to another person's id
+                if (person.partners && person.partners !== 'None') {
+                    node.pids = person.partners.flat().filter(partner_id => ids.includes(partner_id));
+                }
+
+                return node;
+            });
+
+            // Log the transformed data
+            console.log('Transformed data:', nodes);
+
+            // Prepare the edges
+            var edges = persons_data.flatMap(function(person) {
+                var personEdges = [];
+
+                // Add an edge for each partner if they exist and correspond to another person's id
+                if (person.partners && person.partners !== 'None') {
+                    person.partners.flat().filter(partner_id => ids.includes(partner_id)).forEach(function(partner_id) {
+                        // Only create an edge if person.id < partner_id
+                        if (person.id < partner_id) {
+                            personEdges.push({
+                                from: person.id,
+                                to: partner_id
+                            });
+                        }
+                    });
+                }
+
+                return personEdges;
+            });
+
+            // Log the edges
+            console.log('Edges:', edges);
+
+            // Define custom template
+<!--            FamilyTree.templates.myTemplate = Object.assign({}, FamilyTree.templates.john); // inherit from 'john' template-->
+<!--            FamilyTree.templates.myTemplate.node = '<circle cx="100" cy="100" r="100" fill="#000000" stroke-width="1" stroke="#aeaeae"></circle>'; // customize the node-->
+
+            // Create the FamilyTree chart with your new settings
+            var chart = new FamilyTree(document.getElementById("treeContainer"), {
+                mouseScrool: FamilyTree.none,
+                minPartnerSeparation: 120,
+                siblingSeparation: 120,
+                template: 'john',
+                nodeBinding: {
+                    field_0: "name",
+                    field_1: "title",
+                    img_0: "img",
+                },
+                nodes: nodes
+            });
+
+        <!--    ////////////////////////////////////////////////////////////////////////////////////////////////    -->
+
         } else if (tree2.checked) {
             // Create the vis-network chart
             var nodes = new vis.DataSet(persons_data.map(function(person) {
@@ -159,8 +209,8 @@
                     });
                 }
 
-                if (person.extra && person.extra.father_id) {
-                    personEdges.push({from: person.extra.father_id, to: person.id, color: 'black', arrows: 'to'});
+                if (person.father_id && person.father_id!='None') {
+                    personEdges.push({from: person.father_id, to: person.id, color: 'black', arrows: 'to'});
                 }
 
                 return personEdges;
@@ -171,6 +221,14 @@
                 edges: edges
             };
             var options = {
+                nodes: {
+                    font: {
+                        size: 14, // set font size
+                        face: 'arial', // set font face
+                        strokeWidth: 0, // set stroke width to 0 to hide the border around the text
+                        strokeColor: '#ffffff' // set stroke color same as background color
+                    }
+                },
                 layout: {
                     hierarchical: {
                         direction: "LR",
