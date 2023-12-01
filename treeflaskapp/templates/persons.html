@@ -166,6 +166,9 @@
 var staticUrl = "{{ url_for('static', filename='') }}";
 
 $(document).ready(function(){
+    // Load the saved page length value or use 5 as default
+    var savedPageLength = localStorage.getItem('pageLength') || 5;
+
     var table = $('#myTable').DataTable({
         language: {
             decimal: "",
@@ -191,8 +194,8 @@ $(document).ready(function(){
                 sortDescending: "{% if g.user_language == 'en' %}: activate to sort column descending{% elif g.user_language == 'ru' %}: активировать для сортировки столбца по убыванию{% endif %}"
             }
         },
-        pageLength: 5,  // Change this to 5
-        lengthMenu: [[5, 10, 15, 20], [5, 10, 15, 20]],
+        pageLength: savedPageLength,  // Use the saved value
+        lengthMenu: [[5, 10, 15, 20, 100], [5, 10, 15, 20, 100]],
         createdRow: function(row, data) {
             $(row).click(function(){
                 var $this = $(this);
@@ -248,6 +251,11 @@ $(document).ready(function(){
                 }
             });
         }
+    });
+
+    // Save the new page length value in localStorage every time the user changes it
+    table.on('length.dt', function(e, settings, len) {
+        localStorage.setItem('pageLength', len);
     });
 });
 

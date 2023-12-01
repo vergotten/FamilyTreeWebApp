@@ -9,31 +9,31 @@ from treeflaskapp.models import *
 from treeflaskapp.forms import *
 
 
-# Create a logger
-logger = logging.getLogger('my_logger')
-logger.setLevel(logging.DEBUG)
+# Get the current file's directory
+current_dir = os.path.dirname(os.path.realpath(__file__))
 
-# Check if the directory exists, and if not, create it
-log_dir = 'log_dir'
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
+# Create a /logs directory near the file
+logs_dir = os.path.join(current_dir, 'logs')
+os.makedirs(logs_dir, exist_ok=True)
 
-# Create file handler which logs even debug messages
-fh = logging.FileHandler(os.path.join(log_dir, 'my_app.log'))
-fh.setLevel(logging.DEBUG)
+# Specify the log file path
+log_file = os.path.join(logs_dir, 'app.log')
 
-# Create console handler with a higher log level
-ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
+# Create a custom logger
+logger = logging.getLogger(__name__)
 
-# Create formatter and add it to the handlers
+# Set the level of this logger
+logger.setLevel(logging.INFO)
+
+# Create file handler which logs messages
+file_handler = logging.FileHandler(log_file)
+
+# Create a logging format
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
+file_handler.setFormatter(formatter)
 
-# Add the handlers to the logger
-logger.addHandler(fh)
-logger.addHandler(ch)
+# Add the file handler to logger
+logger.addHandler(file_handler)
 
 
 @login_manager.user_loader
@@ -78,7 +78,7 @@ def register():
             logger.error('An error occurred during registration: {}'.format(e))
     return render_template('register.html', form=form)
 
-# TODO: Fix
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm(user_language=g.user_language)

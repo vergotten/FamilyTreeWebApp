@@ -323,4 +323,3 @@ def persons_tree(username):
     except Exception as e:
         print(f"An error occurred: {e}")
         return "An error occurred", 500
-

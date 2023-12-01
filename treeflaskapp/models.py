@@ -46,9 +46,9 @@ class Person(db.Model):
     age = db.Column(db.String(120), nullable=True)
     gender = db.Column(db.String(120), nullable=True)
 
-    spouse_id = db.Column(db.Integer, db.ForeignKey('person.id'))  # table.id
-    mother_id = db.Column(db.Integer, db.ForeignKey('person.id'))
-    father_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    spouse_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)  # table.id
+    mother_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
+    father_id = db.Column(db.Integer, db.ForeignKey('person.id'), nullable=True)
 
     # lambda to initialize Person object.id before it's actually created (it doesn't work otherwise)
     spouse = db.relationship('Person', foreign_keys=[spouse_id], remote_side=[id])
