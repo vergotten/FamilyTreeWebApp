@@ -76,6 +76,7 @@
 
 <script type="text/javascript">
     var persons_data = {{ persons_data|tojson }};
+    var userLanguage = "{{ g.user_language }}";
     console.log('Persons data:', persons_data);  // Debug line
 
     // Create the chart container
@@ -97,7 +98,7 @@
         }
 
         // Define a variable to control whether to show dummy nodes
-        var showDummies = true;  // Change this to false if you don't want to show dummy nodes
+        var showDummies = false;  // Change this to false if you don't want to show dummy nodes
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,12 +136,22 @@
                     return null;
                 }
 
+                var subNames = person.name.match(/(\S+ \(\S+\)|\S+)/g);
+                console.log(subNames);
+
+                console.log('person.name:', person.name);
+                console.log('Type of person.name:', typeof person.name);
+
                 // Prepare the node data
                 var node = {
-                    id: person.id ? person.id : 'unknown',
-                    name: person.name ? person.name : 'unknown',
+                    id: person.id ? person.id : null,
+                    lastName: subNames && subNames[0] ? subNames[0] : null,
+                    name: subNames && subNames[1] ? subNames[1] : null,
+                    patronymic: subNames && subNames[2] ? subNames[2] : null,
                     img: person.img ? person.img : "/static/images/no-user-photo.png"
                 };
+
+                console.log('node:', node);
 
                 // Check if person.extra.gender is "Male" or "Female", then set node.gender
                 if (person.extra && person.extra.gender) {
@@ -195,18 +206,106 @@
             // Log the edges
             console.log('Edges:', edges);
 
-            FamilyTree.templates.field_0 = '<text style="font-size: 24px;" fill="#ffffff" x="100" y="90" text-anchor="middle">{val}</text>';
+            if (userLanguage === 'en') {
+                FamilyTree.SEARCH_PLACEHOLDER = "Search";
+            } else if (userLanguage === 'ru') {
+                FamilyTree.SEARCH_PLACEHOLDER = "Поиск";
+            }
 
-            // Create the FamilyTree chart with your new settings
+            // // Create the FamilyTree chart with your new settings
+            // var chart = new FamilyTree(document.getElementById("treeContainer"), {
+            //     mouseScrool: FamilyTree.none,
+            //     minPartnerSeparation: 150,
+            //     siblingSeparation: 150,
+            //     template: 'tommy',
+            //     nodeBinding: {
+            //         field_0: "name",
+            //         field_1: "title",
+            //         img_0: "img",
+            //     },
+            //     nodes: nodes
+            // });
+
+            FamilyTree.templates.myTemplate = Object.assign({}, FamilyTree.templates.tommy); // tommy john
+            FamilyTree.templates.myTemplate.size = [200, 200];
+            FamilyTree.templates.myTemplate.node =
+                '<circle cx="100" cy="100" r="100" fill="#4D4D4D" stroke-width="1" stroke="#aeaeae"></circle>';
+
+            FamilyTree.templates.myTemplate.defs = ``;
+
+            FamilyTree.templates.myTemplate.ripple = {
+                radius: 100,
+                color: "#e6e6e6",
+                rect: null
+            };
+            FamilyTree.templates.myTemplate.img_0 =
+                '<clipPath id="ulaImg">'
+                + '<circle cx="100" cy="150" r="40"></circle>'
+                + '</clipPath>'
+                + '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="60" y="110" width="80" height="80">'
+                + '</image>';
+
+            FamilyTree.templates.myTemplate.field_lastName = '<text style="font-size: 16px;" fill="#ffffff" x="100" y="60" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.myTemplate.field_name = '<text style="font-size: 16px;" fill="#ffffff" x="100" y="80" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.myTemplate.field_patronymic = '<text style="font-size: 16px;" fill="#ffffff" x="100" y="100" text-anchor="middle">{val}</text>';
+
+            FamilyTree.templates.myTemplate.link =
+                '<path stroke="#686868" stroke-width="1px" fill="none" data-l-id="[{id}][{child-id}]" d="M{xa},{ya} C{xb},{yb} {xc},{yc} {xd},{yd}" />';
+
+            FamilyTree.templates.myTemplate.nodeMenuButton =
+                '<g style="cursor:pointer;" transform="matrix(1,0,0,1,93,15)" data-ctrl-n-menu-id="{id}">'
+                + '<rect x="-4" y="-10" fill="#000000" fill-opacity="0" width="22" height="22">'
+                + '</rect>'
+                + '<line x1="0" y1="0" x2="0" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
+                + '<line x1="7" y1="0" x2="7" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
+                + '<line x1="14" y1="0" x2="14" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
+                + '</g>';
+
+            FamilyTree.templates.myTemplate.menuButton =
+                '<div style="position:absolute;right:{p}px;top:{p}px; width:40px;height:50px;cursor:pointer;" data-ctrl-menu="">'
+                + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
+                + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
+                + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
+                + '</div>';
+
+            FamilyTree.templates.myTemplate.pointer =
+                '<g data-pointer="pointer" transform="matrix(0,0,0,0,100,100)">><g transform="matrix(0.3,0,0,0.3,-17,-17)">'
+                + '<polygon fill="rgb(255, 202, 40)" points="53.004,173.004 53.004,66.996 0,120" />'
+                + '<polygon fill="rgb(255, 202, 40)" points="186.996,66.996 186.996,173.004 240,120" />'
+                + '<polygon fill="rgb(255, 202, 40)" points="66.996,53.004 173.004,53.004 120,0" />'
+                + '<polygon fill="rgb(255, 202, 40)" points="120,240 173.004,186.996 66.996,186.996" />'
+                + '<circle fill="rgb(255, 202, 40)" cx="120" cy="120" r="30" />'
+                + '</g></g>';
+
+            FamilyTree.templates.myTemplate_male = Object.assign({}, FamilyTree.templates.myTemplate);
+            FamilyTree.templates.myTemplate_male.node = '<circle cx="100" cy="100" r="100" fill="#039be5" stroke-width="1" stroke="#aeaeae"></circle>';
+            FamilyTree.templates.myTemplate_female = Object.assign({}, FamilyTree.templates.myTemplate);
+            FamilyTree.templates.myTemplate_female.node = '<circle cx="100" cy="100" r="100" fill="#FF46A3" stroke-width="1" stroke="#aeaeae"></circle>';
+
+            // FamilyTree.templates.myTemplate_male = Object.assign({}, FamilyTree.templates.myTemplate);
+            // FamilyTree.templates.myTemplate_male.node = '<rect x="50" y="50" width="100" height="100" fill="#039be5" stroke-width="1" stroke="#aeaeae"></rect>';
+            // FamilyTree.templates.myTemplate_female = Object.assign({}, FamilyTree.templates.myTemplate);
+            // FamilyTree.templates.myTemplate_female.node = '<rect x="50" y="50" width="100" height="100" fill="#FF46A3" stroke-width="1" stroke="#aeaeae"></rect>';
+
             var chart = new FamilyTree(document.getElementById("treeContainer"), {
-                mouseScrool: FamilyTree.none,
-                minPartnerSeparation: 150,
-                siblingSeparation: 150,
-                template: 'tommy',
+                mouseScrool: FamilyTree.action.none,
+                template: "myTemplate",
+                enableSearch: true,
                 nodeBinding: {
-                    field_0: "name",
-                    field_1: "title",
-                    img_0: "img",
+                    field_lastName: "lastName",
+                    field_name: "name",
+                    field_patronymic: "patronymic",
+                    img_0: "img"
+                },
+                nodeMenu: {
+                    details: { text: "Details" },
+                    edit: { text: "Edit" }
+                },
+                menu: {
+                    pdf: { text: "Export PDF" },
+                    png: { text: "Export PNG" },
+                    svg: { text: "Export SVG" },
+                    csv: { text: "Export CSV" }
                 },
                 nodes: nodes
             });
@@ -240,18 +339,43 @@
             });
 
             // Transform the preprocessed data into a format suitable for the tree visualization, creating a node for each person
+            // var nodes = persons_data.map(function(person) {
+            //     // Skip if the person is a dummy and showDummies is false
+            //     if (person.id < 0 && !showDummies) {
+            //         return null;
+            //     }
+            //
+            //     // Prepare the node data
+            //     var node = {
+            //         id: person.id ? person.id : 'unknown',
+            //         name: person.name ? person.name : 'unknown',
+            //         img: person.img ? person.img : "/static/images/no-user-photo.png"
+            //     };
+
+            // Transform the preprocessed data into a format suitable for the tree visualization, creating a node for each person
             var nodes = persons_data.map(function(person) {
                 // Skip if the person is a dummy and showDummies is false
                 if (person.id < 0 && !showDummies) {
                     return null;
                 }
 
+                var subNames = person.name.match(/(\S+ \(\S+\)|\S+)/g);
+                console.log(subNames);
+
+                console.log('person.name:', person.name);
+                console.log('Type of person.name:', typeof person.name);
+
                 // Prepare the node data
                 var node = {
-                    id: person.id ? person.id : 'unknown',
-                    name: person.name ? person.name : 'unknown',
+                    id: person.id ? person.id : null,
+                    lastName: subNames && subNames[0] ? subNames[0] : null,
+                    name: subNames && subNames[1] ? subNames[1] : null,
+                    patronymic: subNames && subNames[2] ? subNames[2] : null,
+                    nameAndPatronymic: (subNames && subNames[1] ? subNames[1] : "") + " " + (subNames && subNames[2] ? subNames[2] : ""),
                     img: person.img ? person.img : "/static/images/no-user-photo.png"
                 };
+
+                console.log('node:', node);
 
                 // Check if person.extra.gender is "Male" or "Female", then set node.gender
                 if (person.extra && person.extra.gender) {
@@ -306,23 +430,37 @@
             // Log the edges
             console.log('Edges:', edges);
 
-            FamilyTree.templates.field_0 = '<text style="font-size: 24px;" fill="#ffffff" x="100" y="90" text-anchor="middle">{val}</text>';
+            if (userLanguage === 'en') {
+                FamilyTree.SEARCH_PLACEHOLDER = "Search";
+            } else if (userLanguage === 'ru') {
+                FamilyTree.SEARCH_PLACEHOLDER = "Поиск";
+            }
 
             // Create the FamilyTree chart with your new settings
             var chart = new FamilyTree(document.getElementById("treeContainer"), {
                 mouseScrool: FamilyTree.none,
-                minPartnerSeparation: 150,
-                siblingSeparation: 150,
+                minPartnerSeparation: 100,
+                siblingSeparation: 100,
                 template: 'john',
                 nodeBinding: {
-                    field_0: "name",
-                    field_1: "title",
+                    field_0: "lastName",
+                    field_1: "nameAndPatronymic",
                     img_0: "img",
+                },
+                nodeMenu: {
+                    details: { text: "Details" },
+                    edit: { text: "Edit" }
+                },
+                menu: {
+                    pdf: { text: "Export PDF" },
+                    png: { text: "Export PNG" },
+                    svg: { text: "Export SVG" },
+                    csv: { text: "Export CSV" }
                 },
                 nodes: nodes
             });
 
-            ////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////
         } else {
             console.log('No tree selected');
         }

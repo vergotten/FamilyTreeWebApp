@@ -16218,3 +16218,6 @@
 2023-12-01 11:22:35,432 - treeflaskapp.routes - INFO - User profile accessed successfully
 2023-12-01 11:22:52,090 - treeflaskapp.blueprint_persons - ERROR - An error occurred while updating the person, places, and events: name 'secure_filename' is not defined
 2023-12-01 11:23:18,543 - treeflaskapp.blueprint_persons - ERROR - An error occurred while updating the person, places, and events: name 'secure_filename' is not defined
+2023-12-17 15:51:32,161 - treeflaskapp.routes - INFO - User logged in successfully
+2023-12-17 15:51:32,178 - treeflaskapp.routes - INFO - User profile accessed successfully
+2023-12-17 15:51:33,734 - treeflaskapp.routes - INFO - User profile accessed successfully
