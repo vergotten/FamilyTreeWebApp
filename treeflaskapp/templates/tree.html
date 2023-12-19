@@ -2,24 +2,6 @@
 
 {% block content %}
 
-<style type="text/css">
-    #treeContainer {
-        width: auto;
-        height: 95%;
-        border: 1px solid lightgray;
-    }
-
-    #treeContainer .node .field_0 {
-        font-size: 24px;  // Adjust as needed
-        white-space: normal;  // Allows the text to wrap to the next line
-        text-align: center;  // Centers the text
-    }
-    #treeContainer .node img {
-        width: 100px;  // Adjust as needed
-        height: 100px;  // Adjust as needed
-    }
-</style>
-
 <script src="https://balkangraph.com/js/latest/OrgChart.js"></script>
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script src="https://balkan.app/js/familytree.js"></script>
@@ -75,7 +57,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script type="text/javascript">
-    var persons_data = {{ persons_data|tojson }};
+    var persons_data = JSON.parse('{{ persons_data | tojson | safe}}');
     var userLanguage = "{{ g.user_language }}";
     console.log('Persons data:', persons_data);  // Debug line
 
@@ -100,111 +82,113 @@
         // Define a variable to control whether to show dummy nodes
         var showDummies = false;  // Change this to false if you don't want to show dummy nodes
 
+        // Get all the ids
+        var ids = persons_data.map(function(person) {
+            return person.id;
+        });
+
+        // Preprocess the data
+        var preprocessedData = persons_data.map(function(person) {
+            // If the person has a spouse but no parents
+            if (Number.isInteger(person.spouse_id) && ![null, "None"].includes(person.mother_id) && ![null, "None"].includes(person.father_id)) {
+                // Find the spouse in the data
+                var spouse = persons_data.find(p => p.id === person.spouse_id);
+
+                // If the spouse exists and has parents, assign the person the same parent IDs as their spouse
+                if (spouse && (spouse.mother_id || spouse.father_id)) {
+                    person.mother_id = spouse.mother_id;
+                    person.father_id = spouse.father_id;
+                }
+            }
+
+            return person;
+        });
+
+        // Transform the preprocessed data into a format suitable for the tree visualization, creating a node for each person
+        var nodes = persons_data.map(function(person) {
+            // Skip if the person is a dummy and showDummies is false
+            if (person.id < 0 && !showDummies) {
+                return null;
+            }
+
+            var subNames = person.name.match(/(\S+ \(\S+\)|\S+)/g);
+            console.log(subNames);
+
+            console.log('person.name:', person.name);
+            console.log('Type of person.name:', typeof person.name);
+
+            // Prepare the node data
+            var node = {
+                id: person.id ? person.id : null,
+                lastName: subNames && subNames[0] ? subNames[0] : null,
+                name: subNames && subNames[1] ? subNames[1] : null,
+                patronymic: subNames && subNames[2] ? subNames[2] : null,
+                nameAndPatronymic: (subNames && subNames[1] ? subNames[1] : "") + " " + (subNames && subNames[2] ? subNames[2] : ""),
+                img: person.img ? person.img : "/static/images/no-user-photo.png"
+            };
+
+            console.log('node:', node);
+
+            // Check if person.extra.gender is "Male" or "Female", then set node.gender
+            if (person.extra && person.extra.gender) {
+                if (person.extra.gender === 'Male' || person.extra.gender === 'Female') {
+                    node.gender = person.extra.gender.toLowerCase();
+                }
+            }
+
+            // Add mother id to mid if it exists and corresponds to another person's id
+            if (person.mother_id && person.mother_id !== 'None' && ids.includes(person.mother_id)) {
+                node.mid = [person.mother_id];
+            }
+
+            // Add father id to fid if it exists and corresponds to another person's id
+            if (person.father_id && person.father_id !== 'None' && ids.includes(person.father_id)) {
+                node.fid = [person.father_id];
+            }
+
+            // Add partners to pids if they exist and each one corresponds to another person's id
+            if (person.partners && person.partners !== 'None') {
+                node.pids = person.partners.flat().filter(partner_id => ids.includes(partner_id));
+            }
+
+            return node;
+        }).filter(Boolean);  // This will remove null values from the nodes array
+
+        // Log the transformed data
+        console.log('Transformed data:', nodes);
+
+        // Prepare the edges
+        var edges = persons_data.flatMap(function(person) {
+            var personEdges = [];
+
+            // Add an edge for each partner if they exist and correspond to another person's id
+            if (person.partners && person.partners !== 'None') {
+                person.partners.flat().filter(partner_id => ids.includes(partner_id)).forEach(function(partner_id) {
+                    // Only create an edge if person.id < partner_id
+                    if (person.id < partner_id) {
+                        // Create an edge for each pair of partners
+                        personEdges.push({
+                            from: person.id,
+                            to: partner_id
+                        });
+                        console.log('Creating edge:', {from: person.id, to: partner_id});  // Log each edge as it's created
+                    }
+                });
+            }
+
+            return personEdges;
+        });
+
+        // Log the edges
+        console.log('Edges:', edges);
+
+        // Log the original data
+        console.log('Original data:', persons_data);
+
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Check if tree1 is checked
         if (tree1.checked) {
-            // Log the original data
-            console.log('Original data:', persons_data);
-
-            // Get all the ids
-            var ids = persons_data.map(function(person) {
-                return person.id;
-            });
-
-            // Preprocess the data
-            var preprocessedData = persons_data.map(function(person) {
-                // If the person has a spouse but no parents
-                if (Number.isInteger(person.spouse_id) && ![null, "None"].includes(person.mother_id) && ![null, "None"].includes(person.father_id)) {
-                    // Find the spouse in the data
-                    var spouse = persons_data.find(p => p.id === person.spouse_id);
-
-                    // If the spouse exists and has parents, assign the person the same parent IDs as their spouse
-                    if (spouse && (spouse.mother_id || spouse.father_id)) {
-                        person.mother_id = spouse.mother_id;
-                        person.father_id = spouse.father_id;
-                    }
-                }
-
-                return person;
-            });
-
-            // Transform the preprocessed data into a format suitable for the tree visualization, creating a node for each person
-            var nodes = persons_data.map(function(person) {
-                // Skip if the person is a dummy and showDummies is false
-                if (person.id < 0 && !showDummies) {
-                    return null;
-                }
-
-                var subNames = person.name.match(/(\S+ \(\S+\)|\S+)/g);
-                console.log(subNames);
-
-                console.log('person.name:', person.name);
-                console.log('Type of person.name:', typeof person.name);
-
-                // Prepare the node data
-                var node = {
-                    id: person.id ? person.id : null,
-                    lastName: subNames && subNames[0] ? subNames[0] : null,
-                    name: subNames && subNames[1] ? subNames[1] : null,
-                    patronymic: subNames && subNames[2] ? subNames[2] : null,
-                    img: person.img ? person.img : "/static/images/no-user-photo.png"
-                };
-
-                console.log('node:', node);
-
-                // Check if person.extra.gender is "Male" or "Female", then set node.gender
-                if (person.extra && person.extra.gender) {
-                    if (person.extra.gender === 'Male' || person.extra.gender === 'Female') {
-                        node.gender = person.extra.gender.toLowerCase();
-                    }
-                }
-
-                // Add mother id to mid if it exists and corresponds to another person's id
-                if (person.mother_id && person.mother_id !== 'None' && ids.includes(person.mother_id)) {
-                    node.mid = [person.mother_id];
-                }
-
-                // Add father id to fid if it exists and corresponds to another person's id
-                if (person.father_id && person.father_id !== 'None' && ids.includes(person.father_id)) {
-                    node.fid = [person.father_id];
-                }
-
-                // Add partners to pids if they exist and each one corresponds to another person's id
-                if (person.partners && person.partners !== 'None') {
-                    node.pids = person.partners.flat().filter(partner_id => ids.includes(partner_id));
-                }
-
-                return node;
-            }).filter(Boolean);  // This will remove null values from the nodes array
-
-            // Log the transformed data
-            console.log('Transformed data:', nodes);
-
-            // Prepare the edges
-            var edges = persons_data.flatMap(function(person) {
-                var personEdges = [];
-
-                // Add an edge for each partner if they exist and correspond to another person's id
-                if (person.partners && person.partners !== 'None') {
-                    person.partners.flat().filter(partner_id => ids.includes(partner_id)).forEach(function(partner_id) {
-                        // Only create an edge if person.id < partner_id
-                        if (person.id < partner_id) {
-                            // Create an edge for each pair of partners
-                            personEdges.push({
-                                from: person.id,
-                                to: partner_id
-                            });
-                            console.log('Creating edge:', {from: person.id, to: partner_id});  // Log each edge as it's created
-                        }
-                    });
-                }
-
-                return personEdges;
-            });
-
-            // Log the edges
-            console.log('Edges:', edges);
 
             if (userLanguage === 'en') {
                 FamilyTree.SEARCH_PLACEHOLDER = "Search";
@@ -240,10 +224,10 @@
             };
             FamilyTree.templates.myTemplate.img_0 =
                 '<clipPath id="ulaImg">'
-                + '<circle cx="100" cy="150" r="40"></circle>'
-                + '</clipPath>'
-                + '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="60" y="110" width="80" height="80">'
-                + '</image>';
+                    + '<circle cx="100" cy="150" r="40"></circle>'
+                    + '</clipPath>'
+                    + '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="60" y="110" width="80" height="80">'
+                    + '</image>';
 
             FamilyTree.templates.myTemplate.field_lastName = '<text style="font-size: 16px;" fill="#ffffff" x="100" y="60" text-anchor="middle">{val}</text>';
             FamilyTree.templates.myTemplate.field_name = '<text style="font-size: 16px;" fill="#ffffff" x="100" y="80" text-anchor="middle">{val}</text>';
@@ -254,28 +238,28 @@
 
             FamilyTree.templates.myTemplate.nodeMenuButton =
                 '<g style="cursor:pointer;" transform="matrix(1,0,0,1,93,15)" data-ctrl-n-menu-id="{id}">'
-                + '<rect x="-4" y="-10" fill="#000000" fill-opacity="0" width="22" height="22">'
-                + '</rect>'
-                + '<line x1="0" y1="0" x2="0" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
-                + '<line x1="7" y1="0" x2="7" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
-                + '<line x1="14" y1="0" x2="14" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
-                + '</g>';
+                    + '<rect x="-4" y="-10" fill="#000000" fill-opacity="0" width="22" height="22">'
+                    + '</rect>'
+                    + '<line x1="0" y1="0" x2="0" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
+                    + '<line x1="7" y1="0" x2="7" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
+                    + '<line x1="14" y1="0" x2="14" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
+                    + '</g>';
 
             FamilyTree.templates.myTemplate.menuButton =
                 '<div style="position:absolute;right:{p}px;top:{p}px; width:40px;height:50px;cursor:pointer;" data-ctrl-menu="">'
-                + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
-                + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
-                + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
-                + '</div>';
+                    + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
+                    + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
+                    + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
+                    + '</div>';
 
             FamilyTree.templates.myTemplate.pointer =
                 '<g data-pointer="pointer" transform="matrix(0,0,0,0,100,100)">><g transform="matrix(0.3,0,0,0.3,-17,-17)">'
-                + '<polygon fill="rgb(255, 202, 40)" points="53.004,173.004 53.004,66.996 0,120" />'
-                + '<polygon fill="rgb(255, 202, 40)" points="186.996,66.996 186.996,173.004 240,120" />'
-                + '<polygon fill="rgb(255, 202, 40)" points="66.996,53.004 173.004,53.004 120,0" />'
-                + '<polygon fill="rgb(255, 202, 40)" points="120,240 173.004,186.996 66.996,186.996" />'
-                + '<circle fill="rgb(255, 202, 40)" cx="120" cy="120" r="30" />'
-                + '</g></g>';
+                    + '<polygon fill="rgb(255, 202, 40)" points="53.004,173.004 53.004,66.996 0,120" />'
+                    + '<polygon fill="rgb(255, 202, 40)" points="186.996,66.996 186.996,173.004 240,120" />'
+                    + '<polygon fill="rgb(255, 202, 40)" points="66.996,53.004 173.004,53.004 120,0" />'
+                    + '<polygon fill="rgb(255, 202, 40)" points="120,240 173.004,186.996 66.996,186.996" />'
+                    + '<circle fill="rgb(255, 202, 40)" cx="120" cy="120" r="30" />'
+                    + '</g></g>';
 
             FamilyTree.templates.myTemplate_male = Object.assign({}, FamilyTree.templates.myTemplate);
             FamilyTree.templates.myTemplate_male.node = '<circle cx="100" cy="100" r="100" fill="#039be5" stroke-width="1" stroke="#aeaeae"></circle>';
@@ -313,122 +297,6 @@
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
         } else if (tree2.checked) {
-            // Log the original data
-            console.log('Original data:', persons_data);
-
-            // Get all the ids
-            var ids = persons_data.map(function(person) {
-                return person.id;
-            });
-
-            // Preprocess the data
-            var preprocessedData = persons_data.map(function(person) {
-                // If the person has a spouse but no parents
-                if (Number.isInteger(person.spouse_id) && ![null, "None"].includes(person.mother_id) && ![null, "None"].includes(person.father_id)) {
-                    // Find the spouse in the data
-                    var spouse = persons_data.find(p => p.id === person.spouse_id);
-
-                    // If the spouse exists and has parents, assign the person the same parent IDs as their spouse
-                    if (spouse && (spouse.mother_id || spouse.father_id)) {
-                        person.mother_id = spouse.mother_id;
-                        person.father_id = spouse.father_id;
-                    }
-                }
-
-                return person;
-            });
-
-            // Transform the preprocessed data into a format suitable for the tree visualization, creating a node for each person
-            // var nodes = persons_data.map(function(person) {
-            //     // Skip if the person is a dummy and showDummies is false
-            //     if (person.id < 0 && !showDummies) {
-            //         return null;
-            //     }
-            //
-            //     // Prepare the node data
-            //     var node = {
-            //         id: person.id ? person.id : 'unknown',
-            //         name: person.name ? person.name : 'unknown',
-            //         img: person.img ? person.img : "/static/images/no-user-photo.png"
-            //     };
-
-            // Transform the preprocessed data into a format suitable for the tree visualization, creating a node for each person
-            var nodes = persons_data.map(function(person) {
-                // Skip if the person is a dummy and showDummies is false
-                if (person.id < 0 && !showDummies) {
-                    return null;
-                }
-
-                var subNames = person.name.match(/(\S+ \(\S+\)|\S+)/g);
-                console.log(subNames);
-
-                console.log('person.name:', person.name);
-                console.log('Type of person.name:', typeof person.name);
-
-                // Prepare the node data
-                var node = {
-                    id: person.id ? person.id : null,
-                    lastName: subNames && subNames[0] ? subNames[0] : null,
-                    name: subNames && subNames[1] ? subNames[1] : null,
-                    patronymic: subNames && subNames[2] ? subNames[2] : null,
-                    nameAndPatronymic: (subNames && subNames[1] ? subNames[1] : "") + " " + (subNames && subNames[2] ? subNames[2] : ""),
-                    img: person.img ? person.img : "/static/images/no-user-photo.png"
-                };
-
-                console.log('node:', node);
-
-                // Check if person.extra.gender is "Male" or "Female", then set node.gender
-                if (person.extra && person.extra.gender) {
-                    if (person.extra.gender === 'Male' || person.extra.gender === 'Female') {
-                        node.gender = person.extra.gender.toLowerCase();
-                    }
-                }
-
-                // Add mother id to mid if it exists and corresponds to another person's id
-                if (person.mother_id && person.mother_id !== 'None' && ids.includes(person.mother_id)) {
-                    node.mid = [person.mother_id];
-                }
-
-                // Add father id to fid if it exists and corresponds to another person's id
-                if (person.father_id && person.father_id !== 'None' && ids.includes(person.father_id)) {
-                    node.fid = [person.father_id];
-                }
-
-                // Add partners to pids if they exist and each one corresponds to another person's id
-                if (person.partners && person.partners !== 'None') {
-                    node.pids = person.partners.flat().filter(partner_id => ids.includes(partner_id));
-                }
-
-                return node;
-            }).filter(Boolean);  // This will remove null values from the nodes array
-
-            // Log the transformed data
-            console.log('Transformed data:', nodes);
-
-            // Prepare the edges
-            var edges = persons_data.flatMap(function(person) {
-                var personEdges = [];
-
-                // Add an edge for each partner if they exist and correspond to another person's id
-                if (person.partners && person.partners !== 'None') {
-                    person.partners.flat().filter(partner_id => ids.includes(partner_id)).forEach(function(partner_id) {
-                        // Only create an edge if person.id < partner_id
-                        if (person.id < partner_id) {
-                            // Create an edge for each pair of partners
-                            personEdges.push({
-                                from: person.id,
-                                to: partner_id
-                            });
-                            console.log('Creating edge:', {from: person.id, to: partner_id});  // Log each edge as it's created
-                        }
-                    });
-                }
-
-                return personEdges;
-            });
-
-            // Log the edges
-            console.log('Edges:', edges);
 
             if (userLanguage === 'en') {
                 FamilyTree.SEARCH_PLACEHOLDER = "Search";
@@ -439,8 +307,9 @@
             // Create the FamilyTree chart with your new settings
             var chart = new FamilyTree(document.getElementById("treeContainer"), {
                 mouseScrool: FamilyTree.none,
-                minPartnerSeparation: 100,
-                siblingSeparation: 100,
+                minPartnerSeparation: 110,
+                siblingSeparation: 110,
+                levelSeparation: 150,
                 template: 'john',
                 nodeBinding: {
                     field_0: "lastName",
