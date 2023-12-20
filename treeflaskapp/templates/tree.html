@@ -40,7 +40,7 @@
             <!-- Add radio buttons for tree selection -->
             <div style="display: flex; gap: 10px;">
                 <div>
-                    <input type="radio" id="tree1" name="tree" checked>
+                    <input type="radio" id="tree1" name="tree" value="tree1">
                     <label for="tree1">
                         {% if g.user_language == 'en' %}
                                         Tree 1
@@ -50,7 +50,7 @@
                     </label>
                 </div>
                 <div>
-                    <input type="radio" id="tree2" name="tree">
+                    <input type="radio" id="tree2" name="tree" value="tree2">
                     <label for="tree2">
                         {% if g.user_language == 'en' %}
                                         Tree 2
@@ -75,24 +75,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        // Save the selection in localStorage when a radio button is selected
-        document.querySelectorAll('input[name="tree"]').forEach(function(radioButton) {
-            radioButton.addEventListener('change', function(event) {
-                localStorage.setItem('selectedRadioButton', event.target.id);
-            });
-        });
-
-        // Restore the selection from localStorage when the page is loaded
-        var selectedRadioButtonId = localStorage.getItem('selectedRadioButton');
-        if (selectedRadioButtonId) {
-            document.getElementById(selectedRadioButtonId).checked = true;
-        }
-    });
-
+    // Global variables
+    var chart = null;
     var persons_data = JSON.parse('{{ persons_data | tojson | safe}}');
     var userLanguage = "{{ g.user_language }}";
-    console.log('Persons data:', persons_data);  // Debug line
 
     // Create the chart container
     var container = document.getElementById('treeContainer');
@@ -102,8 +88,16 @@
     var tree2 = document.getElementById('tree2');
 
     // Add event listeners to the radio buttons
-    tree1.addEventListener('change', updateChart);
-    tree2.addEventListener('change', updateChart);
+    window.onload = function() {
+        tree1.addEventListener('change', function() {
+            localStorage.setItem('selectedTemplate', this.value);
+            setupTemplateBasedOnRadioButton();
+        });
+        tree2.addEventListener('change', function() {
+            localStorage.setItem('selectedTemplate', this.value);
+            setupTemplateBasedOnRadioButton();
+        });
+    };
 
     var translations = {
         en: {
@@ -142,18 +136,17 @@
         }
     };
 
-    // Function to update the chart
-    function updateChart() {
-        // Define a variable to control whether to show dummy nodes
-        var showDummies = false;  // Change this to false if you don't want to show dummy nodes
 
-        // Get all the ids
-        var ids = persons_data.map(function(person) {
-            return person.id;
-        });
+    // Function definitions
 
-        // Preprocess the data
-        var preprocessedData = persons_data.map(function(person) {
+    function getIds(persons_data) {
+    return persons_data.map(function(person) {
+        return person.id;
+    });
+}
+
+    function preprocessData(persons_data) {
+        return persons_data.map(function(person) {
             // If the person has a spouse but no parents
             if (Number.isInteger(person.spouse_id) && ![null, "None"].includes(person.mother_id) && ![null, "None"].includes(person.father_id)) {
                 // Find the spouse in the data
@@ -168,59 +161,58 @@
 
             return person;
         });
+    }
 
-        // Transform the preprocessed data into a format suitable for the tree visualization, creating a node for each person
-        var nodes = persons_data.map(function(person) {
+    function createNode(person, ids) {
+        var subNames = person.name.match(/(\S+ \(\S+\)|\S+)/g);
+
+        // Prepare the node data
+        var node = {
+            id: person.id ? person.id : null,
+            lastName: subNames && subNames[0] ? subNames[0] : null,
+            name: subNames && subNames[1] ? subNames[1] : null,
+            patronymic: subNames && subNames[2] ? subNames[2] : null,
+            nameAndPatronymic: (subNames && subNames[1] ? subNames[1] : "") + " " + (subNames && subNames[2] ? subNames[2] : ""),
+            img: person.img ? person.img : "/static/images/no-user-photo.png"
+        };
+
+        // Check if person.extra.gender is "Male" or "Female", then set node.gender
+        if (person.extra && person.extra.gender) {
+            if (person.extra.gender === 'Male' || person.extra.gender === 'Female') {
+                node.gender = person.extra.gender.toLowerCase();
+            }
+        }
+
+        // Add mother id to mid if it exists and corresponds to another person's id
+        if (person.mother_id && person.mother_id !== 'None' && ids.includes(person.mother_id)) {
+            node.mid = [person.mother_id];
+        }
+
+        // Add father id to fid if it exists and corresponds to another person's id
+        if (person.father_id && person.father_id !== 'None' && ids.includes(person.father_id)) {
+            node.fid = [person.father_id];
+        }
+
+        // Add partners to pids if they exist and each one corresponds to another person's id
+        if (person.partners && person.partners !== 'None') {
+            node.pids = person.partners.flat().filter(partner_id => ids.includes(partner_id));
+        }
+
+        return node;
+    }
+
+    function transformData(persons_data, showDummies) {
+        // Get all the ids
+        var ids = getIds(persons_data);
+
+        return persons_data.map(function(person) {
             // Skip if the person is a dummy and showDummies is false
             if (person.id < 0 && !showDummies) {
                 return null;
             }
 
-            var subNames = person.name.match(/(\S+ \(\S+\)|\S+)/g);
-            console.log(subNames);
-
-            console.log('person.name:', person.name);
-            console.log('Type of person.name:', typeof person.name);
-
-            // Prepare the node data
-            var node = {
-                id: person.id ? person.id : null,
-                lastName: subNames && subNames[0] ? subNames[0] : null,
-                name: subNames && subNames[1] ? subNames[1] : null,
-                patronymic: subNames && subNames[2] ? subNames[2] : null,
-                nameAndPatronymic: (subNames && subNames[1] ? subNames[1] : "") + " " + (subNames && subNames[2] ? subNames[2] : ""),
-                img: person.img ? person.img : "/static/images/no-user-photo.png"
-            };
-
-            console.log('node:', node);
-
-            // Check if person.extra.gender is "Male" or "Female", then set node.gender
-            if (person.extra && person.extra.gender) {
-                if (person.extra.gender === 'Male' || person.extra.gender === 'Female') {
-                    node.gender = person.extra.gender.toLowerCase();
-                }
-            }
-
-            // Add mother id to mid if it exists and corresponds to another person's id
-            if (person.mother_id && person.mother_id !== 'None' && ids.includes(person.mother_id)) {
-                node.mid = [person.mother_id];
-            }
-
-            // Add father id to fid if it exists and corresponds to another person's id
-            if (person.father_id && person.father_id !== 'None' && ids.includes(person.father_id)) {
-                node.fid = [person.father_id];
-            }
-
-            // Add partners to pids if they exist and each one corresponds to another person's id
-            if (person.partners && person.partners !== 'None') {
-                node.pids = person.partners.flat().filter(partner_id => ids.includes(partner_id));
-            }
-
-            return node;
+            return createNode(person, ids);
         }).filter(Boolean);  // This will remove null values from the nodes array
-
-        // Log the transformed data
-        console.log('Transformed data:', nodes);
 
         // Prepare the edges
         var edges = persons_data.flatMap(function(person) {
@@ -243,19 +235,15 @@
 
             return personEdges;
         });
+    }
 
-        // Log the edges
-        console.log('Edges:', edges);
+    function setupTemplateSriniz(nodes) {
+        // If a chart already exists, destroy it
+        if (chart) {
+            chart.destroy();
+        }
 
-        // Log the original data
-        console.log('Original data:', persons_data);
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////
-
-        // Check if tree1 is checked
-        if (tree1.checked) {
-
-            if (userLanguage === 'en') {
+        if (userLanguage === 'en') {
                 FamilyTree.SEARCH_PLACEHOLDER = "Search";
             } else if (userLanguage === 'ru') {
                 FamilyTree.SEARCH_PLACEHOLDER = "Поиск";
@@ -372,7 +360,7 @@
                 '</g></g>';
 
 
-            var family = new FamilyTree(document.getElementById("treeContainer"), {
+            var chart = new FamilyTree(document.getElementById("treeContainer"), {
                 mouseScrool: FamilyTree.action.ctrlZoom,
                 template: 'sriniz',
                 enableSearch: true,
@@ -404,19 +392,19 @@
                 nodes: nodes,
             });
 
-            family.on('render-link', function (sender, args) {
+            chart.on('render-link', function (sender, args) {
                 if (args.cnode.ppid != undefined)
                     args.html += '<use data-ctrl-ec-id="' + args.node.id + '" xlink:href="#heart" x="' + (args.p.xa) + '" y="' + (args.p.ya) + '"/>';
                 if (args.cnode.isPartner && args.node.partnerSeparation == 30)
                     args.html += '<use data-ctrl-ec-id="' + args.node.id + '" xlink:href="#heart" x="' + (args.p.xb) + '" y="' + (args.p.yb) + '"/>';
             });
 
-            family.on('init', function () {
+            chart.on('init', function () {
                 // preview();
             });
 
             function previewPDF() {
-                FamilyTree.pdfPrevUI.show(family, {
+                FamilyTree.pdfPrevUI.show(chart, {
                     format: 'A4',
                     padding: 50,
                     header: '',
@@ -440,16 +428,19 @@
                 document.querySelector('option[value="Legal"]').textContent = translations[userLanguage].legal;
 
                 var fitOptions = document.querySelectorAll('option[value="fit"]');
-                    fitOptions.forEach(function(option) {
-                        option.textContent = translations[userLanguage].fit;
-                    });
+                fitOptions.forEach(function (option) {
+                    option.textContent = translations[userLanguage].fit;
+                });
             }
+    }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////
+    function setupTemplateJohn(nodes) {
+        // If a chart already exists, destroy it
+        if (chart) {
+            chart.destroy();
+        }
 
-        } else if (tree2.checked) {
-
-            if (userLanguage === 'en') {
+        if (userLanguage === 'en') {
                 FamilyTree.SEARCH_PLACEHOLDER = "Search";
             } else if (userLanguage === 'ru') {
                 FamilyTree.SEARCH_PLACEHOLDER = "Поиск";
@@ -573,16 +564,65 @@
                         option.textContent = translations[userLanguage].fit;
                     });
             }
+    }
 
-        ////////////////////////////////////////////////////////////////////////////////////////////////
+    window.onload = function() {
+        // Save the selected radio button value to localStorage whenever it changes
+        var radioButtons = document.querySelectorAll('input[name="tree"]');
+        for (var i = 0; i < radioButtons.length; i++) {
+            radioButtons[i].addEventListener('change', function() {
+                localStorage.setItem('selectedTemplate', this.value);
+                // setupTemplateBasedOnRadioButton();
+                location.reload();
+            });
+        }
 
+        // Get the stored radio button value
+        var storedValue = localStorage.getItem('selectedTemplate');
+
+        // If no value is stored in localStorage, use a default value
+        if (!storedValue) {
+            storedValue = 'tree1';  // Replace with your default value
+            localStorage.setItem('selectedTemplate', storedValue);
+        }
+
+        // Select the corresponding radio button
+        document.querySelector('input[name="tree"][value="' + storedValue + '"]').checked = true;
+
+        // Call the function to setup the initial chart
+        setupTemplateBasedOnRadioButton();
+    };
+
+    function setupTemplateBasedOnRadioButton() {
+        // Get the value of the radio button from localStorage
+        var radioButtonValue = localStorage.getItem('selectedTemplate');
+
+        // If no value is stored in localStorage, use a default value
+        if (!radioButtonValue) {
+            radioButtonValue = 'tree1';  // Replace with your default value
+        }
+
+        // Get all the ids
+        var ids = getIds(persons_data);
+
+        // Preprocess the data
+        var preprocessedData = preprocessData(persons_data);
+
+        // Transform the preprocessed data into a format suitable for the tree visualization, creating a node for each person
+        var nodes = transformData(preprocessedData, false);  // Set showDummies to false if you don't want to show dummy nodes
+
+        // Call the appropriate function based on the radio button value
+        if (radioButtonValue === 'tree1') {
+            setupTemplateSriniz(nodes);
+        } else if (radioButtonValue === 'tree2') {
+            setupTemplateJohn(nodes);
         } else {
-            console.log('No tree selected');
+            console.error('Unknown template: ' + radioButtonValue);
         }
     }
 
-    // Create the initial chart
-    updateChart();
+    // Call the function immediately to setup the initial chart
+    setupTemplateBasedOnRadioButton();
 
 </script>
 

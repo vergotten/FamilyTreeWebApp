@@ -8,7 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.db" beforeDir="false" afterPath="$PROJECT_DIR$/db.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/treeflaskapp/logs/app.log" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/logs/app.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/tree_.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +71,8 @@
       <workItem from="1702941697295" duration="9828000" />
       <workItem from="1702976002951" duration="6939000" />
       <workItem from="1703006876237" duration="11658000" />
-      <workItem from="1703040871691" duration="2625000" />
+      <workItem from="1703040871691" duration="6734000" />
+      <workItem from="1703048513541" duration="4340000" />
     </task>
     <servers />
   </component>
