@@ -6,6 +6,24 @@
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script src="https://balkan.app/js/familytree.js"></script>
 
+<style type="text/css">
+    #treeContainer {
+        width: auto;
+        height: 95%;
+        border: 1px solid lightgray;
+    }
+
+    #treeContainer .node .field_0 {
+        font-size: 24px;  // Adjust as needed
+        white-space: normal;  // Allows the text to wrap to the next line
+        text-align: center;  // Centers the text
+    }
+    #treeContainer .node img {
+        width: 100px;  // Adjust as needed
+        height: 100px;  // Adjust as needed
+    }
+</style>
+
 <div class="container" style="height: 100vh;">
     <div class="form-container bg-light p-2 rounded" style="height: 100%;">
         <!-- Flash message handler -->
@@ -57,6 +75,21 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Save the selection in localStorage when a radio button is selected
+        document.querySelectorAll('input[name="tree"]').forEach(function(radioButton) {
+            radioButton.addEventListener('change', function(event) {
+                localStorage.setItem('selectedRadioButton', event.target.id);
+            });
+        });
+
+        // Restore the selection from localStorage when the page is loaded
+        var selectedRadioButtonId = localStorage.getItem('selectedRadioButton');
+        if (selectedRadioButtonId) {
+            document.getElementById(selectedRadioButtonId).checked = true;
+        }
+    });
+
     var persons_data = JSON.parse('{{ persons_data | tojson | safe}}');
     var userLanguage = "{{ g.user_language }}";
     console.log('Persons data:', persons_data);  // Debug line
@@ -72,13 +105,45 @@
     tree1.addEventListener('change', updateChart);
     tree2.addEventListener('change', updateChart);
 
+    var translations = {
+        en: {
+            pdfPreview: "PDF Preview",
+            save: "Save",
+            cancel: "Cancel",
+            format: "Format: ",
+            layout: "Layout: ",
+            portrait: "Portrait",
+            scale: "Scale: ",
+            header: "Header: ",
+            footer: "Footer: ",
+            margin: "Margin: ",
+            portrait: "Portrait",
+            landscape: "Landscape",
+            fit: "Fit",
+            letter: "Letter",
+            legal: "Legal",
+        },
+        ru: {
+            pdfPreview: "Просмотр PDF",
+            save: "Сохранить",
+            cancel: "Отмена",
+            format: "Формат: ",
+            layout: "Макет: ",
+            portrait: "Портрет",
+            scale: "Масштаб: ",
+            header: "Заголовок: ",
+            footer: "Нижний колонтитул: ",
+            margin: "Поля: ",
+            portrait: "Портрет",
+            landscape: "Пейзаж",
+            fit: "По ширине",
+            letter: "Письмо",
+            legal: "Юридический"
+        }
+    };
+
     // Function to update the chart
     function updateChart() {
-        // Clear the existing chart
-        while (container.firstChild) {
-            container.firstChild.remove();
-        }
-
         // Define a variable to control whether to show dummy nodes
         var showDummies = false;  // Change this to false if you don't want to show dummy nodes
 
@@ -196,47 +261,31 @@
                 FamilyTree.SEARCH_PLACEHOLDER = "Поиск";
             }
 
-            // // Create the FamilyTree chart with your new settings
-            // var chart = new FamilyTree(document.getElementById("treeContainer"), {
-            //     mouseScrool: FamilyTree.none,
-            //     minPartnerSeparation: 150,
-            //     siblingSeparation: 150,
-            //     template: 'tommy',
-            //     nodeBinding: {
-            //         field_0: "name",
-            //         field_1: "title",
-            //         img_0: "img",
-            //     },
-            //     nodes: nodes
-            // });
+            FamilyTree.templates.sriniz = Object.assign({}, FamilyTree.templates.base);
 
-            FamilyTree.templates.myTemplate = Object.assign({}, FamilyTree.templates.tommy); // tommy john
-            FamilyTree.templates.myTemplate.size = [200, 200];
-            FamilyTree.templates.myTemplate.node =
-                '<circle cx="100" cy="100" r="100" fill="#4D4D4D" stroke-width="1" stroke="#aeaeae"></circle>';
+            FamilyTree.templates.sriniz.size = [245, 90];
+            FamilyTree.templates.sriniz.node =
+                '<rect x="0" y="0" height="90" width="225" stroke-width="1" rx="15" ry="15"></rect>';
 
-            FamilyTree.templates.myTemplate.defs = ``;
 
-            FamilyTree.templates.myTemplate.ripple = {
-                radius: 100,
-                color: "#e6e6e6",
-                rect: null
-            };
-            FamilyTree.templates.myTemplate.img_0 =
-                '<clipPath id="ulaImg">'
-                    + '<circle cx="100" cy="150" r="40"></circle>'
-                    + '</clipPath>'
-                    + '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" x="60" y="110" width="80" height="80">'
-                    + '</image>';
+            FamilyTree.templates.sriniz.defs = `
+                <g transform="matrix(0.05,0,0,0.05,-13 ,-12)" id="heart">
+                    <path d="M448,256c0-106-86-192-192-192S64,150,64,256s86,192,192,192S448,362,448,256Z" style="fill:#fff;stroke:red;stroke-miterlimit:10;stroke-width:24px" fill="red"></path><path d="M256,360a16,16,0,0,1-9-2.78c-39.3-26.68-56.32-45-65.7-56.41-20-24.37-29.58-49.4-29.3-76.5.31-31.06,25.22-56.33,55.53-56.33,20.4,0,35,10.63,44.1,20.41a6,6,0,0,0,8.72,0c9.11-9.78,23.7-20.41,44.1-20.41,30.31,0,55.22,25.27,55.53,56.33.28,27.1-9.31,52.13-29.3,76.5-9.38,11.44-26.4,29.73-65.7,56.41A16,16,0,0,1,256,360Z" fill="red"></path>
+                  </g>
+                  <g id="sriniz_male_up">
+                    <circle cx="15" cy="15" r="10" fill="#fff" stroke="#fff" stroke-width="1"></circle>
+                    ${FamilyTree.icon.ft(15, 15, '#039BE5', 7.5, 7.5)}
+                  </g>
 
-            FamilyTree.templates.myTemplate.field_lastName = '<text style="font-size: 16px;" fill="#ffffff" x="100" y="60" text-anchor="middle">{val}</text>';
-            FamilyTree.templates.myTemplate.field_name = '<text style="font-size: 16px;" fill="#ffffff" x="100" y="80" text-anchor="middle">{val}</text>';
-            FamilyTree.templates.myTemplate.field_patronymic = '<text style="font-size: 16px;" fill="#ffffff" x="100" y="100" text-anchor="middle">{val}</text>';
+                  <g id="sriniz_female_up">
+                    <circle cx="15" cy="15" r="10" fill="#fff" stroke="#fff" stroke-width="1"></circle>
+                    ${FamilyTree.icon.ft(15, 15, '#FF46A3', 7.5, 7.5)}
+                  </g>`;
 
-            FamilyTree.templates.myTemplate.link =
+            FamilyTree.templates.sriniz.link =
                 '<path stroke="#686868" stroke-width="1px" fill="none" data-l-id="[{id}][{child-id}]" d="M{xa},{ya} C{xb},{yb} {xc},{yc} {xd},{yd}" />';
 
-            FamilyTree.templates.myTemplate.nodeMenuButton =
+            FamilyTree.templates.sriniz.nodeMenuButton =
                 '<g style="cursor:pointer;" transform="matrix(1,0,0,1,93,15)" data-ctrl-n-menu-id="{id}">'
                     + '<rect x="-4" y="-10" fill="#000000" fill-opacity="0" width="22" height="22">'
                     + '</rect>'
@@ -245,14 +294,12 @@
                     + '<line x1="14" y1="0" x2="14" y2="10" stroke-width="2" stroke="rgb(255, 202, 40)" />'
                     + '</g>';
 
-            FamilyTree.templates.myTemplate.menuButton =
+            FamilyTree.templates.sriniz.menuButton =
                 '<div style="position:absolute;right:{p}px;top:{p}px; width:40px;height:50px;cursor:pointer;" data-ctrl-menu="">'
-                    + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
-                    + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
-                    + '<hr style="background-color: rgb(255, 202, 40); height: 3px; border: none;">'
+                    + '<img src="/static/images/save.png" style="width:100%;height:100%;">'
                     + '</div>';
 
-            FamilyTree.templates.myTemplate.pointer =
+            FamilyTree.templates.sriniz.pointer =
                 '<g data-pointer="pointer" transform="matrix(0,0,0,0,100,100)">><g transform="matrix(0.3,0,0,0.3,-17,-17)">'
                     + '<polygon fill="rgb(255, 202, 40)" points="53.004,173.004 53.004,66.996 0,120" />'
                     + '<polygon fill="rgb(255, 202, 40)" points="186.996,66.996 186.996,173.004 240,120" />'
@@ -261,38 +308,142 @@
                     + '<circle fill="rgb(255, 202, 40)" cx="120" cy="120" r="30" />'
                     + '</g></g>';
 
-            FamilyTree.templates.myTemplate_male = Object.assign({}, FamilyTree.templates.myTemplate);
-            FamilyTree.templates.myTemplate_male.node = '<circle cx="100" cy="100" r="100" fill="#039be5" stroke-width="1" stroke="#aeaeae"></circle>';
-            FamilyTree.templates.myTemplate_female = Object.assign({}, FamilyTree.templates.myTemplate);
-            FamilyTree.templates.myTemplate_female.node = '<circle cx="100" cy="100" r="100" fill="#FF46A3" stroke-width="1" stroke="#aeaeae"></circle>';
+            // Male
+            FamilyTree.templates.sriniz_male = Object.assign({},
+                FamilyTree.templates.sriniz
+            );
+            FamilyTree.templates.sriniz_male.node =
+                '<rect x="0" y="0" height="{h}" width="{w}" stroke-width="1" fill="#039BE5" stroke="#aeaeae" rx="15" ry="15"></rect>';
 
-            // FamilyTree.templates.myTemplate_male = Object.assign({}, FamilyTree.templates.myTemplate);
-            // FamilyTree.templates.myTemplate_male.node = '<rect x="50" y="50" width="100" height="100" fill="#039be5" stroke-width="1" stroke="#aeaeae"></rect>';
-            // FamilyTree.templates.myTemplate_female = Object.assign({}, FamilyTree.templates.myTemplate);
-            // FamilyTree.templates.myTemplate_female.node = '<rect x="50" y="50" width="100" height="100" fill="#FF46A3" stroke-width="1" stroke="#aeaeae"></rect>';
+            FamilyTree.templates.sriniz_male.field_0 =
+                '<text style="font-size: 16px; font-weight: bold;" fill="#ffffff" x="100" y="30">{val}</text>';
+            FamilyTree.templates.sriniz_male.field_1 =
+                '<text style="font-size: 12px; font-weight: bold;" fill="#ffffff" x="100" y="50">{val}</text>';
 
-            var chart = new FamilyTree(document.getElementById("treeContainer"), {
-                mouseScrool: FamilyTree.action.none,
-                template: "myTemplate",
+            // Female
+            FamilyTree.templates.sriniz_female = Object.assign({},
+                FamilyTree.templates.sriniz
+            );
+            FamilyTree.templates.sriniz_female.node =
+                '<rect x="0" y="0" height="{h}" width="{w}" stroke-width="1" fill="#FF46A3" stroke="#aeaeae" rx="15" ry="15"></rect>';
+
+            FamilyTree.templates.sriniz_female.field_0 =
+                '<text style="font-size: 16px; font-weight: bold;" fill="#ffffff" x="100" y="30">{val}</text>';
+            FamilyTree.templates.sriniz_female.field_1 =
+                '<text style="font-size: 12px; font-weight: bold;" fill="#ffffff" x="100" y="50">{val}</text>';
+
+            const expandIconMale =
+                '<circle cx="97" cy="-16" r="10" fill="#039BE5" stroke="#fff" stroke-width="1"><title>Expand</title></circle>' +
+                '<line x1="90" y1="-16" x2="104" y2="-16" stroke-width="1" stroke="#fff"></line>' +
+                '<line x1="97" y1="-23" x2="97" y2="-9" stroke-width="1" stroke="#fff"></line>';
+
+            const expandIconFemale =
+                '<circle cx="97" cy="-16" r="10" fill="#FF46A3" stroke="#fff" stroke-width="1"></circle>' +
+                '<line x1="90" y1="-16" x2="104" y2="-16" stroke-width="1" stroke="#fff"></line>' +
+                '<line x1="97" y1="-23" x2="97" y2="-9" stroke-width="1" stroke="#fff"></line>';
+
+            FamilyTree.templates.sriniz_male.plus = expandIconMale;
+            FamilyTree.templates.sriniz_female.plus = expandIconFemale;
+
+            // Image
+            const imgTemplate =
+                '<clipPath id="ulaImg">' +
+                '<rect  height="75" width="75" x="7" y="7" stroke-width="1" fill="#FF46A3" stroke="#aeaeae" rx="15" ry="15"></rect>' +
+                '</clipPath>' +
+                '<image x="7" y="7" preserveAspectRatio="xMidYMid slice" clip-path="url(#ulaImg)" xlink:href="{val}" width="75" height="75">' +
+                '</image>';
+
+            FamilyTree.templates.sriniz_male.img_0 = imgTemplate;
+            FamilyTree.templates.sriniz_female.img_0 = imgTemplate;
+
+            FamilyTree.templates.sriniz_male.up =
+                '<use x="195" y="0" xlink:href="#sriniz_male_up"></use>';
+            FamilyTree.templates.sriniz_female.up =
+                '<use x="195" y="0" xlink:href="#sriniz_female_up"></use>';
+
+            // Pointer
+            FamilyTree.templates.sriniz.pointer =
+                '<g data-pointer="pointer" transform="matrix(0,0,0,0,80,80)">><g transform="matrix(0.3,0,0,0.3,-17,-17)">' +
+                '<polygon fill="#039BE5" points="53.004,173.004 53.004,66.996 0,120" />' +
+                '<polygon fill="#039BE5" points="186.996,66.996 186.996,173.004 240,120" />' +
+                '<polygon fill="#FF46A3" points="66.996,53.004 173.004,53.004 120,0" />' +
+                '<polygon fill="#FF46A3" points="120,240 173.004,186.996 66.996,186.996" />' +
+                '<circle fill="red" cx="120" cy="120" r="30" />' +
+                '</g></g>';
+
+
+            var family = new FamilyTree(document.getElementById("treeContainer"), {
+                mouseScrool: FamilyTree.action.ctrlZoom,
+                template: 'sriniz',
                 enableSearch: true,
+                nodeMouseClick: FamilyTree.action.none,
+                scaleInitial: FamilyTree.match.boundary,
+                scaleMax: 1.5,
                 nodeBinding: {
-                    field_lastName: "lastName",
-                    field_name: "name",
-                    field_patronymic: "patronymic",
+                    field_0: "name",
                     img_0: "img"
                 },
-                nodeMenu: {
-                    details: { text: "Details" },
-                    edit: { text: "Edit" }
-                },
+                // nodeMenu: {
+                //     details: { text: "Details" },
+                //     edit: { text: "Edit" }
+                // },
                 menu: {
-                    pdf: { text: "Export PDF" },
-                    png: { text: "Export PNG" },
-                    svg: { text: "Export SVG" },
-                    csv: { text: "Export CSV" }
+                    export_pdf: {
+                        text: userLanguage === "ru" ? "Сохранить в PDF" : "Export PDF",
+                        icon: FamilyTree.icon.pdf(24, 24, "#7A7A7A"),
+                        onClick: previewPDF
+                    },
                 },
-                nodes: nodes
+                toolbar: {
+                    fullScreen: true,
+                    zoom: true,
+                    fit: true,
+                    expandAll: true,
+                },
+
+                nodes: nodes,
             });
+
+            family.on('render-link', function (sender, args) {
+                if (args.cnode.ppid != undefined)
+                    args.html += '<use data-ctrl-ec-id="' + args.node.id + '" xlink:href="#heart" x="' + (args.p.xa) + '" y="' + (args.p.ya) + '"/>';
+                if (args.cnode.isPartner && args.node.partnerSeparation == 30)
+                    args.html += '<use data-ctrl-ec-id="' + args.node.id + '" xlink:href="#heart" x="' + (args.p.xb) + '" y="' + (args.p.yb) + '"/>';
+            });
+
+            family.on('init', function () {
+                // preview();
+            });
+
+            function previewPDF() {
+                FamilyTree.pdfPrevUI.show(family, {
+                    format: 'A4',
+                    padding: 50,
+                    header: '',
+                    footer: '',
+                });
+
+                // Translate the elements
+                document.querySelector('h1').textContent = translations[userLanguage].pdfPreview;
+                document.getElementById('bft-prev-save').textContent = translations[userLanguage].save;
+                document.getElementById('bft-prev-cancel').textContent = translations[userLanguage].cancel;
+                document.querySelector('label[for="bft-size"]').textContent = translations[userLanguage].format;
+                document.querySelector('label[for="bft-ppdf-layout"]').textContent = translations[userLanguage].layout;
+                document.querySelector('label[for="bft-scale"]').textContent = translations[userLanguage].scale;
+                document.querySelector('label[for="bft-ppdf-header"]').textContent = translations[userLanguage].header;
+                document.querySelector('label[for="bft-ppdf-footer"]').textContent = translations[userLanguage].footer;
+                document.querySelector('label[for="bft-ppdf-margin"]').textContent = translations[userLanguage].margin;
+                document.querySelector('option[value="false"]').textContent = translations[userLanguage].portrait;
+                document.querySelector('option[value="true"]').textContent = translations[userLanguage].landscape;
+                // document.querySelector('option[value="fit"]').textContent = translations[userLanguage].fit;
+                document.querySelector('option[value="Letter"]').textContent = translations[userLanguage].letter;
+                document.querySelector('option[value="Legal"]').textContent = translations[userLanguage].legal;
+
+                var fitOptions = document.querySelectorAll('option[value="fit"]');
+                    fitOptions.forEach(function(option) {
+                        option.textContent = translations[userLanguage].fit;
+                    });
+            }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -303,6 +454,63 @@
             } else if (userLanguage === 'ru') {
                 FamilyTree.SEARCH_PLACEHOLDER = "Поиск";
             }
+
+            FamilyTree.templates.john = Object.assign({}, FamilyTree.templates.base);
+            FamilyTree.templates.john.defs = `<style>
+                                                .{randId} .bft-edit-form-header, .{randId} .bft-img-button{
+                                                    background-color: #aeaeae;
+                                                }
+                                                .{randId}.male .bft-edit-form-header, .{randId}.male .bft-img-button{
+                                                    background-color: #039BE5;
+                                                }
+                                                .{randId}.male div.bft-img-button:hover{
+                                                    background-color: #F57C00;
+                                                }
+                                                .{randId}.female .bft-edit-form-header, .{randId}.female .bft-img-button{
+                                                    background-color: #F57C00;
+                                                }
+                                                .{randId}.female div.bft-img-button:hover{
+                                                    background-color: #039BE5;
+                                                }
+                                            </style>
+                                            <clipPath id="john_img_0"><rect x="6" y="6" rx="54" ry="54" width="108" height="108"></rect></clipPath>
+                                            ${FamilyTree.gradientCircleForDefs('circle', '#aeaeae', 60, 5)}
+                                            ${FamilyTree.gradientCircleForDefs('male_circle', '#039BE5', 60, 5)}
+                                            ${FamilyTree.gradientCircleForDefs('female_circle', '#F57C00', 60, 5)}`;
+            FamilyTree.templates.john.field_0 =
+                '<text ' + FamilyTree.attr.width + ' ="230" style="font-size: 16px;font-weight:bold;" fill="#aeaeae" x="60" y="135" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.john.field_1 =
+                '<text ' + FamilyTree.attr.width + ' ="150" style="font-size: 13px;" fill="#aeaeae" x="60" y="150" text-anchor="middle">{val}</text>';
+            FamilyTree.templates.john.node = '<use x="0" y="0" xlink:href="#circle" />';
+            FamilyTree.templates.john.img_0 =
+                '<image preserveAspectRatio="xMidYMid slice" clip-path="url(#john_img_0)" xlink:href="{val}" x="6" y="6" width="108" height="108"></image>';
+            FamilyTree.templates.john.ripple = {
+                radius: 60,
+                color: "#e6e6e6",
+                rect: null
+            };
+
+            FamilyTree.templates.john.menuButton =
+                '<div style="position:absolute;right:{p}px;top:{p}px; width:40px;height:50px;cursor:pointer;" data-ctrl-menu="">'
+                    + '<img src="/static/images/save.png" style="width:100%;height:100%;">'
+                    + '</div>';
+
+            FamilyTree.templates.john.size = [120, 120]
+            FamilyTree.templates.john_male = Object.assign({}, FamilyTree.templates.john);
+            FamilyTree.templates.john_male.node += '<use x="0" y="0" xlink:href="#male_circle" />';
+            FamilyTree.templates.john_male.ripple = {
+                radius: 60,
+                color: "#039BE5",
+                rect: null
+            };
+            FamilyTree.templates.john_female = Object.assign({}, FamilyTree.templates.john);
+            FamilyTree.templates.john_female.node += '<use x="0" y="0" xlink:href="#female_circle" />';
+            FamilyTree.templates.john_female.ripple = {
+                radius: 60,
+                color: "#F57C00",
+                rect: null
+            };
+            FamilyTree.templates.john.nodeMenuButton = `<use ${FamilyTree.attr.control_node_menu_id}="{id}" x="90" y="50" xlink:href="#base_node_menu" />`;
 
             // Create the FamilyTree chart with your new settings
             var chart = new FamilyTree(document.getElementById("treeContainer"), {
@@ -316,20 +524,58 @@
                     field_1: "nameAndPatronymic",
                     img_0: "img",
                 },
-                nodeMenu: {
-                    details: { text: "Details" },
-                    edit: { text: "Edit" }
-                },
                 menu: {
-                    pdf: { text: "Export PDF" },
-                    png: { text: "Export PNG" },
-                    svg: { text: "Export SVG" },
-                    csv: { text: "Export CSV" }
+                    export_pdf: {
+                        text: userLanguage === "ru" ? "Сохранить в PDF" : "Export PDF",
+                        icon: FamilyTree.icon.pdf(24, 24, "#7A7A7A"),
+                        onClick: previewPDF
+                    },
+                },
+                toolbar: {
+                    fullScreen: true,
+                    zoom: true,
+                    fit: true,
+                    expandAll: true,
                 },
                 nodes: nodes
             });
 
+            chart.on('init', function () {
+                // preview();
+            });
+
+            function previewPDF() {
+                FamilyTree.pdfPrevUI.show(chart, {
+                    format: 'A4',
+                    padding: 50,
+                    header: '',
+                    footer: '',
+                });
+
+                // Translate the elements
+                document.querySelector('h1').textContent = translations[userLanguage].pdfPreview;
+                document.getElementById('bft-prev-save').textContent = translations[userLanguage].save;
+                document.getElementById('bft-prev-cancel').textContent = translations[userLanguage].cancel;
+                document.querySelector('label[for="bft-size"]').textContent = translations[userLanguage].format;
+                document.querySelector('label[for="bft-ppdf-layout"]').textContent = translations[userLanguage].layout;
+                document.querySelector('label[for="bft-scale"]').textContent = translations[userLanguage].scale;
+                document.querySelector('label[for="bft-ppdf-header"]').textContent = translations[userLanguage].header;
+                document.querySelector('label[for="bft-ppdf-footer"]').textContent = translations[userLanguage].footer;
+                document.querySelector('label[for="bft-ppdf-margin"]').textContent = translations[userLanguage].margin;
+                document.querySelector('option[value="false"]').textContent = translations[userLanguage].portrait;
+                document.querySelector('option[value="true"]').textContent = translations[userLanguage].landscape;
+                // document.querySelector('option[value="fit"]').textContent = translations[userLanguage].fit;
+                document.querySelector('option[value="Letter"]').textContent = translations[userLanguage].letter;
+                document.querySelector('option[value="Legal"]').textContent = translations[userLanguage].legal;
+
+                var fitOptions = document.querySelectorAll('option[value="fit"]');
+                    fitOptions.forEach(function(option) {
+                        option.textContent = translations[userLanguage].fit;
+                    });
+            }
+
         ////////////////////////////////////////////////////////////////////////////////////////////////
+
         } else {
             console.log('No tree selected');
         }
