@@ -1,4 +1,4 @@
 from treeflaskapp import app
 
 if __name__ == '__main__':
-    app.run(debug=True, port=6070)
+    app.run(debug=True, port=8080)
