@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="bc2120d4-31d6-4b79-aa1b-7300dde184f1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/treeflaskapp/templates/tree.html" beforeDir="false" afterPath="$PROJECT_DIR$/treeflaskapp/templates/tree.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,25 +27,25 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/Python_Flask/FamilyTreeWebApp/treeflaskapp/templates&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "E:/Python_Flask/FamilyTreeWebApp/treeflaskapp/static/demo",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Python_Flask\FamilyTreeWebApp\treeflaskapp\static\demo" />
       <recent name="E:\Python_Flask\FamilyTreeWebApp\treeflaskapp\templates" />
       <recent name="E:\Python_Flask\FamilyTreeWebApp\treeflaskapp\static\js" />
-      <recent name="E:\Python_Flask\FamilyTreeWebApp\treeflaskapp\static\demo" />
       <recent name="E:\Python_Flask\FamilyTreeWebApp" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -74,7 +74,8 @@
       <workItem from="1703098295197" duration="1379000" />
       <workItem from="1703191821741" duration="3744000" />
       <workItem from="1703213670395" duration="94000" />
-      <workItem from="1703222098399" duration="5736000" />
+      <workItem from="1703222098399" duration="6362000" />
+      <workItem from="1703251695595" duration="342000" />
     </task>
     <servers />
   </component>
