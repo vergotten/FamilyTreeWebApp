@@ -76,6 +76,8 @@
 
 <script type="text/javascript">
     // Global variables
+    var domain = 'https://familytreewebapp.onrender.com';
+    var prod = true;
     var chart = null;
     var persons_data = JSON.parse('{{ persons_data | tojson | safe}}');
     var userLanguage = "{{ g.user_language }}";
@@ -173,8 +175,37 @@
             name: subNames && subNames[1] ? subNames[1] : null,
             patronymic: subNames && subNames[2] ? subNames[2] : null,
             nameAndPatronymic: (subNames && subNames[1] ? subNames[1] : "") + " " + (subNames && subNames[2] ? subNames[2] : ""),
-            img: person.img ? person.img : "/static/images/no-user-photo.png"
+            img: null, // Initialize img as null
+            birth_date: person.extra && person.extra.birth_date ? person.extra.birth_date : null,
+            death_date: person.extra && person.extra.death_date ? person.extra.death_date : null,
+            dates: null // Initialize dates as null
         };
+        console.log(node)
+
+        // If prod is true, prepend domain to img
+        if (prod) {
+            node.img = domain + (person.img ? person.img : "/static/images/no-user-photo.png");
+        } else {
+            node.img = person.img ? person.img : "/static/images/no-user-photo.png";
+        }
+
+        // If birth_date is not null, create dates string
+        if (node.birth_date) {
+            if (userLanguage === 'ru') {
+                node.dates = 'д.р. ' + node.birth_date;
+            } else if (userLanguage === 'en') {
+                node.dates = 'b.d. ' + node.birth_date;
+            }
+
+            // If death_date is also not null, append it to dates string
+            if (node.death_date) {
+                if (userLanguage === 'ru') {
+                    node.dates += ' - д.с. ' + node.death_date;
+                } else if (userLanguage === 'en') {
+                    node.dates += ' - d.d. ' + node.death_date;
+                }
+            }
+        }
 
         // Check if person.extra.gender is "Male" or "Female", then set node.gender
         if (person.extra && person.extra.gender) {
@@ -251,7 +282,8 @@
 
             FamilyTree.templates.sriniz = Object.assign({}, FamilyTree.templates.base);
 
-            FamilyTree.templates.sriniz.size = [245, 90];
+            // FamilyTree.templates.sriniz.size = [245, 90];
+            FamilyTree.templates.sriniz.size = [320, 90];
             FamilyTree.templates.sriniz.node =
                 '<rect x="0" y="0" height="90" width="225" stroke-width="1" rx="15" ry="15"></rect>';
 
@@ -306,7 +338,9 @@
             FamilyTree.templates.sriniz_male.field_0 =
                 '<text style="font-size: 16px; font-weight: bold;" fill="#ffffff" x="100" y="30">{val}</text>';
             FamilyTree.templates.sriniz_male.field_1 =
-                '<text style="font-size: 12px; font-weight: bold;" fill="#ffffff" x="100" y="50">{val}</text>';
+                '<text style="font-size: 14px; font-weight: bold;" fill="#ffffff" x="100" y="50">{val}</text>';
+            FamilyTree.templates.sriniz_male.field_2 =
+                '<text style="font-size: 14px; font-weight: bold;" fill="#ffffff" x="100" y="70">{val}</text>';
 
             // Female
             FamilyTree.templates.sriniz_female = Object.assign({},
@@ -318,7 +352,9 @@
             FamilyTree.templates.sriniz_female.field_0 =
                 '<text style="font-size: 16px; font-weight: bold;" fill="#ffffff" x="100" y="30">{val}</text>';
             FamilyTree.templates.sriniz_female.field_1 =
-                '<text style="font-size: 12px; font-weight: bold;" fill="#ffffff" x="100" y="50">{val}</text>';
+                '<text style="font-size: 14px; font-weight: bold;" fill="#ffffff" x="100" y="50">{val}</text>';
+            FamilyTree.templates.sriniz_female.field_2 =
+                '<text style="font-size: 14px; font-weight: bold;" fill="#ffffff" x="100" y="70">{val}</text>';
 
             const expandIconMale =
                 '<circle cx="97" cy="-16" r="10" fill="#039BE5" stroke="#fff" stroke-width="1"><title>Expand</title></circle>' +
@@ -368,8 +404,10 @@
                 scaleInitial: FamilyTree.match.boundary,
                 scaleMax: 1.5,
                 nodeBinding: {
-                    field_0: "name",
-                    img_0: "img"
+                    field_0: "lastName",
+                    img_0: "img",
+                    field_1: "nameAndPatronymic",
+                    field_2: "dates"
                 },
                 // nodeMenu: {
                 //     details: { text: "Details" },
@@ -423,7 +461,6 @@
                 document.querySelector('label[for="bft-ppdf-margin"]').textContent = translations[userLanguage].margin;
                 document.querySelector('option[value="false"]').textContent = translations[userLanguage].portrait;
                 document.querySelector('option[value="true"]').textContent = translations[userLanguage].landscape;
-                // document.querySelector('option[value="fit"]').textContent = translations[userLanguage].fit;
                 document.querySelector('option[value="Letter"]').textContent = translations[userLanguage].letter;
                 document.querySelector('option[value="Legal"]').textContent = translations[userLanguage].legal;
 
@@ -555,7 +592,6 @@
                 document.querySelector('label[for="bft-ppdf-margin"]').textContent = translations[userLanguage].margin;
                 document.querySelector('option[value="false"]').textContent = translations[userLanguage].portrait;
                 document.querySelector('option[value="true"]').textContent = translations[userLanguage].landscape;
-                // document.querySelector('option[value="fit"]').textContent = translations[userLanguage].fit;
                 document.querySelector('option[value="Letter"]').textContent = translations[userLanguage].letter;
                 document.querySelector('option[value="Legal"]').textContent = translations[userLanguage].legal;
 
@@ -621,7 +657,7 @@
         }
     }
 
-    // Call the function immediately to setup the initial chart
+    // Call the function immediately to set up the initial chart
     setupTemplateBasedOnRadioButton();
 
 </script>
